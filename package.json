@@ -1,0 +1,38 @@
+{
+  "name": "react-native-network-logger",
+  "version": "1.0.0",
+  "description": "An HTTP traffic monitor for React Native with zero dependencies",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexbrazier/react-native-network-logger.git"
+  },
+  "keywords": [
+    "react",
+    "native",
+    "react-native",
+    "network",
+    "interceptor",
+    "http",
+    "monitor",
+    "logging"
+  ],
+  "author": "alexbrazier",
+  "license": "MIT",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "prepare": "yarn build",
+    "prebuild": "rimraf lib",
+    "build": "tsc"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/react": "^16.9.38",
+    "@types/react-native": "^0.62.13",
+    "rimraf": "^3.0.2",
+    "typescript": "^3.9.5"
+  },
+  "homepage": "https://github.com/alexbrazier/react-native-network-logger.git"
+}
