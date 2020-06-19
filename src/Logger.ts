@@ -57,6 +57,7 @@ export default class Logger {
     XHRInterceptor.setSendCallback((data: string, xhr: XHR) => {
       const request = this.getRequest(xhr._index);
       if (!request) return;
+      request.startTime = Date.now();
       request.dataSent = data;
     });
 
@@ -81,6 +82,7 @@ export default class Logger {
       ) => {
         const networkInfo = this.getRequest(xhr._index);
         if (!networkInfo) return;
+        networkInfo.endTime = Date.now();
         networkInfo.status = status;
         networkInfo.timeout = timeout;
         networkInfo.response = response;

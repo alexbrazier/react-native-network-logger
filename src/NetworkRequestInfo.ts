@@ -18,10 +18,16 @@ export default class NetworkRequestInfo {
   messages = '';
   serverClose = undefined;
   serverError = undefined;
+  startTime: number = 0;
+  endTime: number = 0;
 
   constructor(type: string, method: RequestMethod, url: string) {
     this.type = type;
     this.method = method;
     this.url = url;
+  }
+
+  get duration() {
+    return this.endTime - this.startTime;
   }
 }
