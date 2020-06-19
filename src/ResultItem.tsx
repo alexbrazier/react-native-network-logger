@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { colors } from './theme';
 import type NetworkRequestInfo from './NetworkRequestInfo';
 
 interface Props {
@@ -10,14 +9,28 @@ interface Props {
 }
 
 const ResultItem: React.FC<Props> = ({ style, request, onPress }) => {
-  const getStatusTextColor = (status: number) => {
+  const getUrlTextColor = (status: number) => {
     if (status !== 200) {
       return {
-        color: colors.red,
+        color: '#8e2800',
       };
     }
     return {};
   };
+  const getStatusTextColor = (status: number) => {
+    if (status < 400) {
+      return 'green';
+    }
+    if (status < 500) {
+      return '#dd825d';
+    }
+    return 'red';
+  };
+
+  const getStatusStyles = (status: number) => ({
+    color: getStatusTextColor(status),
+    borderColor: getStatusTextColor(status),
+  });
   return (
     <TouchableOpacity
       style={[styles.container, style]}
@@ -25,16 +38,15 @@ const ResultItem: React.FC<Props> = ({ style, request, onPress }) => {
         onPress?.();
       }}
     >
-      <Text style={[styles.text, styles.method, styles[request.method]]}>
-        {request.method}
-      </Text>
-      <View style={styles.divider} />
+      <View style={styles.leftContainer}>
+        <Text style={[styles.text, styles.method]}>{request.method}</Text>
+        <Text style={[styles.status, getStatusStyles(request.status)]}>
+          {request.status}
+        </Text>
+        <Text>{request.duration}ms</Text>
+      </View>
       <Text
-        style={[
-          styles.text,
-          styles.content,
-          getStatusTextColor(request.status),
-        ]}
+        style={[styles.text, styles.content, getUrlTextColor(request.status)]}
       >
         {request.url}
       </Text>
@@ -46,15 +58,28 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: colors.grey,
+    backgroundColor: 'white',
     flexDirection: 'row',
     margin: 5,
     paddingTop: 10,
     paddingBottom: 10,
     borderRadius: 5,
   },
+  leftContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  status: {
+    fontWeight: 'bold',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingVertical: 1,
+    paddingHorizontal: 4,
+    textAlign: 'center',
+    marginVertical: 3,
+  },
   text: {
-    color: colors.white,
+    color: 'black',
     fontSize: 16,
     textAlign: 'left',
   },
@@ -63,23 +88,6 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     flexShrink: 1,
     flex: 1,
-  },
-  divider: {
-    width: 1,
-    backgroundColor: colors.white,
-    height: '100%',
-  },
-  GET: {
-    color: colors.green,
-  },
-  POST: {
-    color: colors.yellow,
-  },
-  UPDATE: {
-    color: colors.orange,
-  },
-  DELETE: {
-    color: colors.red,
   },
   method: {
     fontSize: 18,

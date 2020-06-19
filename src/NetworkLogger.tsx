@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import logger from './loggerSingleton';
 import ResultItem from './ResultItem';
-import { colors } from './theme';
 import RequestDetails from './RequestDetails';
 import type NetworkRequestInfo from './NetworkRequestInfo';
 
@@ -47,7 +46,7 @@ const NetworkLogger = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.dark,
+    backgroundColor: '#ededed',
     flex: 1,
   },
 });

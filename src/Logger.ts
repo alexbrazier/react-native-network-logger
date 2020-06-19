@@ -5,6 +5,7 @@ let nextXHRId = 0;
 
 type XHR = {
   _index: number;
+  responseHeaders?: Headers;
 };
 
 export default class Logger {
@@ -67,7 +68,7 @@ export default class Logger {
         if (!networkInfo) return;
         networkInfo.responseContentType = type;
         networkInfo.responseSize = size;
-        networkInfo.responseHeaders = responseHeaders;
+        networkInfo.responseHeaders = xhr.responseHeaders;
       }
     );
 
