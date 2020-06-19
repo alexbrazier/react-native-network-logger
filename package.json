@@ -118,7 +118,8 @@
   },
   "eslintIgnore": [
     "node_modules/",
-    "lib/"
+    "lib/",
+    "coverage"
   ],
   "homepage": "https://github.com/alexbrazier/react-native-network-logger.git",
   "@react-native-community/bob": {
