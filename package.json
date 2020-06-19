@@ -2,10 +2,11 @@
   "name": "react-native-network-logger",
   "version": "1.0.3",
   "description": "An HTTP traffic monitor for React Native with zero dependencies",
-  "main": "lib/commonjs/index.js",
-  "module": "lib/module/index.js",
-  "react-native": "src/index.tsx",
+  "main": "lib/commonjs/index",
+  "module": "lib/module/index",
+  "react-native": "src/index",
   "types": "lib/typescript/index.d.ts",
+  "source": "src/index",
   "repository": {
     "type": "git",
     "url": "https://github.com/alexbrazier/react-native-network-logger.git"
@@ -26,14 +27,20 @@
   "license": "MIT",
   "files": [
     "lib",
-    "src"
+    "src",
+    "!lib/typescript/example",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__"
   ],
   "scripts": {
     "test": "jest",
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "prepare": "bob build",
-    "release": "release-it"
+    "release": "release-it",
+    "example": "yarn --cwd example",
+    "bootstrap": "yarn example && yarn"
   },
   "dependencies": {},
   "devDependencies": {
