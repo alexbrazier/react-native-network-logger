@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
-import Logger from './Logger';
+import logger from './loggerSingleton';
 import ResultItem from './ResultItem';
 import { colors } from './theme';
 import RequestDetails from './RequestDetails';
 import type NetworkRequestInfo from './NetworkRequestInfo';
-
-const logger = new Logger();
 
 const NetworkLogger = () => {
   const [requests, setRequests] = useState(logger.getRequests());

@@ -4,7 +4,7 @@
   "description": "An HTTP traffic monitor for React Native with zero dependencies",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
-  "react-native": "src/index.ts",
+  "react-native": "src/index.tsx",
   "types": "lib/typescript/src/index.d.ts",
   "repository": {
     "type": "git",
