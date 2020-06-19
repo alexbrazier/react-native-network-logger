@@ -1,6 +1,6 @@
 import XHRInterceptor from 'react-native/Libraries/Network/XHRInterceptor';
 import NetworkRequestInfo from './NetworkRequestInfo';
-import { Headers, RequestMethod } from './types';
+import type { Headers, RequestMethod } from './types';
 let nextXHRId = 0;
 
 type XHR = {
@@ -10,6 +10,7 @@ type XHR = {
 export default class Logger {
   private requests: NetworkRequestInfo[] = [];
   private xhrIdMap: { [key: number]: number } = {};
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   callback = (requests: any[]) => {};
 
   setCallback(callback: any) {

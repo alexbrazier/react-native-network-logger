@@ -17,9 +17,9 @@ AppRegistry.registerComponent('App', () => App);
 ## Display Requests and Responses
 
 ```js
-import NetworkMonitor from 'react-native-network-logger';
+import NetworkLogger from 'react-native-network-logger';
 
 render() {
-    return(<NetworkMonitor/>)
+    return(<NetworkLogger/>)
 }
 ```

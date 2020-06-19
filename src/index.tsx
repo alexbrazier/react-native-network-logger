@@ -1,6 +1,6 @@
 import logger from './loggerSingleton';
 
-export { default as NetworkMonitor } from './NetworkMonitor';
+export { default } from './NetworkLogger';
 
 export const startNetworkLogging = () => {
   logger.enableXHRInterception();

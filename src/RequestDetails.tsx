@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import ResultItem from './ResultItem';
 import { colors } from './theme';
-import NetworkRequestInfo from './NetworkRequestInfo';
+import type NetworkRequestInfo from './NetworkRequestInfo';
 
 interface Props {
   request: NetworkRequestInfo;

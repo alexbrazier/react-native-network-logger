@@ -1,4 +1,4 @@
-import { Headers, RequestMethod } from './types';
+import type { Headers, RequestMethod } from './types';
 
 export default class NetworkRequestInfo {
   type = '';

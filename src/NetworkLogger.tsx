@@ -4,11 +4,11 @@ import Logger from './Logger';
 import ResultItem from './ResultItem';
 import { colors } from './theme';
 import RequestDetails from './RequestDetails';
-import NetworkRequestInfo from './NetworkRequestInfo';
+import type NetworkRequestInfo from './NetworkRequestInfo';
 
 const logger = new Logger();
 
-const NetworkMonitor = () => {
+const NetworkLogger = () => {
   const [requests, setRequests] = useState(logger.getRequests());
   const [request, setRequest] = useState<NetworkRequestInfo>();
   const [showDetails, setShowDetails] = useState(false);
@@ -54,4 +54,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NetworkMonitor;
+export default NetworkLogger;
