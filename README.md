@@ -1,10 +1,11 @@
 # react-native-network-logger
 
-![Dependencies](https://img.shields.io/david/alexbrazier/react-native-network-logger)
-![npm](https://img.shields.io/npm/v/react-native-network-logger)
-![npm bundle size](https://img.shields.io/bundlephobia/min/react-native-network-logger)
-![npm](https://img.shields.io/npm/dw/react-native-network-logger)
-![License](https://img.shields.io/npm/l/react-native-network-logger)
+[![CircleCI](https://img.shields.io/circleci/build/gh/alexbrazier/react-native-network-logger)](https://circleci.com/gh/alexbrazier/react-native-network-logger)
+[![Dependencies](https://img.shields.io/david/alexbrazier/react-native-network-logger)](https://david-dm.org/alexbrazier/react-native-network-logger)
+[![npm](https://img.shields.io/npm/v/react-native-network-logger)](https://www.npmjs.com/package/react-native-network-logger)
+[![npm bundle size](https://img.shields.io/bundlephobia/min/react-native-network-logger)](https://bundlephobia.com/result?p=react-native-network-logger)
+[![npm downloads](https://img.shields.io/npm/dw/react-native-network-logger)](https://www.npmjs.com/package/react-native-network-logger)
+[![License](https://img.shields.io/npm/l/react-native-network-logger)](./LICENSE)
 
 An HTTP traffic monitor for React Native including in app interface
 
