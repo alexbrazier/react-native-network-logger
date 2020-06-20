@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
 import logger from './loggerSingleton';
-import ResultItem from './ResultItem';
-import RequestDetails from './RequestDetails';
+import RequestList from './RequestList';
 import type NetworkRequestInfo from './NetworkRequestInfo';
-import { colors } from './theme';
+import { ThemeContext, ThemeName } from './theme';
+import RequestDetails from './RequestDetails';
 
-const NetworkLogger = () => {
+interface Props {
+  theme?: ThemeName;
+}
+
+const NetworkLogger: React.FC<Props> = ({ theme = 'light' }) => {
   const [requests, setRequests] = useState(logger.getRequests());
   const [request, setRequest] = useState<NetworkRequestInfo>();
   const [showDetails, setShowDetails] = useState(false);
@@ -18,38 +21,25 @@ const NetworkLogger = () => {
 
     logger.enableXHRInterception();
   }, []);
+
   return (
-    <View style={styles.container}>
-      <FlatList
-        keyExtractor={(item, index) => index.toString()}
-        data={requests}
-        renderItem={({ item }) => {
-          return (
-            <ResultItem
-              request={item}
-              onPress={() => {
-                setRequest(item);
-                setShowDetails(true);
-              }}
-            />
-          );
-        }}
-      />
-      {showDetails && request && (
+    <ThemeContext.Provider value={theme}>
+      {showDetails && request ? (
         <RequestDetails
           onClose={() => setShowDetails(false)}
           request={request}
         />
+      ) : (
+        <RequestList
+          requests={requests}
+          onPressItem={(item) => {
+            setRequest(item);
+            setShowDetails(true);
+          }}
+        />
       )}
-    </View>
+    </ThemeContext.Provider>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.background,
-    flex: 1,
-  },
-});
 
 export default NetworkLogger;

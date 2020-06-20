@@ -8,16 +8,17 @@ import {
 } from 'react-native';
 import ResultItem from './ResultItem';
 import type NetworkRequestInfo from './NetworkRequestInfo';
-import { colors } from './theme';
+import { useThemedStyles, Theme } from './theme';
 
 interface Props {
   request: NetworkRequestInfo;
   onClose(): void;
 }
 
-const Header = ({ children }: { children: string }) => (
-  <Text style={styles.header}>{children}</Text>
-);
+const Header = ({ children }: { children: string }) => {
+  const styles = useThemedStyles(themedStyles);
+  return <Text style={styles.header}>{children}</Text>;
+};
 
 const Headers = ({
   title = 'Headers',
@@ -25,22 +26,26 @@ const Headers = ({
 }: {
   title: string;
   headers?: Object;
-}) => (
-  <View>
-    <Header>{title}</Header>
-    <View style={styles.content}>
-      {Object.entries(headers || {}).map(([name, value]) => (
-        <View style={styles.headerContainer} key={name}>
-          <Text style={styles.headerKey}>{name}: </Text>
-          <Text style={styles.headerValue}>{value}</Text>
-        </View>
-      ))}
+}) => {
+  const styles = useThemedStyles(themedStyles);
+  return (
+    <View>
+      <Header>{title}</Header>
+      <View style={styles.content}>
+        {Object.entries(headers || {}).map(([name, value]) => (
+          <View style={styles.headerContainer} key={name}>
+            <Text style={styles.headerKey}>{name}: </Text>
+            <Text style={styles.headerValue}>{value}</Text>
+          </View>
+        ))}
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
   const [responseBody, setResponseBody] = useState('Loading...');
+  const styles = useThemedStyles(themedStyles);
 
   useEffect(() => {
     (async () => {
@@ -53,14 +58,12 @@ const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
     <View style={styles.container}>
       <ResultItem request={request} style={styles.info} />
       <ScrollView style={styles.scrollView}>
-        <View style={styles.request}>
-          <Headers title="Request Headers" headers={request.requestHeaders} />
-          <Headers title="Response Headers" headers={request.responseHeaders} />
-          <Header>Request Body</Header>
-          <Text style={styles.content}>{request.getRequestBody()}</Text>
-          <Header>Response Body</Header>
-          <Text style={styles.content}>{responseBody}</Text>
-        </View>
+        <Headers title="Request Headers" headers={request.requestHeaders} />
+        <Headers title="Response Headers" headers={request.responseHeaders} />
+        <Header>Request Body</Header>
+        <Text style={styles.content}>{request.getRequestBody()}</Text>
+        <Header>Response Body</Header>
+        <Text style={styles.content}>{responseBody}</Text>
       </ScrollView>
       <TouchableOpacity onPress={() => onClose()} style={styles.close}>
         <Text style={styles.closeTitle}>Close</Text>
@@ -69,56 +72,54 @@ const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    backgroundColor: colors.background,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  info: {
-    margin: 0,
-  },
-  close: {
-    position: 'absolute',
-    right: 10,
-    top: 10,
-  },
-  closeTitle: {
-    fontSize: 18,
-    color: colors.link,
-  },
-  scrollView: {
-    width: '100%',
-  },
-  header: {
-    fontWeight: 'bold',
-    fontSize: 20,
-    marginTop: 10,
-    marginBottom: 5,
-    color: colors.text,
-  },
-  headerContainer: { flexDirection: 'row', flexWrap: 'wrap' },
-  headerKey: { fontWeight: 'bold', color: colors.text },
-  headerValue: { color: colors.text },
-  request: { marginHorizontal: 10 },
-  text: {
-    fontSize: 16,
-    color: colors.text,
-  },
-  horizontal: {
-    flexDirection: 'row',
-    alignSelf: 'flex-start',
-    flex: 1,
-  },
-  content: {
-    backgroundColor: colors.card,
-    marginHorizontal: -10,
-    padding: 10,
-    color: colors.text,
-  },
-});
+const themedStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    info: {
+      margin: 0,
+    },
+    close: {
+      position: 'absolute',
+      right: 10,
+      top: 10,
+    },
+    closeTitle: {
+      fontSize: 18,
+      color: theme.colors.link,
+    },
+    scrollView: {
+      width: '100%',
+    },
+    header: {
+      fontWeight: 'bold',
+      fontSize: 20,
+      marginTop: 10,
+      marginBottom: 5,
+      marginHorizontal: 10,
+      color: theme.colors.text,
+    },
+    headerContainer: { flexDirection: 'row', flexWrap: 'wrap' },
+    headerKey: { fontWeight: 'bold', color: theme.colors.text },
+    headerValue: { color: theme.colors.text },
+    text: {
+      fontSize: 16,
+      color: theme.colors.text,
+    },
+    horizontal: {
+      flexDirection: 'row',
+      alignSelf: 'flex-start',
+      flex: 1,
+    },
+    content: {
+      backgroundColor: theme.colors.card,
+      padding: 10,
+      color: theme.colors.text,
+    },
+  });
 
 export default RequestDetails;

@@ -1,6 +1,6 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Button, SafeAreaView, Platform } from 'react-native';
-import NetworkLogger from 'react-native-network-logger';
+import NetworkLogger, { ThemeName } from 'react-native-network-logger';
 
 export default function App() {
   const makeRequest = () => {
@@ -12,11 +12,16 @@ export default function App() {
     fetch('https://httpstat.us/400');
     fetch('https://httpstat.us/500');
   };
+  const [theme, setTheme] = useState<ThemeName>('light');
 
   return (
     <SafeAreaView style={styles.container}>
       <Button title="Make request" onPress={makeRequest} />
-      <NetworkLogger />
+      <NetworkLogger theme={theme} />
+      <Button
+        title="Toggle Theme"
+        onPress={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+      />
     </SafeAreaView>
   );
 }

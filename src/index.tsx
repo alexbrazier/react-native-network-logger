@@ -9,3 +9,5 @@ export const startNetworkLogging = () => {
 export const getRequestLogger = () => {
   return logger.getRequests();
 };
+
+export type { ThemeName } from './theme';

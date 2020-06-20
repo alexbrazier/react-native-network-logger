@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import type NetworkRequestInfo from './NetworkRequestInfo';
-import { colors } from './theme';
+import { Theme, useThemedStyles, useTheme } from './theme';
 
 interface Props {
   request: NetworkRequestInfo;
@@ -10,6 +10,8 @@ interface Props {
 }
 
 const ResultItem: React.FC<Props> = ({ style, request, onPress }) => {
+  const styles = useThemedStyles(themedStyles);
+  const theme = useTheme();
   const getUrlTextColor = (status: number) => {
     if (status >= 400) {
       return {
@@ -20,12 +22,12 @@ const ResultItem: React.FC<Props> = ({ style, request, onPress }) => {
   };
   const getStatusTextColor = (status: number) => {
     if (status < 400) {
-      return colors.statusGood;
+      return theme.colors.statusGood;
     }
     if (status < 500) {
-      return colors.statusWarning;
+      return theme.colors.statusWarning;
     }
-    return colors.statusBad;
+    return theme.colors.statusBad;
   };
 
   const getStatusStyles = (status: number) => ({
@@ -55,47 +57,48 @@ const ResultItem: React.FC<Props> = ({ style, request, onPress }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: colors.card,
-    flexDirection: 'row',
-    margin: 5,
-    paddingTop: 10,
-    paddingBottom: 10,
-    borderRadius: 5,
-  },
-  leftContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  status: {
-    fontWeight: 'bold',
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingVertical: 1,
-    paddingHorizontal: 4,
-    textAlign: 'center',
-    marginVertical: 3,
-  },
-  text: {
-    color: colors.text,
-    fontSize: 16,
-  },
-  content: {
-    paddingLeft: 5,
-    paddingRight: 5,
-    flexShrink: 1,
-    flex: 1,
-  },
-  method: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    padding: 0,
-    width: 80,
-  },
-});
+const themedStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      backgroundColor: theme.colors.card,
+      flexDirection: 'row',
+      margin: 5,
+      paddingTop: 10,
+      paddingBottom: 10,
+      borderRadius: 5,
+    },
+    leftContainer: {
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    status: {
+      fontWeight: 'bold',
+      borderWidth: 1,
+      borderRadius: 10,
+      paddingVertical: 1,
+      paddingHorizontal: 4,
+      textAlign: 'center',
+      marginVertical: 3,
+    },
+    text: {
+      color: theme.colors.text,
+      fontSize: 16,
+    },
+    content: {
+      paddingLeft: 5,
+      paddingRight: 5,
+      flexShrink: 1,
+      flex: 1,
+    },
+    method: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      padding: 0,
+      width: 80,
+    },
+  });
 
 export default ResultItem;

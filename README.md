@@ -69,6 +69,16 @@ import NetworkLogger from 'react-native-network-logger';
 const MyScreen = () => <NetworkLogger />;
 ```
 
+#### Themes
+
+You can change between the dark and light theme by passing the `theme` prop with `"dark"` or `"light"`.
+
+```js
+import NetworkLogger from 'react-native-network-logger';
+
+const MyScreen = () => <NetworkLogger theme="dark" />;
+```
+
 ## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
