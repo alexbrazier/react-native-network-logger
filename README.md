@@ -7,18 +7,23 @@
 [![npm downloads](https://img.shields.io/npm/dw/react-native-network-logger)](https://www.npmjs.com/package/react-native-network-logger)
 [![License](https://img.shields.io/npm/l/react-native-network-logger)](./LICENSE)
 
-An HTTP traffic monitor for React Native including in app interface
+An HTTP traffic monitor for React Native including in app interface.
 
-An alternative to Wormholy but for iOS and Android and with zero native dependencies
+An alternative to Wormholy but for both iOS and Android and with zero native dependencies
 
 ## Features
 
 - Log networks requests on iOS and Android
-- View network requests made in app
+- View network requests made with in app viewer
 - Debug network requests on release builds
 - Individually view headers sent, received and body sent and received
 - Zero native or JavaScript dependencies
 - Built in TypeScript definitions
+
+<p float="left">
+  <img src="./.github/images/list-screen.png" width="300" />
+  <img src="./.github/images/request-screen.png" width="300" /> 
+</p>
 
 ## Install
 
@@ -44,7 +49,5 @@ AppRegistry.registerComponent('App', () => App);
 ```js
 import NetworkLogger from 'react-native-network-logger';
 
-render() {
-    return(<NetworkLogger/>)
-}
+const MyScreen = () => <NetworkLogger />;
 ```

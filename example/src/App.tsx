@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, Button } from 'react-native';
+import { StyleSheet, Button, SafeAreaView } from 'react-native';
 import NetworkLogger from 'react-native-network-logger';
 
 export default function App() {
@@ -14,10 +14,10 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Button title="Make request" onPress={makeRequest} />
       <NetworkLogger />
-    </View>
+    </SafeAreaView>
   );
 }
 
