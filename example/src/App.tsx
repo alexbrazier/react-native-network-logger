@@ -8,6 +8,9 @@ export default function App() {
       method: 'POST',
       body: JSON.stringify({ test: 'hello' }),
     });
+    fetch('https://httpstat.us/302');
+    fetch('https://httpstat.us/400');
+    fetch('https://httpstat.us/500');
   };
 
   return (

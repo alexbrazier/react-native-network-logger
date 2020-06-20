@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -38,93 +38,35 @@ const Headers = ({
   </View>
 );
 
-export default class RequestDetails extends Component<Props> {
-  state = { content: '' };
+const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
+  const [responseBody, setResponseBody] = useState('Loading...');
 
-  constructor(props: Props) {
-    super(props);
-    this.state = { content: this.getAll() };
-  }
+  useEffect(() => {
+    (async () => {
+      const body = await request.getResponseBody();
+      setResponseBody(body);
+    })();
+  }, [request]);
 
-  getRequestHeader() {
-    const request = this.props.request;
-    let header = {
-      ...request.requestHeaders,
-      method: request.method,
-      url: request.url,
-    };
-    if (request.requestHeaders !== undefined) {
-      header = { ...header, ...request.requestHeaders };
-    }
-    return JSON.stringify(header, null, '\t');
-  }
-
-  getRequestBody() {
-    try {
-      return JSON.stringify(
-        JSON.parse(this.props.request.dataSent),
-        null,
-        '\t'
-      );
-    } catch (e) {
-      return this.props.request.dataSent;
-    }
-  }
-
-  getAll() {
-    return JSON.stringify(this.props.request, null, '\t');
-  }
-
-  getResponseBody() {
-    try {
-      return JSON.stringify(this.props.request.response, null, '\t');
-    } catch (e) {
-      return this.props.request.response;
-    }
-  }
-
-  getResponseHeader() {
-    const { request } = this.props;
-    const header = {
-      responseHeaders: request.responseHeaders,
-      responseContentType: request.responseContentType,
-      responseSize: request.responseSize,
-      responseURL: request.responseURL,
-      responseType: request.responseType,
-    };
-    return JSON.stringify(header, null, '\t');
-  }
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <ResultItem request={this.props.request} style={styles.info} />
-        <ScrollView style={styles.scrollView}>
-          <View style={styles.request}>
-            <Headers
-              title="Request Headers"
-              headers={this.props.request.requestHeaders}
-            />
-            <Headers
-              title="Response Headers"
-              headers={this.props.request.responseHeaders}
-            />
-            <Header>Request Body</Header>
-            <Text style={styles.content}>{this.getRequestBody()}</Text>
-            <Header>Response Body</Header>
-            <Text style={styles.content}>{this.getResponseBody()}</Text>
-          </View>
-        </ScrollView>
-        <TouchableOpacity
-          onPress={() => this.props.onClose()}
-          style={styles.close}
-        >
-          <Text style={styles.closeTitle}>Close</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-}
+  return (
+    <View style={styles.container}>
+      <ResultItem request={request} style={styles.info} />
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.request}>
+          <Headers title="Request Headers" headers={request.requestHeaders} />
+          <Headers title="Response Headers" headers={request.responseHeaders} />
+          <Header>Request Body</Header>
+          <Text style={styles.content}>{request.getRequestBody()}</Text>
+          <Header>Response Body</Header>
+          <Text style={styles.content}>{responseBody}</Text>
+        </View>
+      </ScrollView>
+      <TouchableOpacity onPress={() => onClose()} style={styles.close}>
+        <Text style={styles.closeTitle}>Close</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -169,3 +111,5 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 });
+
+export default RequestDetails;
