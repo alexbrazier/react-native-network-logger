@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.1.0...v1.2.0) (2020-06-20)
+
+
+### Features
+
+* Make themeable and add dark theme ([e5fcad6](https://github.com/alexbrazier/react-native-network-logger/commit/e5fcad6492dc5a4e8674bac68a22c8a826018c76))
+
 # [1.1.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.0.3...v1.1.0) (2020-06-20)
 
 
