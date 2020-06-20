@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, Button, SafeAreaView } from 'react-native';
+import { StyleSheet, Button, SafeAreaView, Platform } from 'react-native';
 import NetworkLogger from 'react-native-network-logger';
 
 export default function App() {
@@ -24,5 +24,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: Platform.OS === 'android' ? 25 : 0,
   },
 });

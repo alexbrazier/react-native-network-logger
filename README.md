@@ -20,9 +20,20 @@ An alternative to Wormholy but for both iOS and Android and with zero native dep
 - Zero native or JavaScript dependencies
 - Built in TypeScript definitions
 
-<p float="left">
-  <img src="./.github/images/list-screen.png" width="300" />
-  <img src="./.github/images/request-screen.png" width="300" /> 
+## Screenshots
+
+### iOS
+
+<p float="left" align="center">
+  <img src="https://raw.githubusercontent.com/alexbrazier/react-native-network-logger/master/.github/images/ios-list.png" width="300" />
+  <img src="https://raw.githubusercontent.com/alexbrazier/react-native-network-logger/master/.github/images/ios-details.png" width="300" /> 
+</p>
+
+### Android
+
+<p float="left" align="center">
+  <img src="https://raw.githubusercontent.com/alexbrazier/react-native-network-logger/master/.github/images/android-list.png" width="300" />
+  <img src="https://raw.githubusercontent.com/alexbrazier/react-native-network-logger/master/.github/images/android-details.png" width="300" /> 
 </p>
 
 ## Install
