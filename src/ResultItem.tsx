@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import type NetworkRequestInfo from './NetworkRequestInfo';
+import { colors } from './theme';
 
 interface Props {
   request: NetworkRequestInfo;
@@ -10,21 +11,21 @@ interface Props {
 
 const ResultItem: React.FC<Props> = ({ style, request, onPress }) => {
   const getUrlTextColor = (status: number) => {
-    if (status !== 200) {
+    if (status >= 400) {
       return {
-        color: '#8e2800',
+        color: getStatusTextColor(status),
       };
     }
     return {};
   };
   const getStatusTextColor = (status: number) => {
     if (status < 400) {
-      return 'green';
+      return colors.statusGood;
     }
     if (status < 500) {
-      return '#dd825d';
+      return colors.statusWarning;
     }
-    return 'red';
+    return colors.statusBad;
   };
 
   const getStatusStyles = (status: number) => ({
@@ -43,7 +44,7 @@ const ResultItem: React.FC<Props> = ({ style, request, onPress }) => {
         <Text style={[styles.status, getStatusStyles(request.status)]}>
           {request.status}
         </Text>
-        <Text>{request.duration}ms</Text>
+        <Text style={styles.text}>{request.duration}ms</Text>
       </View>
       <Text
         style={[styles.text, styles.content, getUrlTextColor(request.status)]}
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     flexDirection: 'row',
     margin: 5,
     paddingTop: 10,
@@ -79,9 +80,8 @@ const styles = StyleSheet.create({
     marginVertical: 3,
   },
   text: {
-    color: 'black',
+    color: colors.text,
     fontSize: 16,
-    textAlign: 'left',
   },
   content: {
     paddingLeft: 5,

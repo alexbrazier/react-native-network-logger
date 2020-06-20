@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import ResultItem from './ResultItem';
 import type NetworkRequestInfo from './NetworkRequestInfo';
+import { colors } from './theme';
 
 interface Props {
   request: NetworkRequestInfo;
@@ -31,7 +32,7 @@ const Headers = ({
       {Object.entries(headers || {}).map(([name, value]) => (
         <View style={styles.headerContainer} key={name}>
           <Text style={styles.headerKey}>{name}: </Text>
-          <Text>{value}</Text>
+          <Text style={styles.headerValue}>{value}</Text>
         </View>
       ))}
     </View>
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: '100%',
-    backgroundColor: '#ededed',
+    backgroundColor: colors.background,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -87,18 +88,25 @@ const styles = StyleSheet.create({
   },
   closeTitle: {
     fontSize: 18,
-    color: '#0077ff',
+    color: colors.link,
   },
   scrollView: {
     width: '100%',
   },
-  header: { fontWeight: 'bold', fontSize: 20, marginTop: 10, marginBottom: 5 },
+  header: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    marginTop: 10,
+    marginBottom: 5,
+    color: colors.text,
+  },
   headerContainer: { flexDirection: 'row', flexWrap: 'wrap' },
-  headerKey: { fontWeight: 'bold' },
+  headerKey: { fontWeight: 'bold', color: colors.text },
+  headerValue: { color: colors.text },
   request: { marginHorizontal: 10 },
   text: {
     fontSize: 16,
-    color: 'black',
+    color: colors.text,
   },
   horizontal: {
     flexDirection: 'row',
@@ -106,9 +114,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     marginHorizontal: -10,
     padding: 10,
+    color: colors.text,
   },
 });
 

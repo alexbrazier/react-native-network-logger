@@ -4,6 +4,7 @@ import logger from './loggerSingleton';
 import ResultItem from './ResultItem';
 import RequestDetails from './RequestDetails';
 import type NetworkRequestInfo from './NetworkRequestInfo';
+import { colors } from './theme';
 
 const NetworkLogger = () => {
   const [requests, setRequests] = useState(logger.getRequests());
@@ -46,7 +47,7 @@ const NetworkLogger = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ededed',
+    backgroundColor: colors.background,
     flex: 1,
   },
 });
