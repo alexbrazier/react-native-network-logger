@@ -1,4 +1,4 @@
-# react-native-network-logger
+# react-native-network-logger [![GitHub stars](https://img.shields.io/github/stars/alexbrazier/react-native-network-logger?label=Star%20Project&style=social)](https://github.com/alexbrazier/react-native-network-logger/stargazers)
 
 [![CircleCI](https://img.shields.io/circleci/build/gh/alexbrazier/react-native-network-logger)](https://circleci.com/gh/alexbrazier/react-native-network-logger)
 [![Dependencies](https://img.shields.io/david/alexbrazier/react-native-network-logger)](https://david-dm.org/alexbrazier/react-native-network-logger)
@@ -9,7 +9,7 @@
 
 An HTTP traffic monitor for React Native including in app interface.
 
-An alternative to Wormholy but for both iOS and Android and with zero native dependencies
+An alternative to Wormholy but for both iOS and Android and with zero native dependencies.
 
 ## Features
 
@@ -36,15 +36,21 @@ An alternative to Wormholy but for both iOS and Android and with zero native dep
   <img src="https://raw.githubusercontent.com/alexbrazier/react-native-network-logger/master/.github/images/android-details.png" width="300" /> 
 </p>
 
-## Install
+## Setup
+
+### Install
 
 ```bash
 yarn add react-native-network-logger
-# OR
+```
+
+or
+
+```
 npm install --save react-native-network-logger
 ```
 
-## Start Logging
+### Start Logging
 
 Call `startNetworkLogging` in your apps entry point to log every request, or call it on a button press to manually trigger it.
 
@@ -55,10 +61,18 @@ startNetworkLogging();
 AppRegistry.registerComponent('App', () => App);
 ```
 
-## Display Requests and Responses
+### Display Requests and Responses
 
 ```js
 import NetworkLogger from 'react-native-network-logger';
 
 const MyScreen = () => <NetworkLogger />;
 ```
+
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
