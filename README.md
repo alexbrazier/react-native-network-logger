@@ -28,12 +28,20 @@ An alternative to Wormholy but for both iOS and Android and with zero native dep
   <img src="https://raw.githubusercontent.com/alexbrazier/react-native-network-logger/master/.github/images/ios-list.png" width="300" />
   <img src="https://raw.githubusercontent.com/alexbrazier/react-native-network-logger/master/.github/images/ios-details.png" width="300" /> 
 </p>
+<p float="left" align="center">
+  <img src="https://raw.githubusercontent.com/alexbrazier/react-native-network-logger/master/.github/images/ios-list-dark.png" width="300" />
+  <img src="https://raw.githubusercontent.com/alexbrazier/react-native-network-logger/master/.github/images/ios-details-dark.png" width="300" /> 
+</p>
 
 ### Android
 
 <p float="left" align="center">
   <img src="https://raw.githubusercontent.com/alexbrazier/react-native-network-logger/master/.github/images/android-list.png" width="300" />
   <img src="https://raw.githubusercontent.com/alexbrazier/react-native-network-logger/master/.github/images/android-details.png" width="300" /> 
+</p>
+<p float="left" align="center">
+  <img src="https://raw.githubusercontent.com/alexbrazier/react-native-network-logger/master/.github/images/android-list-dark.png" width="300" />
+  <img src="https://raw.githubusercontent.com/alexbrazier/react-native-network-logger/master/.github/images/android-details-dark.png" width="300" /> 
 </p>
 
 ## Setup
