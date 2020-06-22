@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/alexbrazier/react-native-network-logger/compare/v1.2.0...v1.2.1) (2020-06-22)
+
+
+### Bug Fixes
+
+* Typescript declarations path ([4f5bcb4](https://github.com/alexbrazier/react-native-network-logger/commit/4f5bcb40f4a18ec3c20173d06a30cb7cb9b342b8))
+
 # [1.2.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.1.0...v1.2.0) (2020-06-20)
 
 
