@@ -2,23 +2,21 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
+  Button,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Share,
 } from 'react-native';
 import ResultItem from './ResultItem';
 import type NetworkRequestInfo from './NetworkRequestInfo';
 import { useThemedStyles, Theme } from './theme';
+import Header from './Header';
 
 interface Props {
   request: NetworkRequestInfo;
   onClose(): void;
 }
-
-const Header = ({ children }: { children: string }) => {
-  const styles = useThemedStyles(themedStyles);
-  return <Text style={styles.header}>{children}</Text>;
-};
 
 const Headers = ({
   title = 'Headers',
@@ -30,7 +28,9 @@ const Headers = ({
   const styles = useThemedStyles(themedStyles);
   return (
     <View>
-      <Header>{title}</Header>
+      <Header shareContent={headers && JSON.stringify(headers, null, 2)}>
+        {title}
+      </Header>
       <View style={styles.content}>
         {Object.entries(headers || {}).map(([name, value]) => (
           <View style={styles.headerContainer} key={name}>
@@ -54,16 +54,52 @@ const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
     })();
   }, [request]);
 
+  const requestBody = request.getRequestBody();
+
+  const getFullRequest = () => {
+    const processedRequest = {
+      ...request,
+      response: JSON.parse(responseBody),
+      duration: request.duration,
+    };
+    return JSON.stringify(processedRequest, null, 2);
+  };
+
+  const getCurlRequest = () => {
+    // TODO - currently wont work for every request
+    let parsedHeaders =
+      request.requestHeaders &&
+      Object.entries(request.requestHeaders)
+        .map(([key, value]) => `"${key}: ${value}"`)
+        .join('-H ');
+    if (parsedHeaders) {
+      parsedHeaders = `-H ${parsedHeaders}`;
+    }
+
+    return `curl -X${request.method.toUpperCase()} ${parsedHeaders} '${
+      request.url
+    }'`;
+  };
+
   return (
     <View style={styles.container}>
       <ResultItem request={request} style={styles.info} />
       <ScrollView style={styles.scrollView}>
         <Headers title="Request Headers" headers={request.requestHeaders} />
         <Headers title="Response Headers" headers={request.responseHeaders} />
-        <Header>Request Body</Header>
-        <Text style={styles.content}>{request.getRequestBody()}</Text>
-        <Header>Response Body</Header>
+        <Header shareContent={requestBody}>Request Body</Header>
+        <Text style={styles.content}>{requestBody}</Text>
+        <Header shareContent={responseBody}>Response Body</Header>
         <Text style={styles.content}>{responseBody}</Text>
+        <Header>More</Header>
+        <Button
+          title="Share full request"
+          onPress={() => Share.share({ message: getFullRequest() })}
+        />
+        <Button
+          title="Share as cURL"
+          onPress={() => Share.share({ message: getCurlRequest() })}
+        />
       </ScrollView>
       <TouchableOpacity onPress={() => onClose()} style={styles.close}>
         <Text style={styles.closeTitle}>Close</Text>
@@ -95,25 +131,12 @@ const themedStyles = (theme: Theme) =>
     scrollView: {
       width: '100%',
     },
-    header: {
-      fontWeight: 'bold',
-      fontSize: 20,
-      marginTop: 10,
-      marginBottom: 5,
-      marginHorizontal: 10,
-      color: theme.colors.text,
-    },
     headerContainer: { flexDirection: 'row', flexWrap: 'wrap' },
     headerKey: { fontWeight: 'bold', color: theme.colors.text },
     headerValue: { color: theme.colors.text },
     text: {
       fontSize: 16,
       color: theme.colors.text,
-    },
-    horizontal: {
-      flexDirection: 'row',
-      alignSelf: 'flex-start',
-      flex: 1,
     },
     content: {
       backgroundColor: theme.colors.card,

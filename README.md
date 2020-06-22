@@ -17,6 +17,8 @@ An alternative to Wormholy but for both iOS and Android and with zero native dep
 - View network requests made with in app viewer
 - Debug network requests on release builds
 - Individually view headers sent, received and body sent and received
+- Copy or share headers, body or full request
+- Share cURL representation of request
 - Zero native or JavaScript dependencies
 - Built in TypeScript definitions
 
