@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.2.1...v1.3.0) (2020-06-22)
+
+
+### Features
+
+* Add share buttons to share part or full requests, including cURL ([3425d7d](https://github.com/alexbrazier/react-native-network-logger/commit/3425d7d8923eebcf815b2dbb93f0fbfef6918c42)), closes [#2](https://github.com/alexbrazier/react-native-network-logger/issues/2)
+
 ## [1.2.1](https://github.com/alexbrazier/react-native-network-logger/compare/v1.2.0...v1.2.1) (2020-06-22)
 
 
