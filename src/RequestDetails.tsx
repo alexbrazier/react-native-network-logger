@@ -65,20 +65,23 @@ const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
     return JSON.stringify(processedRequest, null, 2);
   };
 
+  const escapeQuotes = (value: string) => value.replace(/'/g, `\\'`);
+
   const getCurlRequest = () => {
-    // TODO - currently wont work for every request
-    let parsedHeaders =
+    let headersPart =
       request.requestHeaders &&
       Object.entries(request.requestHeaders)
-        .map(([key, value]) => `"${key}: ${value}"`)
+        .map(([key, value]) => `'${key}: ${escapeQuotes(value)}'`)
         .join('-H ');
-    if (parsedHeaders) {
-      parsedHeaders = `-H ${parsedHeaders}`;
-    }
+    headersPart = headersPart ? `-H ${headersPart}` : '';
 
-    return `curl -X${request.method.toUpperCase()} ${parsedHeaders} '${
-      request.url
-    }'`;
+    const body = requestBody && escapeQuotes(requestBody);
+
+    const methodPart =
+      request.method !== 'GET' ? `-X${request.method.toUpperCase()}` : '';
+    const bodyPart = body ? `-d '${body}'` : '';
+
+    return `curl ${methodPart} ${headersPart} ${bodyPart} '${request.url}'`;
   };
 
   return (
