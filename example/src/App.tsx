@@ -25,7 +25,9 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>react-native-network-logger</Text>
+      <Text style={styles.title} accessibilityRole="header">
+        react-native-network-logger
+      </Text>
       <NetworkLogger theme={theme} />
       <View style={styles.bottomView}>
         <Button

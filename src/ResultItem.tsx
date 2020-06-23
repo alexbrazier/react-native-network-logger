@@ -34,26 +34,39 @@ const ResultItem: React.FC<Props> = ({ style, request, onPress }) => {
     color: getStatusTextColor(status),
     borderColor: getStatusTextColor(status),
   });
+
+  const MaybeTouchable: any = onPress ? TouchableOpacity : View;
+
+  const status = request.status > 0 ? request.status : '-';
+
   return (
-    <TouchableOpacity
+    <MaybeTouchable
       style={[styles.container, style]}
-      onPress={() => {
-        onPress?.();
-      }}
+      {...(onPress && { accessibilityRole: 'button', onPress })}
     >
       <View style={styles.leftContainer}>
-        <Text style={[styles.text, styles.method]}>{request.method}</Text>
-        <Text style={[styles.status, getStatusStyles(request.status)]}>
-          {request.status}
+        <Text
+          style={[styles.text, styles.method]}
+          accessibilityLabel={`Method: ${request.method}`}
+        >
+          {request.method}
         </Text>
-        <Text style={styles.text}>{request.duration}ms</Text>
+        <Text
+          style={[styles.status, getStatusStyles(request.status)]}
+          accessibilityLabel={`Response status ${status}`}
+        >
+          {status}
+        </Text>
+        <Text style={styles.text}>
+          {request.duration > 0 ? `${request.duration}ms` : 'pending'}
+        </Text>
       </View>
       <Text
         style={[styles.text, styles.content, getUrlTextColor(request.status)]}
       >
         {request.url}
       </Text>
-    </TouchableOpacity>
+    </MaybeTouchable>
   );
 };
 

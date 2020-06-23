@@ -104,7 +104,11 @@ const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
           onPress={() => Share.share({ message: getCurlRequest() })}
         />
       </ScrollView>
-      <TouchableOpacity onPress={() => onClose()} style={styles.close}>
+      <TouchableOpacity
+        onPress={onClose}
+        style={styles.close}
+        accessibilityRole="button"
+      >
         <Text style={styles.closeTitle}>Close</Text>
       </TouchableOpacity>
     </View>
