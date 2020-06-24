@@ -37,7 +37,7 @@ export default class NetworkRequestInfo {
       this.requestHeaders &&
       Object.entries(this.requestHeaders)
         .map(([key, value]) => `'${key}: ${this.escapeQuotes(value)}'`)
-        .join('-H ');
+        .join(' -H ');
     headersPart = headersPart ? `-H ${headersPart}` : '';
 
     const body = this.dataSent && this.escapeQuotes(this.dataSent);
@@ -46,7 +46,7 @@ export default class NetworkRequestInfo {
       this.method !== 'GET' ? `-X${this.method.toUpperCase()}` : '';
     const bodyPart = body ? `-d '${body}'` : '';
 
-    const parts = ['curl', methodPart, headersPart, bodyPart, this.url];
+    const parts = ['curl', methodPart, headersPart, bodyPart, `'${this.url}'`];
 
     return parts.filter(Boolean).join(' ');
   }
