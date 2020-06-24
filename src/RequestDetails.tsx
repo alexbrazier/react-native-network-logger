@@ -59,7 +59,7 @@ const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
   const getFullRequest = () => {
     const processedRequest = {
       ...request,
-      response: JSON.parse(responseBody),
+      response: responseBody ? JSON.parse(responseBody) : undefined,
       duration: request.duration,
     };
     return JSON.stringify(processedRequest, null, 2);

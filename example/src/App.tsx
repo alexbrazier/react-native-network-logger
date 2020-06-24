@@ -18,6 +18,8 @@ export default function App() {
     fetch('https://httpstat.us/302');
     fetch('https://httpstat.us/400');
     fetch('https://httpstat.us/500');
+    // Test requests that fail
+    // fetch('https://failingrequest');
   };
   const [theme, setTheme] = useState<ThemeName>('dark');
 

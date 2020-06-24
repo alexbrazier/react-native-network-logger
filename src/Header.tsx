@@ -22,7 +22,7 @@ const Header: React.FC<Props> = ({ children, shareContent }) => {
         {children}
       </Text>
 
-      {shareContent && (
+      {!!shareContent && (
         <TouchableOpacity
           accessibilityLabel="Share"
           accessibilityRole="button"
