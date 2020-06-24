@@ -18,12 +18,17 @@ const Header: React.FC<Props> = ({ children, shareContent }) => {
   const styles = useThemedStyles(themedStyles);
   return (
     <View style={styles.container}>
-      <Text style={styles.header} accessibilityRole="header">
+      <Text
+        style={styles.header}
+        accessibilityRole="header"
+        testID="header-text"
+      >
         {children}
       </Text>
 
       {!!shareContent && (
         <TouchableOpacity
+          testID="header-share"
           accessibilityLabel="Share"
           accessibilityRole="button"
           onPress={() => {
