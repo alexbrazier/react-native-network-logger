@@ -32,6 +32,29 @@ export default class NetworkRequestInfo {
     return this.endTime - this.startTime;
   }
 
+  get curlRequest() {
+    let headersPart =
+      this.requestHeaders &&
+      Object.entries(this.requestHeaders)
+        .map(([key, value]) => `'${key}: ${this.escapeQuotes(value)}'`)
+        .join('-H ');
+    headersPart = headersPart ? `-H ${headersPart}` : '';
+
+    const body = this.dataSent && this.escapeQuotes(this.dataSent);
+
+    const methodPart =
+      this.method !== 'GET' ? `-X${this.method.toUpperCase()}` : '';
+    const bodyPart = body ? `-d '${body}'` : '';
+
+    const parts = ['curl', methodPart, headersPart, bodyPart, this.url];
+
+    return parts.filter(Boolean).join(' ');
+  }
+
+  private escapeQuotes(value: string) {
+    return value.replace(/'/g, `\\'`);
+  }
+
   private stringifyFormat(data: string) {
     try {
       return JSON.stringify(JSON.parse(data), null, '\t');

@@ -65,25 +65,6 @@ const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
     return JSON.stringify(processedRequest, null, 2);
   };
 
-  const escapeQuotes = (value: string) => value.replace(/'/g, `\\'`);
-
-  const getCurlRequest = () => {
-    let headersPart =
-      request.requestHeaders &&
-      Object.entries(request.requestHeaders)
-        .map(([key, value]) => `'${key}: ${escapeQuotes(value)}'`)
-        .join('-H ');
-    headersPart = headersPart ? `-H ${headersPart}` : '';
-
-    const body = requestBody && escapeQuotes(requestBody);
-
-    const methodPart =
-      request.method !== 'GET' ? `-X${request.method.toUpperCase()}` : '';
-    const bodyPart = body ? `-d '${body}'` : '';
-
-    return `curl ${methodPart} ${headersPart} ${bodyPart} '${request.url}'`;
-  };
-
   return (
     <View style={styles.container}>
       <ResultItem request={request} style={styles.info} />
@@ -101,7 +82,7 @@ const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
         />
         <Button
           title="Share as cURL"
-          onPress={() => Share.share({ message: getCurlRequest() })}
+          onPress={() => Share.share({ message: request.curlRequest })}
         />
       </ScrollView>
       <TouchableOpacity
