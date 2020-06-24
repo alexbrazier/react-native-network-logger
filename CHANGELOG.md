@@ -1,3 +1,12 @@
+## [1.3.1](https://github.com/alexbrazier/react-native-network-logger/compare/v1.3.0...v1.3.1) (2020-06-24)
+
+
+### Bug Fixes
+
+* curl export to add data and escape characters ([82931b5](https://github.com/alexbrazier/react-native-network-logger/commit/82931b5817714a6c231fdd7d845bc0383a46bd4a))
+* Error when viewing request that has error, closes [#7](https://github.com/alexbrazier/react-native-network-logger/issues/7) ([f0bdd3d](https://github.com/alexbrazier/react-native-network-logger/commit/f0bdd3d4735b5329fe844d27e2754783731f3478))
+* Improve accessibility with voiceover and talkback ([ed4339b](https://github.com/alexbrazier/react-native-network-logger/commit/ed4339b022279dd0f154343dcc0761e646c88152))
+
 # [1.3.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.2.1...v1.3.0) (2020-06-22)
 
 
