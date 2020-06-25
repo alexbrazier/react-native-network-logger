@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Share,
+  TextInput,
+  Platform,
 } from 'react-native';
 import ResultItem from './ResultItem';
 import type NetworkRequestInfo from './NetworkRequestInfo';
@@ -43,6 +45,37 @@ const Headers = ({
   );
 };
 
+const LargeText: React.FC<{ children: string }> = ({ children }) => {
+  const styles = useThemedStyles(themedStyles);
+
+  if (Platform.OS === 'ios') {
+    /**
+     * A readonly TextInput is used because large Text blocks sometimes don't render on iOS
+     * See this issue https://github.com/facebook/react-native/issues/19453
+     * Note: Even with the fix mentioned in the comments, text with ~10,000 lines still fails to render
+     */
+    return (
+      <TextInput
+        style={[styles.content, styles.largeContent]}
+        multiline
+        editable={false}
+      >
+        {children}
+      </TextInput>
+    );
+  }
+
+  return (
+    <View style={styles.largeContent}>
+      <ScrollView nestedScrollEnabled>
+        <View>
+          <Text style={styles.content}>{children}</Text>
+        </View>
+      </ScrollView>
+    </View>
+  );
+};
+
 const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
   const [responseBody, setResponseBody] = useState('Loading...');
   const styles = useThemedStyles(themedStyles);
@@ -68,22 +101,26 @@ const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
   return (
     <View style={styles.container}>
       <ResultItem request={request} style={styles.info} />
-      <ScrollView style={styles.scrollView}>
+      <ScrollView style={styles.scrollView} nestedScrollEnabled>
         <Headers title="Request Headers" headers={request.requestHeaders} />
         <Headers title="Response Headers" headers={request.responseHeaders} />
         <Header shareContent={requestBody}>Request Body</Header>
-        <Text style={styles.content}>{requestBody}</Text>
+        <LargeText>{requestBody}</LargeText>
         <Header shareContent={responseBody}>Response Body</Header>
-        <Text style={styles.content}>{responseBody}</Text>
+        <LargeText>{responseBody}</LargeText>
         <Header>More</Header>
-        <Button
-          title="Share full request"
-          onPress={() => Share.share({ message: getFullRequest() })}
-        />
-        <Button
-          title="Share as cURL"
-          onPress={() => Share.share({ message: request.curlRequest })}
-        />
+        <View style={styles.shareButtonContainer}>
+          <Button
+            title="Share full request"
+            onPress={() => Share.share({ message: getFullRequest() })}
+          />
+        </View>
+        <View style={styles.shareButtonContainer}>
+          <Button
+            title="Share as cURL"
+            onPress={() => Share.share({ message: request.curlRequest })}
+          />
+        </View>
       </ScrollView>
       <TouchableOpacity
         onPress={onClose}
@@ -130,6 +167,13 @@ const themedStyles = (theme: Theme) =>
       backgroundColor: theme.colors.card,
       padding: 10,
       color: theme.colors.text,
+    },
+    largeContent: {
+      maxHeight: 300,
+    },
+    shareButtonContainer: {
+      marginVertical: 5,
+      marginHorizontal: 10,
     },
   });
 
