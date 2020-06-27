@@ -1,6 +1,10 @@
 import XHRInterceptor from 'react-native/Libraries/Network/XHRInterceptor';
 import NetworkRequestInfo from './NetworkRequestInfo';
-import type { Headers, RequestMethod } from './types';
+import type {
+  Headers,
+  RequestMethod,
+  StartNetworkLoggingOptions,
+} from './types';
 let nextXHRId = 0;
 
 type XHR = {
@@ -11,6 +15,8 @@ type XHR = {
 export default class Logger {
   private requests: NetworkRequestInfo[] = [];
   private xhrIdMap: { [key: number]: number } = {};
+  private maxRequests: number = 500;
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   callback = (requests: any[]) => {};
 
@@ -24,10 +30,21 @@ export default class Logger {
     return this.requests[requestIndex];
   }
 
-  enableXHRInterception() {
+  enableXHRInterception(options?: StartNetworkLoggingOptions) {
     if (XHRInterceptor.isInterceptorEnabled()) {
       return;
     }
+
+    if (options?.maxRequests !== undefined) {
+      if (typeof options.maxRequests !== 'number' || options.maxRequests < 1) {
+        console.warn(
+          'react-native-network-logger: maxRequests must be a number greater than 0. The logger has not been started.'
+        );
+        return;
+      }
+      this.maxRequests = options.maxRequests;
+    }
+
     XHRInterceptor.setOpenCallback(
       (method: RequestMethod, url: string, xhr: XHR) => {
         xhr._index = nextXHRId++;
@@ -39,6 +56,10 @@ export default class Logger {
           method,
           url
         );
+
+        if (this.requests.length >= this.maxRequests) {
+          this.requests.shift();
+        }
 
         this.requests.push(newRequest);
       }

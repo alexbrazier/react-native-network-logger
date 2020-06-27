@@ -89,6 +89,14 @@ import NetworkLogger from 'react-native-network-logger';
 const MyScreen = () => <NetworkLogger theme="dark" />;
 ```
 
+### Logging options
+
+You can configure the max number of requests stored on the device using by calling `startNetworkLogging` with the `maxRequests` option. The default is `500`.
+
+```js
+startNetworkLogging({ maxRequests: 500 });
+```
+
 ## Example App
 
 To test the example app, after cloning the repo, install the required dependencies by running:
