@@ -89,6 +89,24 @@ import NetworkLogger from 'react-native-network-logger';
 const MyScreen = () => <NetworkLogger theme="dark" />;
 ```
 
+## Example App
+
+To test the example app, after cloning the repo, install the required dependencies by running:
+
+```sh
+yarn bootstrap
+```
+
+Then start the example app by running:
+
+```sh
+yarn example start
+```
+
+You should then be able to open the expo server at http://localhost:3000/ and launch the app on iOS or Android.
+
+For more setup and development details, see [Contributing](#Contributing).
+
 ## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
