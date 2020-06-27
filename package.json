@@ -30,6 +30,8 @@
     "src",
     "!lib/typescript/example",
     "!**/__tests__",
+    "!**/*.spec.ts",
+    "!**/*.spec.tsx",
     "!**/__fixtures__",
     "!**/__mocks__"
   ],

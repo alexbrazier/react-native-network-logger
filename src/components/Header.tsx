@@ -7,7 +7,7 @@ import {
   Share,
   Image,
 } from 'react-native';
-import { useThemedStyles, Theme } from './theme';
+import { useThemedStyles, Theme } from '../theme';
 
 interface Props {
   children: string;

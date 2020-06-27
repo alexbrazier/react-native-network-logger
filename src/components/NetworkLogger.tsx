@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import logger from './loggerSingleton';
+import logger from '../loggerSingleton';
+import type NetworkRequestInfo from '../NetworkRequestInfo';
+import { ThemeContext, ThemeName } from '../theme';
 import RequestList from './RequestList';
-import type NetworkRequestInfo from './NetworkRequestInfo';
-import { ThemeContext, ThemeName } from './theme';
 import RequestDetails from './RequestDetails';
 
 interface Props {

@@ -10,9 +10,9 @@ import {
   TextInput,
   Platform,
 } from 'react-native';
+import type NetworkRequestInfo from '../NetworkRequestInfo';
+import { useThemedStyles, Theme } from '../theme';
 import ResultItem from './ResultItem';
-import type NetworkRequestInfo from './NetworkRequestInfo';
-import { useThemedStyles, Theme } from './theme';
 import Header from './Header';
 
 interface Props {

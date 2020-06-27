@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, act, fireEvent } from '@testing-library/react-native';
-import Header from '../Header';
+import Header from './Header';
 import { Share } from 'react-native';
 
 jest.mock('react-native/Libraries/Share/Share', () => ({ share: jest.fn() }));
