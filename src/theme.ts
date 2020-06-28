@@ -13,6 +13,7 @@ export type Theme = {
     statusGood: string;
     statusWarning: string;
     statusBad: string;
+    muted: string;
   };
 };
 
@@ -25,6 +26,7 @@ const darkTheme: Theme = {
     statusGood: '#28a844',
     statusWarning: '#ffc007',
     statusBad: '#dd3444',
+    muted: '#cccccc',
   },
 };
 const lightTheme: Theme = {
@@ -36,6 +38,7 @@ const lightTheme: Theme = {
     statusGood: '#28a844',
     statusWarning: '#ffc007',
     statusBad: '#dd3444',
+    muted: '#757575',
   },
 };
 

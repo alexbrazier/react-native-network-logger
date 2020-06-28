@@ -39,6 +39,17 @@ const ResultItem: React.FC<Props> = ({ style, request, onPress }) => {
 
   const status = request.status > 0 ? request.status : '-';
 
+  const pad = (num: number) => `0${num}`.slice(-2);
+
+  const getTime = (time: number) => {
+    const date = new Date(time);
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+
+    return `${hours}:${minutes}:${seconds}`;
+  };
+
   return (
     <MaybeTouchable
       style={[styles.container, style]}
@@ -60,6 +71,7 @@ const ResultItem: React.FC<Props> = ({ style, request, onPress }) => {
         <Text style={styles.text}>
           {request.duration > 0 ? `${request.duration}ms` : 'pending'}
         </Text>
+        <Text style={styles.time}>{getTime(request.startTime)}</Text>
       </View>
       <Text
         style={[styles.text, styles.content, getUrlTextColor(request.status)]}
@@ -111,6 +123,11 @@ const themedStyles = (theme: Theme) =>
       textAlign: 'center',
       padding: 0,
       width: 80,
+    },
+    time: {
+      color: theme.colors.muted,
+      marginTop: 5,
+      marginHorizontal: 2,
     },
   });
 
