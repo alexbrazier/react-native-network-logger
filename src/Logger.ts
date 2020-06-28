@@ -119,4 +119,9 @@ export default class Logger {
   getRequests() {
     return this.requests;
   }
+
+  clearRequests() {
+    this.requests = [];
+    this.callback(this.requests);
+  }
 }

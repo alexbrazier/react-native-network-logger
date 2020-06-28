@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Alert } from 'react-native';
 import logger from '../loggerSingleton';
 import type NetworkRequestInfo from '../NetworkRequestInfo';
 import { ThemeContext, ThemeName } from '../theme';
@@ -22,6 +23,17 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light' }) => {
     logger.enableXHRInterception();
   }, []);
 
+  const showMore = () => {
+    Alert.alert('More Options', undefined, [
+      {
+        text: 'Clear Logs',
+        onPress: () => logger.clearRequests(),
+        style: 'destructive',
+      },
+      { text: 'Cancel', style: 'cancel' },
+    ]);
+  };
+
   return (
     <ThemeContext.Provider value={theme}>
       {showDetails && request ? (
@@ -32,6 +44,7 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light' }) => {
       ) : (
         <RequestList
           requests={requests}
+          onShowMore={showMore}
           onPressItem={(item) => {
             setRequest(item);
             setShowDetails(true);

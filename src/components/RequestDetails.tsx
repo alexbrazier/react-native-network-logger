@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  Button,
   StyleSheet,
-  TouchableOpacity,
   ScrollView,
   Share,
   TextInput,
@@ -14,6 +12,7 @@ import type NetworkRequestInfo from '../NetworkRequestInfo';
 import { useThemedStyles, Theme } from '../theme';
 import ResultItem from './ResultItem';
 import Header from './Header';
+import Button from './Button';
 
 interface Props {
   request: NetworkRequestInfo;
@@ -109,26 +108,22 @@ const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
         <Header shareContent={responseBody}>Response Body</Header>
         <LargeText>{responseBody}</LargeText>
         <Header>More</Header>
-        <View style={styles.shareButtonContainer}>
-          <Button
-            title="Share full request"
-            onPress={() => Share.share({ message: getFullRequest() })}
-          />
-        </View>
-        <View style={styles.shareButtonContainer}>
-          <Button
-            title="Share as cURL"
-            onPress={() => Share.share({ message: request.curlRequest })}
-          />
-        </View>
+        <Button
+          onPress={() => Share.share({ message: getFullRequest() })}
+          fullWidth
+        >
+          Share full request
+        </Button>
+        <Button
+          onPress={() => Share.share({ message: request.curlRequest })}
+          fullWidth
+        >
+          Share as cURL
+        </Button>
       </ScrollView>
-      <TouchableOpacity
-        onPress={onClose}
-        style={styles.close}
-        accessibilityRole="button"
-      >
-        <Text style={styles.closeTitle}>Close</Text>
-      </TouchableOpacity>
+      <Button onPress={onClose} style={styles.close}>
+        Close
+      </Button>
     </View>
   );
 };
@@ -140,6 +135,7 @@ const themedStyles = (theme: Theme) =>
       backgroundColor: theme.colors.background,
       justifyContent: 'center',
       alignItems: 'center',
+      paddingBottom: 10,
     },
     info: {
       margin: 0,
@@ -147,11 +143,7 @@ const themedStyles = (theme: Theme) =>
     close: {
       position: 'absolute',
       right: 10,
-      top: 10,
-    },
-    closeTitle: {
-      fontSize: 18,
-      color: theme.colors.link,
+      top: 0,
     },
     scrollView: {
       width: '100%',
@@ -170,10 +162,6 @@ const themedStyles = (theme: Theme) =>
     },
     largeContent: {
       maxHeight: 300,
-    },
-    shareButtonContainer: {
-      marginVertical: 5,
-      marginHorizontal: 10,
     },
   });
 

@@ -7,8 +7,8 @@ export const startNetworkLogging = (options?: StartNetworkLoggingOptions) => {
   logger.enableXHRInterception(options);
 };
 
-export const getRequestLogger = () => {
-  return logger.getRequests();
-};
+export const getRequests = () => logger.getRequests();
+
+export const clearRequests = () => logger.clearRequests();
 
 export type { ThemeName } from './theme';
