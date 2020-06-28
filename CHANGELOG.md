@@ -1,3 +1,17 @@
+# [1.4.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.3.2...v1.4.0) (2020-06-28)
+
+
+### Bug Fixes
+
+* Issue causing delay to updates when viewing logger page ([427e13c](https://github.com/alexbrazier/react-native-network-logger/commit/427e13ce017137ab6c6be05ac51b647b443ffe86))
+
+
+### Features
+
+* Add option to clear all requests ([506cd23](https://github.com/alexbrazier/react-native-network-logger/commit/506cd23769f9ef02b4b299abd0a9fd426b0fc628))
+* Add option to configure max requests stored and set default to 500 ([c75f926](https://github.com/alexbrazier/react-native-network-logger/commit/c75f926d478323bea46348ba9de77277c3e66fca))
+* Show request time on logs ([d9115fd](https://github.com/alexbrazier/react-native-network-logger/commit/d9115fd2b2cbb12b88f885248d6496d4e1cd0888))
+
 ## [1.3.2](https://github.com/alexbrazier/react-native-network-logger/compare/v1.3.1...v1.3.2) (2020-06-25)
 
 
