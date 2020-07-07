@@ -64,7 +64,7 @@ npm install --save react-native-network-logger
 
 Call `startNetworkLogging` in your apps entry point to log every request, or call it on a button press to manually trigger it.
 
-```js
+```ts
 import { startNetworkLogging } from 'react-native-network-logger';
 
 startNetworkLogging();
@@ -73,7 +73,7 @@ AppRegistry.registerComponent('App', () => App);
 
 ### Display Requests and Responses
 
-```js
+```ts
 import NetworkLogger from 'react-native-network-logger';
 
 const MyScreen = () => <NetworkLogger />;
@@ -83,7 +83,7 @@ const MyScreen = () => <NetworkLogger />;
 
 You can change between the dark and light theme by passing the `theme` prop with `"dark"` or `"light"`.
 
-```js
+```ts
 import NetworkLogger from 'react-native-network-logger';
 
 const MyScreen = () => <NetworkLogger theme="dark" />;
@@ -93,8 +93,16 @@ const MyScreen = () => <NetworkLogger theme="dark" />;
 
 You can configure the max number of requests stored on the device using by calling `startNetworkLogging` with the `maxRequests` option. The default is `500`.
 
-```js
+```ts
 startNetworkLogging({ maxRequests: 500 });
+```
+
+Set the sort order of requests. Options are `asc` or `desc`, default is `desc` (most recent at the top).
+
+```ts
+import NetworkLogger from 'react-native-network-logger';
+
+const MyScreen = () => <NetworkLogger sort="asc" />;
 ```
 
 ## Example App

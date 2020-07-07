@@ -8,20 +8,30 @@ import RequestDetails from './RequestDetails';
 
 interface Props {
   theme?: ThemeName;
+  sort?: 'asc' | 'desc';
 }
 
-const NetworkLogger: React.FC<Props> = ({ theme = 'light' }) => {
-  const [requests, setRequests] = useState(logger.getRequests());
+const sortRequests = (requests: NetworkRequestInfo[], sort: 'asc' | 'desc') => {
+  if (sort === 'asc') {
+    return requests.reverse();
+  }
+  return [...requests];
+};
+
+const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
+  const [requests, setRequests] = useState(
+    sortRequests(logger.getRequests(), sort)
+  );
   const [request, setRequest] = useState<NetworkRequestInfo>();
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     logger.setCallback((updatedRequests: NetworkRequestInfo[]) => {
-      setRequests([...updatedRequests]);
+      setRequests(sortRequests(updatedRequests, sort));
     });
 
     logger.enableXHRInterception();
-  }, []);
+  }, [sort]);
 
   const showMore = () => {
     Alert.alert('More Options', undefined, [
