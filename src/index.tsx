@@ -1,5 +1,5 @@
 import logger from './loggerSingleton';
-import type { StartNetworkLoggingOptions } from './types';
+import { StartNetworkLoggingOptions } from './types';
 
 export { default } from './components/NetworkLogger';
 
@@ -11,4 +11,4 @@ export const getRequests = () => logger.getRequests();
 
 export const clearRequests = () => logger.clearRequests();
 
-export type { ThemeName } from './theme';
+export { ThemeName } from './theme';

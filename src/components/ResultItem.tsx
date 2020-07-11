@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import type NetworkRequestInfo from '../NetworkRequestInfo';
+import NetworkRequestInfo from '../NetworkRequestInfo';
 import { Theme, useThemedStyles, useTheme } from '../theme';
 
 interface Props {

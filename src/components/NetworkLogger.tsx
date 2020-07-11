@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 import logger from '../loggerSingleton';
-import type NetworkRequestInfo from '../NetworkRequestInfo';
+import NetworkRequestInfo from '../NetworkRequestInfo';
 import { ThemeContext, ThemeName } from '../theme';
 import RequestList from './RequestList';
 import RequestDetails from './RequestDetails';
