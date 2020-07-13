@@ -9,8 +9,8 @@ export default class NetworkRequestInfo {
   dataSent = '';
   responseContentType = '';
   responseSize = 0;
-  requestHeaders?: Headers;
-  responseHeaders?: Headers;
+  requestHeaders: Headers = {};
+  responseHeaders: Headers = {};
   response = '';
   responseURL = '';
   responseType = '';

@@ -26,6 +26,71 @@ export default class Logger {
     return this.requests[requestIndex];
   }
 
+  private updateRequest(index: number, update: Partial<NetworkRequestInfo>) {
+    const networkInfo = this.getRequest(index);
+    if (!networkInfo) return;
+    Object.assign(networkInfo, update);
+  }
+
+  private openCallback(method: RequestMethod, url: string, xhr: XHR) {
+    xhr._index = nextXHRId++;
+    const xhrIndex = this.requests.length;
+    this.xhrIdMap[xhr._index] = xhrIndex;
+
+    const newRequest = new NetworkRequestInfo('XMLHttpRequest', method, url);
+
+    if (this.requests.length >= this.maxRequests) {
+      this.requests.shift();
+    }
+
+    this.requests.push(newRequest);
+  }
+
+  private requestHeadersCallback(header: string, value: string, xhr: XHR) {
+    const networkInfo = this.getRequest(xhr._index);
+    if (!networkInfo) return;
+    networkInfo.requestHeaders[header] = value;
+  }
+
+  private headerReceivedCallback(
+    responseContentType: string,
+    responseSize: number,
+    responseHeaders: Headers,
+    xhr: XHR
+  ) {
+    this.updateRequest(xhr._index, {
+      responseContentType,
+      responseSize,
+      responseHeaders: xhr.responseHeaders,
+    });
+  }
+
+  private sendCallback(data: string, xhr: XHR) {
+    this.updateRequest(xhr._index, {
+      startTime: Date.now(),
+      dataSent: data,
+    });
+  }
+
+  private responseCallback(
+    status: number,
+    timeout: number,
+    response: string,
+    responseURL: string,
+    responseType: string,
+    xhr: XHR
+  ) {
+    this.updateRequest(xhr._index, {
+      endTime: Date.now(),
+      status,
+      timeout,
+      response,
+      responseURL,
+      responseType,
+    });
+    this.callback(this.requests);
+  }
+
   enableXHRInterception(options?: StartNetworkLoggingOptions) {
     if (XHRInterceptor.isInterceptorEnabled()) {
       return;
@@ -41,74 +106,12 @@ export default class Logger {
       this.maxRequests = options.maxRequests;
     }
 
-    XHRInterceptor.setOpenCallback(
-      (method: RequestMethod, url: string, xhr: XHR) => {
-        xhr._index = nextXHRId++;
-        const xhrIndex = this.requests.length;
-        this.xhrIdMap[xhr._index] = xhrIndex;
+    XHRInterceptor.setOpenCallback(this.openCallback);
+    XHRInterceptor.setRequestHeaderCallback(this.requestHeadersCallback);
+    XHRInterceptor.setHeaderReceivedCallback(this.headerReceivedCallback);
+    XHRInterceptor.setSendCallback(this.sendCallback);
+    XHRInterceptor.setResponseCallback(this.responseCallback);
 
-        const newRequest = new NetworkRequestInfo(
-          'XMLHttpRequest',
-          method,
-          url
-        );
-
-        if (this.requests.length >= this.maxRequests) {
-          this.requests.shift();
-        }
-
-        this.requests.push(newRequest);
-      }
-    );
-
-    XHRInterceptor.setRequestHeaderCallback(
-      (header: string, value: string, xhr: XHR) => {
-        const networkInfo = this.getRequest(xhr._index);
-        if (!networkInfo) return;
-        if (!networkInfo.requestHeaders) {
-          networkInfo.requestHeaders = {};
-        }
-        networkInfo.requestHeaders[header] = value;
-      }
-    );
-
-    XHRInterceptor.setSendCallback((data: string, xhr: XHR) => {
-      const request = this.getRequest(xhr._index);
-      if (!request) return;
-      request.startTime = Date.now();
-      request.dataSent = data;
-    });
-
-    XHRInterceptor.setHeaderReceivedCallback(
-      (type: string, size: number, responseHeaders: Headers, xhr: XHR) => {
-        const networkInfo = this.getRequest(xhr._index);
-        if (!networkInfo) return;
-        networkInfo.responseContentType = type;
-        networkInfo.responseSize = size;
-        networkInfo.responseHeaders = xhr.responseHeaders;
-      }
-    );
-
-    XHRInterceptor.setResponseCallback(
-      (
-        status: number,
-        timeout: number,
-        response: string,
-        responseURL: string,
-        responseType: string,
-        xhr: XHR
-      ) => {
-        const networkInfo = this.getRequest(xhr._index);
-        if (!networkInfo) return;
-        networkInfo.endTime = Date.now();
-        networkInfo.status = status;
-        networkInfo.timeout = timeout;
-        networkInfo.response = response;
-        networkInfo.responseURL = responseURL;
-        networkInfo.responseType = responseType;
-        this.callback(this.requests);
-      }
-    );
     XHRInterceptor.enableInterception();
   }
 
