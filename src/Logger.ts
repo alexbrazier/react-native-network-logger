@@ -16,23 +16,26 @@ export default class Logger {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   callback = (requests: any[]) => {};
 
-  setCallback(callback: any) {
+  setCallback = (callback: any) => {
     this.callback = callback;
-  }
+  };
 
-  private getRequest(xhrIndex?: number) {
+  private getRequest = (xhrIndex?: number) => {
     if (xhrIndex === undefined) return undefined;
     const requestIndex = this.xhrIdMap[xhrIndex];
     return this.requests[requestIndex];
-  }
+  };
 
-  private updateRequest(index: number, update: Partial<NetworkRequestInfo>) {
+  private updateRequest = (
+    index: number,
+    update: Partial<NetworkRequestInfo>
+  ) => {
     const networkInfo = this.getRequest(index);
     if (!networkInfo) return;
     Object.assign(networkInfo, update);
-  }
+  };
 
-  private openCallback(method: RequestMethod, url: string, xhr: XHR) {
+  private openCallback = (method: RequestMethod, url: string, xhr: XHR) => {
     xhr._index = nextXHRId++;
     const xhrIndex = this.requests.length;
     this.xhrIdMap[xhr._index] = xhrIndex;
@@ -44,42 +47,46 @@ export default class Logger {
     }
 
     this.requests.push(newRequest);
-  }
+  };
 
-  private requestHeadersCallback(header: string, value: string, xhr: XHR) {
+  private requestHeadersCallback = (
+    header: string,
+    value: string,
+    xhr: XHR
+  ) => {
     const networkInfo = this.getRequest(xhr._index);
     if (!networkInfo) return;
     networkInfo.requestHeaders[header] = value;
-  }
+  };
 
-  private headerReceivedCallback(
+  private headerReceivedCallback = (
     responseContentType: string,
     responseSize: number,
     responseHeaders: Headers,
     xhr: XHR
-  ) {
+  ) => {
     this.updateRequest(xhr._index, {
       responseContentType,
       responseSize,
       responseHeaders: xhr.responseHeaders,
     });
-  }
+  };
 
-  private sendCallback(data: string, xhr: XHR) {
+  private sendCallback = (data: string, xhr: XHR) => {
     this.updateRequest(xhr._index, {
       startTime: Date.now(),
       dataSent: data,
     });
-  }
+  };
 
-  private responseCallback(
+  private responseCallback = (
     status: number,
     timeout: number,
     response: string,
     responseURL: string,
     responseType: string,
     xhr: XHR
-  ) {
+  ) => {
     this.updateRequest(xhr._index, {
       endTime: Date.now(),
       status,
@@ -89,9 +96,9 @@ export default class Logger {
       responseType,
     });
     this.callback(this.requests);
-  }
+  };
 
-  enableXHRInterception(options?: StartNetworkLoggingOptions) {
+  enableXHRInterception = (options?: StartNetworkLoggingOptions) => {
     if (XHRInterceptor.isInterceptorEnabled()) {
       return;
     }
@@ -113,14 +120,14 @@ export default class Logger {
     XHRInterceptor.setResponseCallback(this.responseCallback);
 
     XHRInterceptor.enableInterception();
-  }
+  };
 
-  getRequests() {
+  getRequests = () => {
     return this.requests;
-  }
+  };
 
-  clearRequests() {
+  clearRequests = () => {
     this.requests = [];
     this.callback(this.requests);
-  }
+  };
 }
