@@ -18,14 +18,15 @@
     "react-native-unimodules": "~0.10.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.10.4",
-    "@babel/runtime": "^7.10.4",
+    "@babel/core": "^7.10.5",
+    "@babel/runtime": "^7.10.5",
     "babel-plugin-module-resolver": "^4.0.0",
     "babel-preset-expo": "~8.2.3",
-    "expo-cli": "^3.21.13"
+    "expo-cli": "^3.22.3"
   },
   "resolutions": {
     "axios": "^0.19.0",
-    "logkitty": "^0.7.1"
+    "logkitty": "^0.7.1",
+    "lodash": "^4.17.19"
   }
 }
