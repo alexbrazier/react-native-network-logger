@@ -1,3 +1,11 @@
+## [1.4.1](https://github.com/alexbrazier/react-native-network-logger/compare/v1.4.0...v1.4.1) (2020-07-16)
+
+
+### Bug Fixes
+
+* Issue with event listeners ([430eefd](https://github.com/alexbrazier/react-native-network-logger/commit/430eefd79477966edb22c1e395b122aac0f4d8fa))
+* Remove type imports/exports to fix for older TS versions ([#17](https://github.com/alexbrazier/react-native-network-logger/issues/17)) ([f4cbefa](https://github.com/alexbrazier/react-native-network-logger/commit/f4cbefa7afe0988818134482b6d0ea46ae77efcd))
+
 # [1.4.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.3.2...v1.4.0) (2020-06-28)
 
 
