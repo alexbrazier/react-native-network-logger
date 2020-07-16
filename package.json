@@ -61,9 +61,9 @@
     "react": "16.11.0",
     "react-native": "0.62.2",
     "react-test-renderer": "^16.13.1",
-    "release-it": "^13.6.4",
+    "release-it": "^13.6.5",
     "rimraf": "^3.0.2",
-    "typescript": "^3.9.6"
+    "typescript": "^3.9.7"
   },
   "peerDependencies": {
     "react": "*",
