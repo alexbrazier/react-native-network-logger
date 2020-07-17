@@ -22,7 +22,7 @@ export default class Logger {
 
   private getRequest = (xhrIndex?: number) => {
     if (xhrIndex === undefined) return undefined;
-    const requestIndex = this.xhrIdMap[xhrIndex];
+    const requestIndex = this.requests.length - this.xhrIdMap[xhrIndex] - 1;
     return this.requests[requestIndex];
   };
 
@@ -43,10 +43,10 @@ export default class Logger {
     const newRequest = new NetworkRequestInfo('XMLHttpRequest', method, url);
 
     if (this.requests.length >= this.maxRequests) {
-      this.requests.shift();
+      this.requests.pop();
     }
 
-    this.requests.push(newRequest);
+    this.requests.unshift(newRequest);
   };
 
   private requestHeadersCallback = (
