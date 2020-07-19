@@ -67,7 +67,7 @@ export default class NetworkRequestInfo {
     return this.stringifyFormat(this.dataSent);
   }
 
-  private async parseReponseBlob() {
+  private async parseResponseBlob() {
     const blobReader = new BlobFileReader();
     blobReader.readAsText(this.response);
 
@@ -85,7 +85,7 @@ export default class NetworkRequestInfo {
   async getResponseBody() {
     const body = await (this.responseType !== 'blob'
       ? this.response
-      : this.parseReponseBlob());
+      : this.parseResponseBlob());
 
     return this.stringifyFormat(body);
   }
