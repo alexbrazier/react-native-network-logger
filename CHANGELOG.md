@@ -1,3 +1,16 @@
+# [1.5.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.4.1...v1.5.0) (2020-07-27)
+
+
+### Bug Fixes
+
+* Issue when sending request with FormData ([1c2ea1c](https://github.com/alexbrazier/react-native-network-logger/commit/1c2ea1ce7aa30f2836c10747033dab6a63215b10))
+* Issue when sharing request that isn't json ([202c31d](https://github.com/alexbrazier/react-native-network-logger/commit/202c31dae94f05b0f56f7e74be3c7e0e30f3933a))
+
+
+### Features
+
+* Add option to change sort order and set default to desc ([#14](https://github.com/alexbrazier/react-native-network-logger/issues/14)) ([3aedb0c](https://github.com/alexbrazier/react-native-network-logger/commit/3aedb0c1effc3d3bd7b5f9c95aac28050f482d5b))
+
 ## [1.4.1](https://github.com/alexbrazier/react-native-network-logger/compare/v1.4.0...v1.4.1) (2020-07-16)
 
 
