@@ -26,6 +26,7 @@
   },
   "resolutions": {
     "axios": "^0.19.0",
+    "jpeg-js": "^0.4.0",
     "logkitty": "^0.7.1",
     "lodash": "^4.17.19"
   }
