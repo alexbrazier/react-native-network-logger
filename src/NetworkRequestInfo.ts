@@ -1,5 +1,6 @@
 import BlobFileReader from 'react-native/Libraries/Blob/FileReader';
 import { Headers, RequestMethod } from './types';
+import fromEntries from './utils/fromEntries';
 
 export default class NetworkRequestInfo {
   type = '';
@@ -52,14 +53,17 @@ export default class NetworkRequestInfo {
   }
 
   private escapeQuotes(value: string) {
-    return value.replace(/'/g, `\\'`);
+    return value.replace?.(/'/g, `\\'`);
   }
 
-  private stringifyFormat(data: string) {
+  private stringifyFormat(data: any) {
     try {
-      return JSON.stringify(JSON.parse(data), null, '\t');
+      if (data?._parts?.length) {
+        return JSON.stringify(fromEntries(data?._parts), null, 2);
+      }
+      return JSON.stringify(JSON.parse(data), null, 2);
     } catch (e) {
-      return data;
+      return `${data}`;
     }
   }
 

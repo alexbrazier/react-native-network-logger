@@ -10,10 +10,16 @@ import {
 import NetworkLogger, { ThemeName } from 'react-native-network-logger';
 
 export default function App() {
+  const formData = new FormData();
+  formData.append('test', 'hello');
   const makeRequest = () => {
     fetch('https://postman-echo.com/post', {
       method: 'POST',
       body: JSON.stringify({ test: 'hello' }),
+    });
+    fetch('https://postman-echo.com/post?formData', {
+      method: 'POST',
+      body: formData,
     });
     fetch('https://httpstat.us/302');
     fetch('https://httpstat.us/400');

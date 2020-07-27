@@ -98,3 +98,80 @@ describe('getCurlRequest', () => {
     expect(info.curlRequest).toEqual("curl -XDELETE 'https://test.com'");
   });
 });
+
+describe('getRequestBody', () => {
+  const info = new NetworkRequestInfo(
+    'application/json',
+    'GET',
+    'https://test.com'
+  );
+
+  it('should return stringified data in consistent format', () => {
+    info.dataSent = '{"data":    {"a":   1   }}';
+    const result = info.getRequestBody();
+    expect(typeof result).toBe('string');
+    expect(result).toMatchInlineSnapshot(`
+      "{
+        \\"data\\": {
+          \\"a\\": 1
+        }
+      }"
+    `);
+  });
+
+  it('should return original object as string if stringify fails', () => {
+    // @ts-ignore
+    info.dataSent = { test: 1 };
+    const result = info.getRequestBody();
+    expect(typeof result).toBe('string');
+    expect(result).toEqual('[object Object]');
+  });
+
+  it('should process formData', () => {
+    const mockFormData = {
+      _parts: [
+        ['test', 'hello'],
+        ['another', 'goodbye'],
+      ],
+    };
+    // @ts-ignore
+    info.dataSent = mockFormData;
+    const result = info.getRequestBody();
+    expect(typeof result).toBe('string');
+    expect(result).toMatchInlineSnapshot(`
+      "{
+        \\"test\\": \\"hello\\",
+        \\"another\\": \\"goodbye\\"
+      }"
+    `);
+  });
+});
+
+describe('getResponseBody', () => {
+  const info = new NetworkRequestInfo(
+    'application/json',
+    'GET',
+    'https://test.com'
+  );
+
+  it('should return stringified data in consistent format', () => {
+    info.dataSent = '{"data":    {"a":   1   }}';
+    const result = info.getRequestBody();
+    expect(typeof result).toBe('string');
+    expect(result).toMatchInlineSnapshot(`
+      "{
+        \\"data\\": {
+          \\"a\\": 1
+        }
+      }"
+    `);
+  });
+
+  it('should return original object as string if stringify fails', () => {
+    // @ts-ignore
+    info.dataSent = { test: 1 };
+    const result = info.getRequestBody();
+    expect(typeof result).toBe('string');
+    expect(result).toEqual('[object Object]');
+  });
+});
