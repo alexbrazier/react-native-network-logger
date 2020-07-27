@@ -18,6 +18,8 @@ export default function App() {
     fetch('https://httpstat.us/302');
     fetch('https://httpstat.us/400');
     fetch('https://httpstat.us/500');
+    // Non JSON response
+    fetch('https://postman-echo.com/stream/2');
     // Test requests that fail
     // fetch('https://failingrequest');
   };
