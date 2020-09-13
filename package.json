@@ -76,7 +76,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "jest": {
-    "preset": "@testing-library/react-native",
+    "preset": "react-native",
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
