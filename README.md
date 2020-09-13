@@ -91,18 +91,38 @@ const MyScreen = () => <NetworkLogger theme="dark" />;
 
 ### Logging options
 
+#### Max Requests
+
 You can configure the max number of requests stored on the device using by calling `startNetworkLogging` with the `maxRequests` option. The default is `500`.
 
 ```ts
 startNetworkLogging({ maxRequests: 500 });
 ```
 
+#### Sorting
+
 Set the sort order of requests. Options are `asc` or `desc`, default is `desc` (most recent at the top).
 
-```ts
+```tsx
 import NetworkLogger from 'react-native-network-logger';
 
 const MyScreen = () => <NetworkLogger sort="asc" />;
+```
+
+#### Integrate with existing navigation
+
+Use your existing back button (e.g. in your navigation header) to navigate within the network logger.
+
+```tsx
+import NetworkLogger, { getBackHandler } from 'react-native-network-logger';
+
+const onBack = getBackHandler(navigate.onBack);
+
+const MyScreen = () => (
+  <Screen onBackPressed={onBack}>
+    <NetworkLogger />
+  </Screen>
+);
 ```
 
 ## Example App

@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import NetworkRequestInfo from '../NetworkRequestInfo';
 import { useThemedStyles, Theme } from '../theme';
+import { backHandlerSet } from '../backHandler';
 import ResultItem from './ResultItem';
 import Header from './Header';
 import Button from './Button';
@@ -129,9 +130,11 @@ const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
           Share as cURL
         </Button>
       </ScrollView>
-      <Button onPress={onClose} style={styles.close}>
-        Close
-      </Button>
+      {!backHandlerSet() && (
+        <Button onPress={onClose} style={styles.close}>
+          Close
+        </Button>
+      )}
     </View>
   );
 };

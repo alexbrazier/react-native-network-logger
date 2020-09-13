@@ -6,8 +6,13 @@ import {
   Platform,
   View,
   Text,
+  Alert,
+  TouchableOpacity,
 } from 'react-native';
-import NetworkLogger, { ThemeName } from 'react-native-network-logger';
+import NetworkLogger, {
+  ThemeName,
+  getBackHandler,
+} from 'react-native-network-logger';
 
 export default function App() {
   const formData = new FormData();
@@ -36,11 +41,27 @@ export default function App() {
 
   const styles = themedStyles(theme === 'dark');
 
+  const goBack = () => {
+    Alert.alert('Going back');
+  };
+
+  const backHandler = getBackHandler(goBack);
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title} accessibilityRole="header">
-        react-native-network-logger
-      </Text>
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={backHandler}
+          hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
+        >
+          <Text style={styles.backButtonText}>{'‹'}</Text>
+        </TouchableOpacity>
+        <Text style={styles.title} accessibilityRole="header">
+          react-native-network-logger
+        </Text>
+        <View style={styles.navButton} />
+      </View>
       <NetworkLogger theme={theme} />
       <View style={styles.bottomView}>
         <Button
@@ -60,7 +81,20 @@ const themedStyles = (dark = false) =>
       backgroundColor: dark ? '#2d2a28' : 'white',
       paddingTop: Platform.OS === 'android' ? 25 : 0,
     },
+    header: {
+      flexDirection: 'row',
+    },
+    navButton: {
+      flex: 1,
+    },
+    backButtonText: {
+      color: dark ? 'white' : 'black',
+      paddingHorizontal: 20,
+      fontSize: 30,
+      fontWeight: 'bold',
+    },
     title: {
+      flex: 5,
       color: dark ? 'white' : 'black',
       textAlign: 'center',
       padding: 10,
