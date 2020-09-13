@@ -16,7 +16,7 @@ An alternative to Wormholy but for both iOS and Android and with zero native dep
 - Log networks requests on iOS and Android
 - View network requests made with in app viewer
 - Debug network requests on release builds
-- Individually view headers sent, received and body sent and received
+- Individually view request/response headers and body
 - Copy or share headers, body or full request
 - Share cURL representation of request
 - Zero native or JavaScript dependencies
@@ -116,7 +116,8 @@ Use your existing back button (e.g. in your navigation header) to navigate withi
 ```tsx
 import NetworkLogger, { getBackHandler } from 'react-native-network-logger';
 
-const onBack = getBackHandler(navigate.onBack);
+const navigation = useNavigation();
+const onBack = getBackHandler(navigation.goBack);
 
 const MyScreen = () => (
   <Screen onBackPressed={onBack}>
