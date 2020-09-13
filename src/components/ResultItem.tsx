@@ -2,6 +2,7 @@ import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import NetworkRequestInfo from '../NetworkRequestInfo';
 import { Theme, useThemedStyles, useTheme } from '../theme';
+import { backHandlerSet } from '../backHandler';
 
 interface Props {
   request: NetworkRequestInfo;
@@ -79,7 +80,7 @@ const ResultItem: React.FC<Props> = ({ style, request, onPress }) => {
           styles.text,
           styles.content,
           getUrlTextColor(request.status),
-          onDetailsPage && styles.paddedUrl,
+          onDetailsPage && !backHandlerSet() && styles.paddedUrl,
         ]}
       >
         {request.url}
