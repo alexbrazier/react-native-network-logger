@@ -1,3 +1,16 @@
+# [1.6.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.5.0...v1.6.0) (2020-09-13)
+
+
+### Bug Fixes
+
+* Remember scroll position when navigating back to requests ([#22](https://github.com/alexbrazier/react-native-network-logger/issues/22)) ([91e6768](https://github.com/alexbrazier/react-native-network-logger/commit/91e67682c25b562339d28316876b34cf953902a1))
+* Request details close button overlap ([#23](https://github.com/alexbrazier/react-native-network-logger/issues/23)) ([7c21317](https://github.com/alexbrazier/react-native-network-logger/commit/7c21317a2073160bdff17fd930ac4ecc27b4c3de))
+
+
+### Features
+
+* Add option to use existing back button to navigate ([#24](https://github.com/alexbrazier/react-native-network-logger/issues/24)) ([054167f](https://github.com/alexbrazier/react-native-network-logger/commit/054167f67303c1b3cdb18710d477211811c4e760))
+
 # [1.5.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.4.1...v1.5.0) (2020-07-27)
 
 
