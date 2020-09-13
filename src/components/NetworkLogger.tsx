@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert } from 'react-native';
+import { Alert, View, StyleSheet } from 'react-native';
 import logger from '../loggerSingleton';
 import NetworkRequestInfo from '../NetworkRequestInfo';
 import { ThemeContext, ThemeName } from '../theme';
@@ -46,23 +46,37 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
 
   return (
     <ThemeContext.Provider value={theme}>
-      {showDetails && request ? (
-        <RequestDetails
-          onClose={() => setShowDetails(false)}
-          request={request}
-        />
-      ) : (
-        <RequestList
-          requests={requests}
-          onShowMore={showMore}
-          onPressItem={(item) => {
-            setRequest(item);
-            setShowDetails(true);
-          }}
-        />
-      )}
+      <View style={styles.visible}>
+        {showDetails && !!request && (
+          <View style={styles.visible}>
+            <RequestDetails
+              onClose={() => setShowDetails(false)}
+              request={request}
+            />
+          </View>
+        )}
+        <View style={showDetails && !!request ? styles.hidden : styles.visible}>
+          <RequestList
+            requests={requests}
+            onShowMore={showMore}
+            onPressItem={(item) => {
+              setRequest(item);
+              setShowDetails(true);
+            }}
+          />
+        </View>
+      </View>
     </ThemeContext.Provider>
   );
 };
+
+const styles = StyleSheet.create({
+  visible: {
+    flex: 1,
+  },
+  hidden: {
+    flex: 0,
+  },
+});
 
 export default NetworkLogger;
