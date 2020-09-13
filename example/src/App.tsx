@@ -13,10 +13,13 @@ export default function App() {
   const formData = new FormData();
   formData.append('test', 'hello');
   const makeRequest = () => {
-    fetch('https://postman-echo.com/post', {
-      method: 'POST',
-      body: JSON.stringify({ test: 'hello' }),
-    });
+    fetch(
+      'https://postman-echo.com/post?query=some really long query that goes onto multiple lines so we can test what happens',
+      {
+        method: 'POST',
+        body: JSON.stringify({ test: 'hello' }),
+      }
+    );
     fetch('https://postman-echo.com/post?formData', {
       method: 'POST',
       body: formData,
