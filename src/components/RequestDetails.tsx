@@ -111,9 +111,9 @@ const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
       <ResultItem request={request} style={styles.info} />
       <ScrollView style={styles.scrollView} nestedScrollEnabled>
         <Headers title="Request Headers" headers={request.requestHeaders} />
-        <Headers title="Response Headers" headers={request.responseHeaders} />
         <Header shareContent={requestBody}>Request Body</Header>
         <LargeText>{requestBody}</LargeText>
+        <Headers title="Response Headers" headers={request.responseHeaders} />
         <Header shareContent={responseBody}>Response Body</Header>
         <LargeText>{responseBody}</LargeText>
         <Header>More</Header>
