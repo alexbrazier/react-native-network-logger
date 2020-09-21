@@ -1,0 +1,27 @@
+name: Pull-Request-Checks
+on:
+  pull_request:
+    branches:
+      - actions
+jobs:
+  typescript-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - run: npm install -g yarn
+      - run: yarn typescript
+  eslint-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - run: npm install -g yarn
+      - run: yarn lint
+  unit-test-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - run: npm install -g yarn
+      - run: yarn test
