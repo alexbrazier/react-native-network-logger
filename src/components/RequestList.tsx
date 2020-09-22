@@ -14,13 +14,13 @@ interface Props {
 const RequestList: React.FC<Props> = ({
   requests,
   onPressItem,
-  onShowMore
+  onShowMore,
 }) => {
   const styles = useThemedStyles(themedStyles);
   const themedColors = useTheme();
 
   const [searchValue, onChangeSearchText] = useState('');
-  const filterdRequests = requests.filter(request =>
+  const filterdRequests = requests.filter((request) =>
     request.url.toLowerCase().includes(searchValue.toLowerCase())
   );
 
@@ -33,7 +33,7 @@ const RequestList: React.FC<Props> = ({
           style={styles.searchIcon}
         />
         <TextInput
-          onChangeText={input => onChangeSearchText(input)}
+          onChangeText={(input) => onChangeSearchText(input)}
           value={searchValue}
           placeholder="Filter URLs"
           underlineColorAndroid={'transparent'}
@@ -66,7 +66,7 @@ const themedStyles = (theme: Theme) =>
       flex: 1,
     },
     more: {
-      marginLeft: 10
+      marginLeft: 10,
     },
     searchContainer: {
       flexDirection: 'row',
@@ -87,7 +87,7 @@ const themedStyles = (theme: Theme) =>
       padding: 0,
       flexGrow: 1,
       color: theme.colors.text,
-    }
+    },
   });
 
 export default RequestList;
