@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, FlatList, TextInput, Image } from 'react-native';
 import NetworkRequestInfo from '../NetworkRequestInfo';
-import { useThemedStyles, Theme } from '../theme';
+import { useThemedStyles, Theme, useTheme } from '../theme';
 import ResultItem from './ResultItem';
 import Button from './Button';
 
@@ -14,11 +14,34 @@ interface Props {
 const RequestList: React.FC<Props> = ({
   requests,
   onPressItem,
-  onShowMore,
+  onShowMore
 }) => {
   const styles = useThemedStyles(themedStyles);
+  const themedColors = useTheme();
+
+  const [searchValue, onChangeSearchText] = useState('');
+  const filterdRequests = requests.filter(request =>
+    request.url.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
   return (
     <View style={styles.container}>
+      <View style={styles.searchContainer}>
+        <Image
+          source={require('./search.png')}
+          resizeMode="contain"
+          style={styles.searchIcon}
+        />
+        <TextInput
+          onChangeText={input => onChangeSearchText(input)}
+          value={searchValue}
+          placeholder="Filter URLs"
+          underlineColorAndroid={'transparent'}
+          style={styles.textInputSearch}
+          color={themedColors.colors.text}
+          placeholderTextColor={themedColors.colors.muted}
+        />
+      </View>
       <FlatList
         keyExtractor={(item, index) => index.toString()}
         ListHeaderComponent={() => (
@@ -26,7 +49,7 @@ const RequestList: React.FC<Props> = ({
             More
           </Button>
         )}
-        data={requests}
+        data={filterdRequests}
         renderItem={({ item }) => (
           <ResultItem request={item} onPress={() => onPressItem(item)} />
         )}
@@ -42,8 +65,27 @@ const themedStyles = (theme: Theme) =>
       flex: 1,
     },
     more: {
-      marginLeft: 10,
+      marginLeft: 10
     },
+    searchContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 10,
+      margin: 5,
+      borderWidth: 1,
+      borderColor: theme.colors.muted,
+      borderRadius: 20,
+    },
+    searchIcon: {
+      width: 20,
+      height: 20,
+      marginRight: 10,
+    },
+    textInputSearch: {
+      height: 30,
+      padding: 0,
+      flexGrow: 1,
+    }
   });
 
 export default RequestList;
