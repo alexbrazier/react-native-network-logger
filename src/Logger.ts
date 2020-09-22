@@ -40,7 +40,12 @@ export default class Logger {
     const xhrIndex = this.requests.length;
     this.xhrIdMap[xhr._index] = xhrIndex;
 
-    const newRequest = new NetworkRequestInfo('XMLHttpRequest', method, url);
+    const newRequest = new NetworkRequestInfo(
+      `${nextXHRId}`,
+      'XMLHttpRequest',
+      method,
+      url
+    );
 
     if (this.requests.length >= this.maxRequests) {
       this.requests.pop();

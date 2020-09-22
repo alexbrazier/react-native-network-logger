@@ -1,56 +1,44 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, FlatList, TextInput, Image } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import NetworkRequestInfo from '../NetworkRequestInfo';
-import { useThemedStyles, Theme, useTheme } from '../theme';
+import { useThemedStyles, Theme } from '../theme';
 import ResultItem from './ResultItem';
 import Button from './Button';
+import SearchBar from './SearchBar';
 
 interface Props {
   requests: NetworkRequestInfo[];
   onPressItem: (item: NetworkRequestInfo) => void;
   onShowMore: () => void;
+  showDetails: boolean;
 }
 
 const RequestList: React.FC<Props> = ({
   requests,
   onPressItem,
   onShowMore,
+  showDetails,
 }) => {
   const styles = useThemedStyles(themedStyles);
-  const themedColors = useTheme();
 
   const [searchValue, onChangeSearchText] = useState('');
-  const filterdRequests = requests.filter((request) =>
+  const filteredRequests = requests.filter((request) =>
     request.url.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   return (
     <View style={styles.container}>
-      <View style={styles.searchContainer}>
-        <Image
-          source={require('./search.png')}
-          resizeMode="contain"
-          style={styles.searchIcon}
-        />
-        <TextInput
-          onChangeText={(input) => onChangeSearchText(input)}
-          value={searchValue}
-          placeholder="Filter URLs"
-          underlineColorAndroid={'transparent'}
-          style={styles.textInputSearch}
-          placeholderTextColor={themedColors.colors.muted}
-        />
-      </View>
+      {!showDetails && (
+        <SearchBar value={searchValue} onChangeText={onChangeSearchText} />
+      )}
       <FlatList
-        keyExtractor={(item, index) =>
-          item.startTime.toString() + index.toString()
-        }
+        keyExtractor={(item) => item.id}
         ListHeaderComponent={() => (
           <Button onPress={onShowMore} style={styles.more}>
             More
           </Button>
         )}
-        data={filterdRequests}
+        data={filteredRequests}
         renderItem={({ item }) => (
           <ResultItem request={item} onPress={() => onPressItem(item)} />
         )}
@@ -67,26 +55,6 @@ const themedStyles = (theme: Theme) =>
     },
     more: {
       marginLeft: 10,
-    },
-    searchContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: 10,
-      margin: 5,
-      borderWidth: 1,
-      borderColor: theme.colors.muted,
-      borderRadius: 20,
-    },
-    searchIcon: {
-      width: 20,
-      height: 20,
-      marginRight: 10,
-    },
-    textInputSearch: {
-      height: 30,
-      padding: 0,
-      flexGrow: 1,
-      color: theme.colors.text,
     },
   });
 

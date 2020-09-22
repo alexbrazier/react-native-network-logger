@@ -5,6 +5,7 @@ jest.mock('react-native/Libraries/Blob/FileReader', () => ({}));
 describe('getCurlRequest', () => {
   it('should return valid curl request for simple GET request', () => {
     const info = new NetworkRequestInfo(
+      '1',
       'application/json',
       'GET',
       'https://test.com'
@@ -15,6 +16,7 @@ describe('getCurlRequest', () => {
 
   it('should return valid curl request for simple GET request with headers', () => {
     const info = new NetworkRequestInfo(
+      '1',
       'application/json',
       'GET',
       'https://test.com'
@@ -33,6 +35,7 @@ describe('getCurlRequest', () => {
 
   it('should return valid curl request for a POST request with headers', () => {
     const info = new NetworkRequestInfo(
+      '1',
       'application/json',
       'POST',
       'https://test.com/post'
@@ -49,6 +52,7 @@ describe('getCurlRequest', () => {
 
   it('should return valid curl request for a POST request with data', () => {
     const info = new NetworkRequestInfo(
+      '1',
       'application/json',
       'POST',
       'https://test.com/post'
@@ -67,6 +71,7 @@ describe('getCurlRequest', () => {
 
   it('should escape quotes in data', () => {
     const info = new NetworkRequestInfo(
+      '1',
       'application/json',
       'POST',
       'https://test.com/post'
@@ -90,6 +95,7 @@ describe('getCurlRequest', () => {
 
   it('should return valid curl request for a DELETE request', () => {
     const info = new NetworkRequestInfo(
+      '1',
       'application/json',
       'DELETE',
       'https://test.com'
@@ -101,6 +107,7 @@ describe('getCurlRequest', () => {
 
 describe('getRequestBody', () => {
   const info = new NetworkRequestInfo(
+    '1',
     'application/json',
     'GET',
     'https://test.com'
@@ -149,6 +156,7 @@ describe('getRequestBody', () => {
 
 describe('getResponseBody', () => {
   const info = new NetworkRequestInfo(
+    '1',
     'application/json',
     'GET',
     'https://test.com'
