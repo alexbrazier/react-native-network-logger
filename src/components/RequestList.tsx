@@ -38,7 +38,6 @@ const RequestList: React.FC<Props> = ({
           placeholder="Filter URLs"
           underlineColorAndroid={'transparent'}
           style={styles.textInputSearch}
-          color={themedColors.colors.text}
           placeholderTextColor={themedColors.colors.muted}
         />
       </View>
@@ -87,6 +86,7 @@ const themedStyles = (theme: Theme) =>
       height: 30,
       padding: 0,
       flexGrow: 1,
+      color: theme.colors.text,
     }
   });
 
