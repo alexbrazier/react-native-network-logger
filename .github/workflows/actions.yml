@@ -9,7 +9,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-      - run: npm install -g yarn
       - run: yarn install
       - run: yarn typescript
   eslint-check:
@@ -17,7 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-      - run: npm install -g yarn
       - run: yarn install
       - run: yarn lint
   unit-test-check:
@@ -25,6 +23,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-      - run: npm install -g yarn
       - run: yarn install
       - run: yarn test
