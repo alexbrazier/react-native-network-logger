@@ -3,6 +3,7 @@ import { Headers, RequestMethod } from './types';
 import fromEntries from './utils/fromEntries';
 
 export default class NetworkRequestInfo {
+  id = '';
   type = '';
   url = '';
   method: RequestMethod;
@@ -23,7 +24,8 @@ export default class NetworkRequestInfo {
   startTime: number = 0;
   endTime: number = 0;
 
-  constructor(type: string, method: RequestMethod, url: string) {
+  constructor(id: string, type: string, method: RequestMethod, url: string) {
+    this.id = id;
     this.type = type;
     this.method = method;
     this.url = url;

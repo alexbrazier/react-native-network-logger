@@ -89,6 +89,7 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
           <RequestList
             requests={requests}
             onShowMore={showMore}
+            showDetails={showDetails && !!request}
             onPressItem={(item) => {
               setRequest(item);
               setShowDetails(true);
