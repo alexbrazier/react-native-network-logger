@@ -43,7 +43,9 @@ const RequestList: React.FC<Props> = ({
         />
       </View>
       <FlatList
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item, index) =>
+          item.startTime.toString() + index.toString()
+        }
         ListHeaderComponent={() => (
           <Button onPress={onShowMore} style={styles.more}>
             More
