@@ -1,3 +1,11 @@
+# [1.7.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.6.0...v1.7.0) (2020-09-22)
+
+
+### Features
+
+* Add search box to filter Requests by URL ([#28](https://github.com/alexbrazier/react-native-network-logger/issues/28)) ([e1cbe9a](https://github.com/alexbrazier/react-native-network-logger/commit/e1cbe9adef14b5297cb5b54584b98c8f9173e64c))
+* Grouped the Request and Response Sections ([#25](https://github.com/alexbrazier/react-native-network-logger/issues/25)) ([b3ca2e3](https://github.com/alexbrazier/react-native-network-logger/commit/b3ca2e30cbbc4102b7be1b03d164c8a019226658))
+
 # [1.6.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.5.0...v1.6.0) (2020-09-13)
 
 
