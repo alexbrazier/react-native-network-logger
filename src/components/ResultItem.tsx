@@ -23,6 +23,9 @@ const ResultItem: React.FC<Props> = ({ style, request, onPress }) => {
     return {};
   };
   const getStatusTextColor = (status: number) => {
+    if (status < 0) {
+      return theme.colors.text;
+    }
     if (status < 400) {
       return theme.colors.statusGood;
     }
