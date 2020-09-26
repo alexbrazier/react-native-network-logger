@@ -82,6 +82,7 @@ export default class Logger {
       startTime: Date.now(),
       dataSent: data,
     });
+    this.callback(this.requests);
   };
 
   private responseCallback = (
