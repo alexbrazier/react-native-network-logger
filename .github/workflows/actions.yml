@@ -1,4 +1,4 @@
-name: Pull-Request-Checks
+name: CI
 on:
   push:
     branches:
@@ -14,9 +14,10 @@ jobs:
       - uses: actions/setup-node@v2-beta
         with:
           node-version: '12'
-      - run: yarn install
+      - run: yarn install --frozen-lockfile
       - run: yarn lint
       - run: yarn typescript
+      - run: yarn prettier
   unit-test:
     runs-on: ubuntu-latest
     steps:
@@ -24,5 +25,5 @@ jobs:
       - uses: actions/setup-node@v2-beta
         with:
           node-version: '12'
-      - run: yarn install
-      - run: yarn test
+      - run: yarn install --frozen-lockfile
+      - run: yarn test --coverage

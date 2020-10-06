@@ -39,6 +39,7 @@
     "test": "jest",
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "prettier": "prettier --check '{,example/}src/**/*.{js,json,ts,tsx}' '{*,example/*}.{js,ts,tsx}'",
     "prepare": "bob build",
     "release": "release-it",
     "example": "yarn --cwd example",
