@@ -1,27 +1,29 @@
-name: Pull-Request-Checks
+name: CI
 on:
+  push:
+    branches:
+      - master
   pull_request:
     branches:
       - master
 jobs:
-  typescript-check:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-      - run: yarn install
-      - run: yarn typescript
-  eslint-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-      - run: yarn install
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '12'
+      - run: yarn install --frozen-lockfile
       - run: yarn lint
-  unit-test-check:
+      - run: yarn typescript
+      - run: yarn prettier
+  unit-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-      - run: yarn install
-      - run: yarn test
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '12'
+      - run: yarn install --frozen-lockfile
+      - run: yarn test --coverage
