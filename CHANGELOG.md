@@ -1,3 +1,15 @@
+# [1.8.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.7.0...v1.8.0) (2020-10-06)
+
+
+### Bug Fixes
+
+* Request not showing up until response received ([#33](https://github.com/alexbrazier/react-native-network-logger/issues/33)) ([4b3ab62](https://github.com/alexbrazier/react-native-network-logger/commit/4b3ab62d3279d4917f1c0a159f6d1cb03ea70812))
+
+
+### Features
+
+* Changed inflight status color to text color ([#30](https://github.com/alexbrazier/react-native-network-logger/issues/30)) ([563ac95](https://github.com/alexbrazier/react-native-network-logger/commit/563ac95ba685ecd784379f3cb8656625ea3abd48))
+
 # [1.7.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.6.0...v1.7.0) (2020-09-22)
 
 
