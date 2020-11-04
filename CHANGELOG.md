@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/alexbrazier/react-native-network-logger/compare/v1.8.0...v1.8.1) (2020-11-04)
+
+
+### Bug Fixes
+
+* dont try and update unmounted component ([#38](https://github.com/alexbrazier/react-native-network-logger/issues/38)) ([59af7e9](https://github.com/alexbrazier/react-native-network-logger/commit/59af7e95af79463efe7d7540b76e4110b1af5dca))
+
 # [1.8.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.7.0...v1.8.0) (2020-10-06)
 
 
