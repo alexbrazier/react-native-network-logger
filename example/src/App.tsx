@@ -72,8 +72,9 @@ export default function App() {
         </Text>
         <View style={styles.navButton} />
       </View>
-      {unmountNetworkLogger && remountButton}
-      {!unmountNetworkLogger && <NetworkLogger theme={theme} />}
+      {(unmountNetworkLogger && remountButton) || (
+        <NetworkLogger theme={theme} />
+      )}
       <View style={styles.bottomView}>
         <Button
           title="Toggle Theme"
