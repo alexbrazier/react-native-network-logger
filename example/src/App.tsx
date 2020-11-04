@@ -6,7 +6,6 @@ import {
   Platform,
   View,
   Text,
-  Alert,
   TouchableOpacity,
 } from 'react-native';
 import NetworkLogger, {
@@ -41,11 +40,22 @@ export default function App() {
 
   const styles = themedStyles(theme === 'dark');
 
-  const goBack = () => {
-    Alert.alert('Going back');
-  };
+  const goBack = () => setUnmountNetworkLogger(true);
+
+  const [unmountNetworkLogger, setUnmountNetworkLogger] = useState(false);
 
   const backHandler = getBackHandler(goBack);
+
+  const remountButton = (
+    <View>
+      <Button
+        title={'Re-open the network logger'}
+        onPress={() => setUnmountNetworkLogger(false)}
+      >
+        Re-open network logger
+      </Button>
+    </View>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -62,7 +72,8 @@ export default function App() {
         </Text>
         <View style={styles.navButton} />
       </View>
-      <NetworkLogger theme={theme} />
+      {unmountNetworkLogger && remountButton}
+      {!unmountNetworkLogger && <NetworkLogger theme={theme} />}
       <View style={styles.bottomView}>
         <Button
           title="Toggle Theme"

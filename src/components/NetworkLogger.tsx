@@ -42,6 +42,11 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
     });
 
     logger.enableXHRInterception();
+
+    return () => {
+      // no-op if component is unmounted
+      logger.setCallback(() => {});
+    };
   }, [sort]);
 
   useEffect(() => {
