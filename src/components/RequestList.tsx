@@ -5,6 +5,7 @@ import { useThemedStyles, Theme } from '../theme';
 import ResultItem from './ResultItem';
 import Button from './Button';
 import SearchBar from './SearchBar';
+import Filter from './Filter';
 
 interface Props {
   requests: NetworkRequestInfo[];
@@ -22,14 +23,28 @@ const RequestList: React.FC<Props> = ({
   const styles = useThemedStyles(themedStyles);
 
   const [searchValue, onChangeSearchText] = useState('');
-  const filteredRequests = requests.filter((request) =>
-    request.url.toLowerCase().includes(searchValue.toLowerCase())
-  );
+  const [httpMethod, onChangeHttpMethods] = useState('');
+  const [httpCode, onChangeHttpCode] = useState(0);
+  const filteredRequests = requests.filter((request) => {
+    return (
+      request.url.toLowerCase().includes(searchValue.toLowerCase()) &&
+      request.method.includes(httpMethod) &&
+      request.status.toString().includes(httpCode.toString())
+    );
+  });
 
   return (
     <View style={styles.container}>
       {!showDetails && (
         <SearchBar value={searchValue} onChangeText={onChangeSearchText} />
+      )}
+      {!showDetails && (
+        <Filter
+          httpMethodValue={httpMethod}
+          httpStatusCodeValue={httpCode}
+          onChangeHttpMethods={onChangeHttpMethods}
+          onChangeHttpCode={onChangeHttpCode}
+        />
       )}
       <FlatList
         keyExtractor={(item) => item.id}
@@ -52,6 +67,8 @@ const themedStyles = (theme: Theme) =>
     container: {
       backgroundColor: theme.colors.background,
       flex: 1,
+      flexDirection: 'column',
+      justifyContent: 'space-between',
     },
     more: {
       marginLeft: 10,
