@@ -65,7 +65,7 @@ const Filter: React.FC<Props> = ({
   );
 };
 
-const themedStyles = (theme: Theme) =>
+const themedStyles = () =>
   StyleSheet.create({
     container: {
       flexDirection: 'row',
