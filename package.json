@@ -45,7 +45,9 @@
     "example": "yarn --cwd example",
     "bootstrap": "yarn example && yarn"
   },
-  "dependencies": {},
+  "dependencies": {
+    "react-native-modal-selector": "^2.0.3"
+  },
   "devDependencies": {
     "@react-native-community/bob": "^0.16.2",
     "@react-native-community/eslint-config": "^2.0.0",

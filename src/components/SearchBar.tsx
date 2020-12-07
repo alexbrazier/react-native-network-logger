@@ -21,7 +21,7 @@ const SearchBar: React.FC<Props> = ({ value, onChangeText }) => {
       <TextInput
         onChangeText={onChangeText}
         value={value}
-        placeholder="Filter URLs"
+        placeholder="Search by URLs"
         underlineColorAndroid="transparent"
         style={styles.textInputSearch}
         placeholderTextColor={theme.colors.muted}
