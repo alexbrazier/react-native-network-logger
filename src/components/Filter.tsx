@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Theme, useThemedStyles, useTheme } from '../theme';
+import { useThemedStyles, useTheme } from '../theme';
 import ModalSelector from 'react-native-modal-selector';
 
 interface Props {
