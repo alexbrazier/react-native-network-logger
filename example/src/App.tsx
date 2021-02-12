@@ -7,6 +7,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  StatusBar,
 } from 'react-native';
 import NetworkLogger, {
   ThemeName,
@@ -37,8 +38,9 @@ export default function App() {
     // fetch('https://failingrequest');
   };
   const [theme, setTheme] = useState<ThemeName>('dark');
+  const isDark = theme === 'dark';
 
-  const styles = themedStyles(theme === 'dark');
+  const styles = themedStyles(isDark);
 
   const goBack = () => setUnmountNetworkLogger(true);
 
@@ -59,6 +61,7 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.navButton}
