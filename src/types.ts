@@ -7,5 +7,5 @@ export type StartNetworkLoggingOptions = {
   /** Max number of requests to keep before overwriting, default 500 */
   maxRequests?: number;
   /** List of hosts to ignore, e.g. services.test.com */
-  ignoredHosts?: string[]
+  ignoredHosts?: string[];
 };

@@ -12,7 +12,7 @@ import {
 import NetworkLogger, {
   ThemeName,
   getBackHandler,
-  startNetworkLogging
+  startNetworkLogging,
 } from 'react-native-network-logger';
 
 export default function App() {
@@ -42,7 +42,7 @@ export default function App() {
   startNetworkLogging({
     ignoredHosts: ['192.168.1.28'],
     maxRequests: 500,
-  })
+  });
 
   const [theme, setTheme] = useState<ThemeName>('dark');
   const isDark = theme === 'dark';
