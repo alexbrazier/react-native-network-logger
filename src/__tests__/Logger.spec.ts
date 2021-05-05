@@ -39,6 +39,17 @@ describe('enableXHRInterception', () => {
     expect(maxRequests).toBe(23);
   });
 
+  it('should update the ignoredHosts if provided', () => {
+    const logger = new Logger();
+
+    logger.enableXHRInterception({ ignoredHosts: ['test.example.com'] });
+    // @ts-ignore
+    const ignoredHosts = logger.ignoredHosts;
+
+    expect(ignoredHosts).toBeInstanceOf(Set)
+    expect(ignoredHosts?.has('test.example.com')).toBeTruthy()
+  });
+
   it('should call setOpenCallback', () => {
     const logger = new Logger();
     logger.enableXHRInterception();
@@ -158,5 +169,40 @@ describe('getRequest', () => {
     // @ts-expect-error
     const result = logger.getRequest(2);
     expect(result).toBe(requests[0]);
+  });
+});
+
+
+describe('openCallback', () => {
+  it('should add new request to start of requests list', () => {
+    const logger = new Logger();
+    logger.enableXHRInterception()
+
+    const xhr = {}
+    const url1 = 'http://example.com/1'
+    const url2 = 'http://example.com/2'
+
+    // @ts-expect-error
+    logger.openCallback('POST', url1, xhr);
+    // @ts-expect-error
+    logger.openCallback('POST', url2, xhr);
+    expect(logger.getRequests()[0].url).toEqual(url2)
+    expect(logger.getRequests()[1].url).toEqual(url1)
+  });
+
+  it('should ignore requests that have ignored hosts', () => {
+    const logger = new Logger();
+    logger.enableXHRInterception({ignoredHosts: ['ignored.com']})
+
+    const xhr = {}
+    const url1 = 'http://example.com/2'
+    const url2 = 'http://ignored.com/1'
+
+    // @ts-expect-error
+    logger.openCallback('POST', url1, xhr);
+    // @ts-expect-error
+    logger.openCallback('POST', url2, xhr);
+    expect(logger.getRequests()[0].url).toEqual(url1)
+    expect(logger.getRequests()).toHaveLength(1)
   });
 });

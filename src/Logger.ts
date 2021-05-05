@@ -1,6 +1,7 @@
 import XHRInterceptor from 'react-native/Libraries/Network/XHRInterceptor';
 import NetworkRequestInfo from './NetworkRequestInfo';
 import { Headers, RequestMethod, StartNetworkLoggingOptions } from './types';
+import extractHost from './utils/extractHost';
 let nextXHRId = 0;
 
 type XHR = {
@@ -12,6 +13,7 @@ export default class Logger {
   private requests: NetworkRequestInfo[] = [];
   private xhrIdMap: { [key: number]: number } = {};
   private maxRequests: number = 500;
+  private ignoredHosts: Set<string>|undefined;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   callback = (requests: any[]) => {};
@@ -39,6 +41,13 @@ export default class Logger {
     xhr._index = nextXHRId++;
     const xhrIndex = this.requests.length;
     this.xhrIdMap[xhr._index] = xhrIndex;
+
+    if (this.ignoredHosts) {
+      const host = extractHost(url)
+      if (host && this.ignoredHosts.has(host)) {
+        return
+      }
+    }
 
     const newRequest = new NetworkRequestInfo(
       `${nextXHRId}`,
@@ -117,6 +126,17 @@ export default class Logger {
         return;
       }
       this.maxRequests = options.maxRequests;
+    }
+
+    // console.log('enable', options?.ignoredHosts)
+    if (options?.ignoredHosts) {
+      if (!Array.isArray(options.ignoredHosts) || typeof options.ignoredHosts[0] !== 'string') {
+        console.warn(
+          'react-native-network-logger: ignoredHosts must be an array of strings. The logger has not been started.'
+        );
+        return;
+      }
+      this.ignoredHosts = new Set(options.ignoredHosts)
     }
 
     XHRInterceptor.setOpenCallback(this.openCallback);

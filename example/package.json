@@ -5,10 +5,10 @@
   "private": true,
   "main": "index",
   "scripts": {
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "start": "expo start",
+    "android": "EXPO_NO_TYPESCRIPT_SETUP=1 expo start --android",
+    "ios": "EXPO_NO_TYPESCRIPT_SETUP=1 expo start --ios",
+    "web": "EXPO_NO_TYPESCRIPT_SETUP=1 expo start --web",
+    "start": "EXPO_NO_TYPESCRIPT_SETUP=1 expo start",
     "test": "jest"
   },
   "dependencies": {

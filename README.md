@@ -99,6 +99,14 @@ You can configure the max number of requests stored on the device using by calli
 startNetworkLogging({ maxRequests: 500 });
 ```
 
+#### Ignored Hosts
+
+You can configure urls/hosts that should be ignored by calling `startNetworkLogging` with the `ignoredHosts` option.
+
+```ts
+startNetworkLogging({ ignoredHosts: ['test.example.com'] });
+```
+
 #### Sorting
 
 Set the sort order of requests. Options are `asc` or `desc`, default is `desc` (most recent at the top).
