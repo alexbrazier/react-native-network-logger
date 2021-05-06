@@ -128,7 +128,6 @@ export default class Logger {
       this.maxRequests = options.maxRequests;
     }
 
-    // console.log('enable', options?.ignoredHosts)
     if (options?.ignoredHosts) {
       if (
         !Array.isArray(options.ignoredHosts) ||
