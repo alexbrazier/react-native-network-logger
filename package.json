@@ -6,7 +6,7 @@
   "module": "lib/module/index",
   "react-native": "src/index",
   "types": "lib/typescript/src/index.d.ts",
-  "source": "src/index",
+  "source": "src/index.tsx",
   "repository": {
     "type": "git",
     "url": "https://github.com/alexbrazier/react-native-network-logger.git"
