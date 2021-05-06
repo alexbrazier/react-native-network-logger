@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.8.1...v1.9.0) (2021-05-06)
+
+
+### Features
+
+* Add `ignoredHosts` option to ignore specified hosts ([#47](https://github.com/alexbrazier/react-native-network-logger/issues/47)) ([8eb6dd6](https://github.com/alexbrazier/react-native-network-logger/commit/8eb6dd6c2d953d5bb1f92bab9eac8a1f289af39b))
+
 ## [1.8.1](https://github.com/alexbrazier/react-native-network-logger/compare/v1.8.0...v1.8.1) (2020-11-04)
 
 
