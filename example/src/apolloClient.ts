@@ -17,5 +17,5 @@ export const getRates = async () => {
       `,
       fetchPolicy: 'network-only',
     })
-    .catch((e) => console.log(e.message));
+    .catch((e: any) => console.log(e.message));
 };
