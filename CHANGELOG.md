@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.9.0...v1.10.0) (2021-06-27)
+
+
+### Features
+
+* Add basic support for GraphQL ([#49](https://github.com/alexbrazier/react-native-network-logger/issues/49)) ([6c11bb2](https://github.com/alexbrazier/react-native-network-logger/commit/6c11bb2b7b887fa75aead0fde44523aced84d62b))
+
 # [1.9.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.8.1...v1.9.0) (2021-05-06)
 
 
