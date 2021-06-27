@@ -14,6 +14,7 @@ import NetworkLogger, {
   getBackHandler,
   startNetworkLogging,
 } from 'react-native-network-logger';
+import { getRates } from './apolloClient';
 
 export default function App() {
   const formData = new FormData();
@@ -35,12 +36,14 @@ export default function App() {
     fetch('https://httpstat.us/500');
     // Non JSON response
     fetch('https://postman-echo.com/stream/2');
+
+    getRates();
     // Test requests that fail
     // fetch('https://failingrequest');
   };
 
   startNetworkLogging({
-    ignoredHosts: ['192.168.1.28'],
+    ignoredHosts: ['192.168.1.28', '127.0.0.1'],
     maxRequests: 500,
   });
 

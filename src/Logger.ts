@@ -34,7 +34,7 @@ export default class Logger {
   ) => {
     const networkInfo = this.getRequest(index);
     if (!networkInfo) return;
-    Object.assign(networkInfo, update);
+    networkInfo.update(update);
   };
 
   private openCallback = (method: RequestMethod, url: string, xhr: XHR) => {
