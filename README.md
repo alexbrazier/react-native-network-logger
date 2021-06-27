@@ -11,6 +11,8 @@ An HTTP traffic monitor for React Native including in app interface.
 
 An alternative to Wormholy but for both iOS and Android and with zero native dependencies.
 
+If this project has helped you out, please support us with a star 🌟.
+
 ## Features
 
 - Log networks requests on iOS and Android
@@ -21,6 +23,7 @@ An alternative to Wormholy but for both iOS and Android and with zero native dep
 - Share cURL representation of request
 - Zero native or JavaScript dependencies
 - Built in TypeScript definitions
+- Extracts GraphQL operation name
 
 ## Screenshots
 
@@ -151,6 +154,12 @@ yarn example start
 You should then be able to open the expo server at http://localhost:3000/ and launch the app on iOS or Android.
 
 For more setup and development details, see [Contributing](#Contributing).
+
+## Why
+
+Network requests can be debugged using tools such as React Native Debugger, however this requires both a debug build of the app and the debugger to be enabled. This library can be built with you app and usable by anyone using your app to see network issues and report them back to developers.
+
+As the library is very small you can safely bundle it with the production version of your app and put it behind a flag, or have a separate testing build of the app which has the network logger enabled.
 
 ## Contributing
 
