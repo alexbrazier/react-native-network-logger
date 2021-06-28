@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Alert, View, StyleSheet, BackHandler } from 'react-native';
+import { Alert, View, StyleSheet, BackHandler, Share } from 'react-native';
 import logger from '../loggerSingleton';
 import NetworkRequestInfo from '../NetworkRequestInfo';
 import { ThemeContext, ThemeName } from '../theme';
@@ -74,6 +74,10 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
         text: 'Clear Logs',
         onPress: () => logger.clearRequests(),
         style: 'destructive',
+      },
+      {
+        text: 'Export All',
+        onPress: () => Share.share({ message: JSON.stringify(requests) }),
       },
       { text: 'Cancel', style: 'cancel' },
     ]);
