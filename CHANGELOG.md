@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/alexbrazier/react-native-network-logger/compare/v1.10.0...v1.10.1) (2021-07-29)
+
+
+### Bug Fixes
+
+* Disable the logger if used on a web project ([#53](https://github.com/alexbrazier/react-native-network-logger/issues/53)) ([800c948](https://github.com/alexbrazier/react-native-network-logger/commit/800c94872219922c35a633fa53046fd43a29a09b))
+
 # [1.10.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.9.0...v1.10.0) (2021-06-27)
 
 
