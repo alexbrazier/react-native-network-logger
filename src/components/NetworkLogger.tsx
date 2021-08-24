@@ -6,6 +6,7 @@ import { ThemeContext, ThemeName } from '../theme';
 import RequestList from './RequestList';
 import RequestDetails from './RequestDetails';
 import { setBackHandler } from '../backHandler';
+import Unmounted from './Unmounted';
 
 interface Props {
   theme?: ThemeName;
@@ -25,6 +26,7 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
   );
   const [request, setRequest] = useState<NetworkRequestInfo>();
   const [showDetails, _setShowDetails] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const setShowDetails = useCallback((shouldShow: boolean) => {
     _setShowDetails(shouldShow);
@@ -42,6 +44,7 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
     });
 
     logger.enableXHRInterception();
+    setMounted(true);
 
     return () => {
       // no-op if component is unmounted
@@ -91,15 +94,19 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
           </View>
         )}
         <View style={showDetails && !!request ? styles.hidden : styles.visible}>
-          <RequestList
-            requests={requests}
-            onShowMore={showMore}
-            showDetails={showDetails && !!request}
-            onPressItem={(item) => {
-              setRequest(item);
-              setShowDetails(true);
-            }}
-          />
+          {mounted && !logger.enabled && !requests.length ? (
+            <Unmounted />
+          ) : (
+            <RequestList
+              requests={requests}
+              onShowMore={showMore}
+              showDetails={showDetails && !!request}
+              onPressItem={(item) => {
+                setRequest(item);
+                setShowDetails(true);
+              }}
+            />
+          )}
         </View>
       </View>
     </ThemeContext.Provider>

@@ -1,4 +1,5 @@
 import XHRInterceptor from 'react-native/Libraries/Network/XHRInterceptor';
+import { warn } from '../utils/logger';
 import Logger from '../Logger';
 
 jest.mock('react-native/Libraries/Blob/FileReader', () => ({}));
@@ -12,12 +13,19 @@ jest.mock('react-native/Libraries/Network/XHRInterceptor', () => ({
   enableInterception: jest.fn(),
 }));
 
+jest.mock('../utils/logger', () => ({
+  warn: jest.fn(() => {
+    throw new Error('Unexpected warning');
+  }),
+}));
+
 beforeEach(() => {
   jest.clearAllMocks();
 });
 
 describe('enableXHRInterception', () => {
   it('should do nothing if interceptor has already been enabled', () => {
+    (warn as jest.Mock).mockImplementationOnce(() => {});
     const logger = new Logger();
 
     (XHRInterceptor.isInterceptorEnabled as jest.Mock).mockReturnValueOnce(
@@ -25,8 +33,21 @@ describe('enableXHRInterception', () => {
     );
 
     expect(logger.enableXHRInterception()).toBeUndefined();
+    expect(warn).toHaveBeenCalledTimes(1);
     expect(XHRInterceptor.isInterceptorEnabled).toHaveBeenCalledTimes(1);
     expect(XHRInterceptor.setOpenCallback).toHaveBeenCalledTimes(0);
+  });
+
+  it('should continue if interceptor has already been enabled but forceEnable is true', () => {
+    const logger = new Logger();
+
+    (XHRInterceptor.isInterceptorEnabled as jest.Mock).mockReturnValueOnce(
+      true
+    );
+
+    expect(logger.enableXHRInterception({ forceEnable: true })).toBeUndefined();
+    expect(XHRInterceptor.isInterceptorEnabled).toHaveBeenCalledTimes(1);
+    expect(XHRInterceptor.setOpenCallback).toHaveBeenCalledTimes(1);
   });
 
   it('should update the maxRequests if provided', () => {
