@@ -2,6 +2,8 @@ import XHRInterceptor from 'react-native/Libraries/Network/XHRInterceptor';
 import NetworkRequestInfo from './NetworkRequestInfo';
 import { Headers, RequestMethod, StartNetworkLoggingOptions } from './types';
 import extractHost from './utils/extractHost';
+import { warn } from './utils/logger';
+
 let nextXHRId = 0;
 
 type XHR = {
@@ -14,6 +16,7 @@ export default class Logger {
   private xhrIdMap: { [key: number]: number } = {};
   private maxRequests: number = 500;
   private ignoredHosts: Set<string> | undefined;
+  public enabled = false;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   callback = (requests: any[]) => {};
@@ -114,14 +117,22 @@ export default class Logger {
   };
 
   enableXHRInterception = (options?: StartNetworkLoggingOptions) => {
-    if (XHRInterceptor.isInterceptorEnabled()) {
+    if (
+      this.enabled ||
+      (XHRInterceptor.isInterceptorEnabled() && !options?.forceEnable)
+    ) {
+      if (!this.enabled) {
+        warn(
+          'network interceptor has not been enabled as another interceptor is already running (e.g. another debugging program). Use option `forceEnable: true` to override this behaviour.'
+        );
+      }
       return;
     }
 
     if (options?.maxRequests !== undefined) {
       if (typeof options.maxRequests !== 'number' || options.maxRequests < 1) {
-        console.warn(
-          'react-native-network-logger: maxRequests must be a number greater than 0. The logger has not been started.'
+        warn(
+          'maxRequests must be a number greater than 0. The logger has not been started.'
         );
         return;
       }
@@ -133,8 +144,8 @@ export default class Logger {
         !Array.isArray(options.ignoredHosts) ||
         typeof options.ignoredHosts[0] !== 'string'
       ) {
-        console.warn(
-          'react-native-network-logger: ignoredHosts must be an array of strings. The logger has not been started.'
+        warn(
+          'ignoredHosts must be an array of strings. The logger has not been started.'
         );
         return;
       }
@@ -148,6 +159,7 @@ export default class Logger {
     XHRInterceptor.setResponseCallback(this.responseCallback);
 
     XHRInterceptor.enableInterception();
+    this.enabled = true;
   };
 
   getRequests = () => {

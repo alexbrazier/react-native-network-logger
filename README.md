@@ -120,6 +120,14 @@ import NetworkLogger from 'react-native-network-logger';
 const MyScreen = () => <NetworkLogger sort="asc" />;
 ```
 
+#### Force Enable
+
+If you are running another network logging interceptor, e.g. Reactotron, the logger will not start as only one can be run at once. You can override this behaviour and force the logger to start by using the `forceEnable` option.
+
+```ts
+startNetworkLogging({ forceEnable: true });
+```
+
 #### Integrate with existing navigation
 
 Use your existing back button (e.g. in your navigation header) to navigate within the network logger.
