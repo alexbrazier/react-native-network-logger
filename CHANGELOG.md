@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.10.1...v1.11.0) (2021-08-24)
+
+
+### Features
+
+* Warn if the logger doesn't start due to duplicate logger ([#56](https://github.com/alexbrazier/react-native-network-logger/issues/56)) ([35b54e0](https://github.com/alexbrazier/react-native-network-logger/commit/35b54e08c33e4a32ff61d253fecd82697abbca69))
+
 ## [1.10.1](https://github.com/alexbrazier/react-native-network-logger/compare/v1.10.0...v1.10.1) (2021-07-29)
 
 
