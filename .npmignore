@@ -1,0 +1,12 @@
+# JS
+node_modules
+yarn.lock
+
+# Project files
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+README.md
+
+# Example
+example/
+
