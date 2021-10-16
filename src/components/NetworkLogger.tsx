@@ -3,13 +3,14 @@ import { Alert, View, StyleSheet, BackHandler } from 'react-native';
 import logger from '../loggerSingleton';
 import NetworkRequestInfo from '../NetworkRequestInfo';
 import { Theme, ThemeContext, ThemeName } from '../theme';
+import { setBackHandler } from '../backHandler';
+import { DeepPartial } from '../types';
 import RequestList from './RequestList';
 import RequestDetails from './RequestDetails';
-import { setBackHandler } from '../backHandler';
 import Unmounted from './Unmounted';
 
 interface Props {
-  theme?: ThemeName | Partial<Theme>;
+  theme?: ThemeName | DeepPartial<Theme>;
   sort?: 'asc' | 'desc';
 }
 
