@@ -56,7 +56,12 @@ const themedStyles = (theme: Theme) =>
       marginHorizontal: 10,
       color: theme.colors.text,
     },
-    shareIcon: { width: 24, height: 24, marginRight: 10 },
+    shareIcon: {
+      width: 24,
+      height: 24,
+      marginRight: 10,
+      tintColor: theme.colors.text,
+    },
     container: {
       justifyContent: 'space-between',
       flexDirection: 'row',

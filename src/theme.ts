@@ -1,7 +1,9 @@
 import React, { useContext } from 'react';
 
 export type ThemeName = 'light' | 'dark';
-export const ThemeContext = React.createContext<ThemeName>('light');
+export const ThemeContext = React.createContext<ThemeName | Partial<Theme>>(
+  'light'
+);
 type Themes = { [key in ThemeName]: Theme };
 
 export type Theme = {
@@ -54,9 +56,11 @@ const themes: Themes = {
 };
 
 export const useTheme = () => {
-  const themeName = useContext(ThemeContext);
+  const themeValue = useContext(ThemeContext);
 
-  return themes[themeName];
+  return typeof themeValue === 'string'
+    ? themes[themeValue]
+    : { ...lightTheme, ...themeValue };
 };
 
 export const useThemedStyles = <T>(styles: (theme: Theme) => T) => {

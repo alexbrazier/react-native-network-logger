@@ -13,4 +13,4 @@ export const clearRequests = () => logger.clearRequests();
 
 export { getBackHandler } from './backHandler';
 
-export { ThemeName } from './theme';
+export { ThemeName, Theme } from './theme';
