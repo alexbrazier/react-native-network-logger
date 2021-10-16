@@ -2,14 +2,14 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Alert, View, StyleSheet, BackHandler } from 'react-native';
 import logger from '../loggerSingleton';
 import NetworkRequestInfo from '../NetworkRequestInfo';
-import { ThemeContext, ThemeName } from '../theme';
+import { Theme, ThemeContext, ThemeName } from '../theme';
 import RequestList from './RequestList';
 import RequestDetails from './RequestDetails';
 import { setBackHandler } from '../backHandler';
 import Unmounted from './Unmounted';
 
 interface Props {
-  theme?: ThemeName;
+  theme?: ThemeName | Partial<Theme>;
   sort?: 'asc' | 'desc';
 }
 
