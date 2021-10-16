@@ -92,6 +92,24 @@ import NetworkLogger from 'react-native-network-logger';
 const MyScreen = () => <NetworkLogger theme="dark" />;
 ```
 
+If preferred you can also override the theme entirely by passing in a theme object.
+
+> Note: breaking theme changes are not guaranteed to follow semver for updates
+
+```ts
+import NetworkLogger from 'react-native-network-logger';
+
+const MyScreen = () => (
+  <NetworkLogger
+    theme={{
+      colors: {
+        background: 'red',
+      },
+    }}
+  />
+);
+```
+
 ### Logging options
 
 #### Max Requests
