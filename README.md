@@ -1,7 +1,7 @@
 # react-native-network-logger [![GitHub stars](https://img.shields.io/github/stars/alexbrazier/react-native-network-logger?label=Star%20Project&style=social)](https://github.com/alexbrazier/react-native-network-logger/stargazers)
 
 [![CI](https://github.com/alexbrazier/react-native-network-logger/workflows/CI/badge.svg)](https://github.com/alexbrazier/react-native-network-logger/actions)
-[![Dependencies](https://img.shields.io/david/alexbrazier/react-native-network-logger)](https://david-dm.org/alexbrazier/react-native-network-logger)
+[![Dependencies](https://img.shields.io/badge/dependencies-none-green)](https://www.npmjs.com/package/react-native-network-logger?activeTab=dependencies)
 [![npm](https://img.shields.io/npm/v/react-native-network-logger)](https://www.npmjs.com/package/react-native-network-logger)
 [![npm bundle size](https://img.shields.io/bundlephobia/min/react-native-network-logger)](https://bundlephobia.com/result?p=react-native-network-logger)
 [![npm downloads](https://img.shields.io/npm/dw/react-native-network-logger)](https://www.npmjs.com/package/react-native-network-logger)
