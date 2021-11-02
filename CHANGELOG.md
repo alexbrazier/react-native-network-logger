@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.11.0...v1.12.0) (2021-11-02)
+
+
+### Features
+
+* Add ability to set custom theme ([#60](https://github.com/alexbrazier/react-native-network-logger/issues/60)) ([75598c0](https://github.com/alexbrazier/react-native-network-logger/commit/75598c03e55f3525c58b5bbc945496918e135494))
+
 # [1.11.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.10.1...v1.11.0) (2021-08-24)
 
 
