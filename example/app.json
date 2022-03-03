@@ -7,7 +7,7 @@
     "description": "Example app for react-native-network-logger",
     "privacy": "public",
     "version": "1.0.0",
-    "platforms": ["ios", "android", "web"],
+    "platforms": ["ios", "android"],
     "ios": {
       "supportsTablet": true
     },

@@ -1,9 +1,12 @@
 const path = require('path');
+const { getDefaultConfig } = require('metro-config');
 const exclusionList = require('metro-config/src/defaults/exclusionList');
 const escape = require('escape-string-regexp');
 const pak = require('../package.json');
 
 const root = path.resolve(__dirname, '..');
+
+const { resolver: defaultResolver } = getDefaultConfig.getDefaultValues();
 
 const modules = Object.keys({
   ...pak.peerDependencies,
@@ -27,6 +30,8 @@ module.exports = {
       acc[name] = path.join(__dirname, 'node_modules', name);
       return acc;
     }, {}),
+
+    sourceExts: [...defaultResolver.sourceExts, 'cjs'],
   },
 
   transformer: {
