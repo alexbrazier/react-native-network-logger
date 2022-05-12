@@ -16,6 +16,7 @@ export default class Logger {
   private xhrIdMap: { [key: number]: number } = {};
   private maxRequests: number = 500;
   private ignoredHosts: Set<string> | undefined;
+  private ignoredUrls: Set<string> | undefined;
   public enabled = false;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -48,6 +49,12 @@ export default class Logger {
     if (this.ignoredHosts) {
       const host = extractHost(url);
       if (host && this.ignoredHosts.has(host)) {
+        return;
+      }
+    }
+
+    if (this.ignoredUrls) {
+      if (url && this.ignoredUrls.has(url)) {
         return;
       }
     }
@@ -150,6 +157,19 @@ export default class Logger {
         return;
       }
       this.ignoredHosts = new Set(options.ignoredHosts);
+    }
+
+    if (options?.ignoredUrls) {
+      if (
+        !Array.isArray(options.ignoredUrls) ||
+        typeof options.ignoredUrls[0] !== 'string'
+      ) {
+        warn(
+          'ignoredUrls must be an array of strings. The logger has not been started.'
+        );
+        return;
+      }
+      this.ignoredUrls = new Set(options.ignoredUrls);
     }
 
     XHRInterceptor.setOpenCallback(this.openCallback);

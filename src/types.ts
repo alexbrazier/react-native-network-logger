@@ -8,6 +8,8 @@ export type StartNetworkLoggingOptions = {
   maxRequests?: number;
   /** List of hosts to ignore, e.g. services.test.com */
   ignoredHosts?: string[];
+  /** List of urls to ignore, e.g. https://services.test.com */
+  ignoredUrls?: string[];
   /**
    * Force the network logger to start even if another program is using the network interceptor
    * e.g. a dev/debuging program
