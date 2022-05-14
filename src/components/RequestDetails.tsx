@@ -1,24 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Share,
-  TextInput,
-  Platform,
-} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Share } from 'react-native';
 import NetworkRequestInfo from '../NetworkRequestInfo';
-import { useThemedStyles, Theme } from '../theme';
+import { useThemedStyles, Theme, ThemeName } from '../theme';
 import { backHandlerSet } from '../backHandler';
 import ResultItem from './ResultItem';
 import Header from './Header';
 import Button from './Button';
+import JSONTree from 'react-native-json-tree';
+import { DeepPartial } from 'src/types';
 
 interface Props {
   request: NetworkRequestInfo;
   onClose(): void;
+  theme?: ThemeName | DeepPartial<Theme>;
 }
+
+const isJson = (item: string) => {
+  try {
+    JSON.parse(item);
+  } catch (error) {
+    return false;
+  }
+
+  return true;
+};
 
 const Headers = ({
   title = 'Headers',
@@ -45,38 +50,52 @@ const Headers = ({
   );
 };
 
-const LargeText: React.FC<{ children: string }> = ({ children }) => {
+const LargeText: React.FC<{
+  children: string;
+  theme?: ThemeName | DeepPartial<Theme>;
+}> = ({ children, theme }) => {
   const styles = useThemedStyles(themedStyles);
 
-  if (Platform.OS === 'ios') {
-    /**
-     * A readonly TextInput is used because large Text blocks sometimes don't render on iOS
-     * See this issue https://github.com/facebook/react-native/issues/19453
-     * Note: Even with the fix mentioned in the comments, text with ~10,000 lines still fails to render
-     */
-    return (
-      <TextInput
-        style={[styles.content, styles.largeContent]}
-        multiline
-        editable={false}
-      >
-        {children}
-      </TextInput>
-    );
-  }
+  // if (Platform.OS === 'ios') {
+  //   /**
+  //    * A readonly TextInput is used because large Text blocks sometimes don't render on iOS
+  //    * See this issue https://github.com/facebook/react-native/issues/19453
+  //    * Note: Even with the fix mentioned in the comments, text with ~10,000 lines still fails to render
+  //    */
+  //   return (
+  //     <TextInput
+  //       style={[styles.content, styles.largeContent]}
+  //       multiline
+  //       editable={false}
+  //     >
+  //       {children}
+  //     </TextInput>
+  //   );
+  // }
+
+  const jsonObject = isJson(children) ? JSON.parse(children) : String(children);
 
   return (
     <View style={styles.largeContent}>
       <ScrollView nestedScrollEnabled>
         <View>
-          <Text style={styles.content}>{children}</Text>
+          {/* <Text style={styles.content}>{children}</Text> */}
+          <JSONTree
+            data={jsonObject}
+            theme={'isotope'}
+            invertTheme={theme === 'light' ? true : false}
+          />
         </View>
       </ScrollView>
     </View>
   );
 };
 
-const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
+const RequestDetails: React.FC<Props> = ({
+  request,
+  onClose,
+  theme = 'light',
+}) => {
   const [responseBody, setResponseBody] = useState('Loading...');
   const styles = useThemedStyles(themedStyles);
 
@@ -115,7 +134,7 @@ const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
         <LargeText>{requestBody}</LargeText>
         <Headers title="Response Headers" headers={request.responseHeaders} />
         <Header shareContent={responseBody}>Response Body</Header>
-        <LargeText>{responseBody}</LargeText>
+        <LargeText theme={theme}>{responseBody}</LargeText>
         <Header>More</Header>
         <Button
           onPress={() => Share.share({ message: getFullRequest() })}
