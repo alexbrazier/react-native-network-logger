@@ -1,3 +1,12 @@
+
+
+# [1.13.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.12.0...v1.13.0) (2022-08-20)
+
+
+### Features
+
+* Add option to export all logs as HAR ([#36](https://github.com/alexbrazier/react-native-network-logger/issues/36)) ([c3b7dda](https://github.com/alexbrazier/react-native-network-logger/commit/c3b7ddaf56f2714dab07d2b8094b38faf674c1d9))
+
 # [1.12.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.11.0...v1.12.0) (2021-11-02)
 
 
@@ -179,4 +188,3 @@
 
 
 ## [1.0.1](https://github.com/alexbrazier/react-native-network-logger/compare/v1.0.3...v1.1.0) (2020-06-19)
-
