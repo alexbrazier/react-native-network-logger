@@ -43,6 +43,7 @@ const RequestList: React.FC<Props> = ({
       )}
       <FlatList
         keyExtractor={(item) => item.id}
+        // eslint-disable-next-line react/no-unstable-nested-components
         ListHeaderComponent={() => (
           <Button onPress={onShowMore} style={styles.more}>
             More
