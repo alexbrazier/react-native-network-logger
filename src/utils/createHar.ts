@@ -1,10 +1,11 @@
 import NetworkRequestInfo from '../NetworkRequestInfo';
 
 const createHarEntry = async (request: NetworkRequestInfo) => {
+  const body = request.getRequestBody();
   return {
     request: {
       method: request.method,
-      url: request.url,
+      url: request.url.replace(/\s/g, '%20'),
       headers: Object.entries(request.requestHeaders).map(([name, value]) => ({
         name,
         value,
@@ -12,10 +13,18 @@ const createHarEntry = async (request: NetworkRequestInfo) => {
       cookies: [],
       headersSize: -1,
       bodySize: -1,
-      // TODO add postData object
+      ...(body && body !== 'null'
+        ? {
+            postData: {
+              // mimeType: // unknown,
+              text: body,
+            },
+          }
+        : {}),
     },
     response: {
       status: request.status,
+      statusText: '',
       headers: Object.entries(request.responseHeaders).map(([name, value]) => ({
         name,
         value,
