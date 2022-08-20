@@ -6,13 +6,15 @@ import {
   Platform,
   View,
   Text,
-  Alert,
   TouchableOpacity,
+  StatusBar,
 } from 'react-native';
 import NetworkLogger, {
   ThemeName,
   getBackHandler,
+  startNetworkLogging,
 } from 'react-native-network-logger';
+import { getRates } from './apolloClient';
 
 export default function App() {
   const formData = new FormData();
@@ -34,21 +36,40 @@ export default function App() {
     fetch('https://httpstat.us/500');
     // Non JSON response
     fetch('https://postman-echo.com/stream/2');
+
+    getRates();
     // Test requests that fail
     // fetch('https://failingrequest');
   };
+
+  startNetworkLogging({
+    ignoredHosts: ['192.168.1.28', '127.0.0.1'],
+    maxRequests: 500,
+  });
+
   const [theme, setTheme] = useState<ThemeName>('dark');
+  const isDark = theme === 'dark';
 
-  const styles = themedStyles(theme === 'dark');
+  const styles = themedStyles(isDark);
 
-  const goBack = () => {
-    Alert.alert('Going back');
-  };
+  const goBack = () => setUnmountNetworkLogger(true);
+
+  const [unmountNetworkLogger, setUnmountNetworkLogger] = useState(false);
 
   const backHandler = getBackHandler(goBack);
 
+  const remountButton = (
+    <View>
+      <Button
+        title={'Re-open the network logger'}
+        onPress={() => setUnmountNetworkLogger(false)}
+      />
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.navButton}
@@ -62,7 +83,9 @@ export default function App() {
         </Text>
         <View style={styles.navButton} />
       </View>
-      <NetworkLogger theme={theme} />
+      {(unmountNetworkLogger && remountButton) || (
+        <NetworkLogger theme={theme} />
+      )}
       <View style={styles.bottomView}>
         <Button
           title="Toggle Theme"

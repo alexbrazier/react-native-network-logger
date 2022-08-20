@@ -23,6 +23,7 @@ export default class NetworkRequestInfo {
   serverError = undefined;
   startTime: number = 0;
   endTime: number = 0;
+  gqlOperation?: string;
 
   constructor(id: string, type: string, method: RequestMethod, url: string) {
     this.id = id;
@@ -54,23 +55,41 @@ export default class NetworkRequestInfo {
     return parts.filter(Boolean).join(' ');
   }
 
+  update(values: Partial<NetworkRequestInfo>) {
+    Object.assign(this, values);
+    if (values.dataSent) {
+      const data = this.parseData(values.dataSent);
+      this.gqlOperation = data?.operationName;
+    }
+  }
+
   private escapeQuotes(value: string) {
     return value.replace?.(/'/g, `\\'`);
   }
 
-  private stringifyFormat(data: any) {
+  private parseData(data: any) {
     try {
       if (data?._parts?.length) {
-        return JSON.stringify(fromEntries(data?._parts), null, 2);
+        return fromEntries(data?._parts);
       }
-      return JSON.stringify(JSON.parse(data), null, 2);
+      return JSON.parse(data);
     } catch (e) {
-      return `${data}`;
+      return { data };
     }
   }
 
-  getRequestBody() {
-    return this.stringifyFormat(this.dataSent);
+  private stringifyFormat(data: any) {
+    return JSON.stringify(this.parseData(data), null, 2);
+  }
+
+  getRequestBody(replaceEscaped = false) {
+    const body = this.stringifyFormat(this.dataSent);
+
+    if (replaceEscaped) {
+      return body.replace(/\\n/g, '\n').replace(/\\"/g, '"');
+    }
+
+    return body;
   }
 
   private async parseResponseBlob() {

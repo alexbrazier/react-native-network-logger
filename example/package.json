@@ -5,29 +5,23 @@
   "private": true,
   "main": "index",
   "scripts": {
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "start": "expo start",
+    "android": "EXPO_NO_TYPESCRIPT_SETUP=1 expo start --android",
+    "ios": "EXPO_NO_TYPESCRIPT_SETUP=1 expo start --ios",
+    "web": "EXPO_NO_TYPESCRIPT_SETUP=1 expo start --web",
+    "start": "EXPO_NO_TYPESCRIPT_SETUP=1 expo start",
     "test": "jest"
   },
   "dependencies": {
-    "expo": "~38.0.10",
-    "react": "~16.11.0",
-    "react-native": "~0.62.2",
-    "react-native-unimodules": "~0.10.1"
+    "@apollo/client": "^3.6.9",
+    "expo": "~46.0.8",
+    "graphql": "^16.6.0",
+    "react": "~18.2.0",
+    "react-native": "~0.69.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.11.6",
-    "@babel/runtime": "^7.11.2",
-    "babel-plugin-module-resolver": "^4.0.0",
-    "babel-preset-expo": "~8.2.3",
-    "expo-cli": "^3.27.6"
-  },
-  "resolutions": {
-    "axios": "^0.19.0",
-    "jpeg-js": "^0.4.0",
-    "node-fetch": "^2.6.1",
-    "node-forge": "^0.10.0"
+    "@babel/core": "^7.18.10",
+    "@babel/runtime": "^7.18.9",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "babel-preset-expo": "~9.2.0"
   }
 }

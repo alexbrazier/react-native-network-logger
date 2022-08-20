@@ -1,7 +1,7 @@
 # react-native-network-logger [![GitHub stars](https://img.shields.io/github/stars/alexbrazier/react-native-network-logger?label=Star%20Project&style=social)](https://github.com/alexbrazier/react-native-network-logger/stargazers)
 
-[![CircleCI](https://img.shields.io/circleci/build/gh/alexbrazier/react-native-network-logger)](https://circleci.com/gh/alexbrazier/react-native-network-logger)
-[![Dependencies](https://img.shields.io/david/alexbrazier/react-native-network-logger)](https://david-dm.org/alexbrazier/react-native-network-logger)
+[![CI](https://github.com/alexbrazier/react-native-network-logger/workflows/CI/badge.svg)](https://github.com/alexbrazier/react-native-network-logger/actions)
+[![Dependencies](https://img.shields.io/badge/dependencies-none-green)](https://www.npmjs.com/package/react-native-network-logger?activeTab=dependencies)
 [![npm](https://img.shields.io/npm/v/react-native-network-logger)](https://www.npmjs.com/package/react-native-network-logger)
 [![npm bundle size](https://img.shields.io/bundlephobia/min/react-native-network-logger)](https://bundlephobia.com/result?p=react-native-network-logger)
 [![npm downloads](https://img.shields.io/npm/dw/react-native-network-logger)](https://www.npmjs.com/package/react-native-network-logger)
@@ -10,6 +10,8 @@
 An HTTP traffic monitor for React Native including in app interface.
 
 An alternative to Wormholy but for both iOS and Android and with zero native dependencies.
+
+If this project has helped you out, please support us with a star 🌟.
 
 ## Features
 
@@ -21,6 +23,7 @@ An alternative to Wormholy but for both iOS and Android and with zero native dep
 - Share cURL representation of request
 - Zero native or JavaScript dependencies
 - Built in TypeScript definitions
+- Extracts GraphQL operation name
 
 ## Screenshots
 
@@ -89,6 +92,24 @@ import NetworkLogger from 'react-native-network-logger';
 const MyScreen = () => <NetworkLogger theme="dark" />;
 ```
 
+If preferred you can also override the theme entirely by passing in a theme object.
+
+> Note: breaking theme changes are not guaranteed to follow semver for updates
+
+```ts
+import NetworkLogger from 'react-native-network-logger';
+
+const MyScreen = () => (
+  <NetworkLogger
+    theme={{
+      colors: {
+        background: 'red',
+      },
+    }}
+  />
+);
+```
+
 ### Logging options
 
 #### Max Requests
@@ -99,6 +120,14 @@ You can configure the max number of requests stored on the device using by calli
 startNetworkLogging({ maxRequests: 500 });
 ```
 
+#### Ignored Hosts
+
+You can configure urls/hosts that should be ignored by calling `startNetworkLogging` with the `ignoredHosts` option.
+
+```ts
+startNetworkLogging({ ignoredHosts: ['test.example.com'] });
+```
+
 #### Sorting
 
 Set the sort order of requests. Options are `asc` or `desc`, default is `desc` (most recent at the top).
@@ -107,6 +136,14 @@ Set the sort order of requests. Options are `asc` or `desc`, default is `desc` (
 import NetworkLogger from 'react-native-network-logger';
 
 const MyScreen = () => <NetworkLogger sort="asc" />;
+```
+
+#### Force Enable
+
+If you are running another network logging interceptor, e.g. Reactotron, the logger will not start as only one can be run at once. You can override this behaviour and force the logger to start by using the `forceEnable` option.
+
+```ts
+startNetworkLogging({ forceEnable: true });
 ```
 
 #### Integrate with existing navigation
@@ -143,6 +180,12 @@ yarn example start
 You should then be able to open the expo server at http://localhost:3000/ and launch the app on iOS or Android.
 
 For more setup and development details, see [Contributing](#Contributing).
+
+## Why
+
+Network requests can be debugged using tools such as React Native Debugger, however this requires both a debug build of the app and the debugger to be enabled. This library can be built with you app and usable by anyone using your app to see network issues and report them back to developers.
+
+As the library is very small you can safely bundle it with the production version of your app and put it behind a flag, or have a separate testing build of the app which has the network logger enabled.
 
 ## Contributing
 

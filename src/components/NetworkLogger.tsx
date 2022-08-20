@@ -2,14 +2,16 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Alert, View, StyleSheet, BackHandler, Share } from 'react-native';
 import logger from '../loggerSingleton';
 import NetworkRequestInfo from '../NetworkRequestInfo';
-import { ThemeContext, ThemeName } from '../theme';
+import { Theme, ThemeContext, ThemeName } from '../theme';
+import { setBackHandler } from '../backHandler';
+import { DeepPartial } from '../types';
 import RequestList from './RequestList';
 import RequestDetails from './RequestDetails';
-import { setBackHandler } from '../backHandler';
 import createHar from '../utils/createHar';
+import Unmounted from './Unmounted';
 
 interface Props {
-  theme?: ThemeName;
+  theme?: ThemeName | DeepPartial<Theme>;
   sort?: 'asc' | 'desc';
 }
 
@@ -26,6 +28,7 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
   );
   const [request, setRequest] = useState<NetworkRequestInfo>();
   const [showDetails, _setShowDetails] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const setShowDetails = useCallback((shouldShow: boolean) => {
     _setShowDetails(shouldShow);
@@ -43,6 +46,12 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
     });
 
     logger.enableXHRInterception();
+    setMounted(true);
+
+    return () => {
+      // no-op if component is unmounted
+      logger.setCallback(() => {});
+    };
   }, [sort]);
 
   useEffect(() => {
@@ -99,15 +108,19 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
           </View>
         )}
         <View style={showDetails && !!request ? styles.hidden : styles.visible}>
-          <RequestList
-            requests={requests}
-            onShowMore={showMore}
-            showDetails={showDetails && !!request}
-            onPressItem={(item) => {
-              setRequest(item);
-              setShowDetails(true);
-            }}
-          />
+          {mounted && !logger.enabled && !requests.length ? (
+            <Unmounted />
+          ) : (
+            <RequestList
+              requests={requests}
+              onShowMore={showMore}
+              showDetails={showDetails && !!request}
+              onPressItem={(item) => {
+                setRequest(item);
+                setShowDetails(true);
+              }}
+            />
+          )}
         </View>
       </View>
     </ThemeContext.Provider>

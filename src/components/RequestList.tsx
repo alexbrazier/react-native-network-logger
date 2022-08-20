@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import NetworkRequestInfo from '../NetworkRequestInfo';
 import { useThemedStyles, Theme } from '../theme';
@@ -22,9 +22,19 @@ const RequestList: React.FC<Props> = ({
   const styles = useThemedStyles(themedStyles);
 
   const [searchValue, onChangeSearchText] = useState('');
-  const filteredRequests = requests.filter((request) =>
-    request.url.toLowerCase().includes(searchValue.toLowerCase())
-  );
+  const [filteredRequests, setFilteredRequests] = useState(requests);
+
+  useEffect(() => {
+    const filtered = requests.filter((request) => {
+      const value = searchValue.toLowerCase().trim();
+      return (
+        request.url.toLowerCase().includes(value) ||
+        request.gqlOperation?.toLowerCase().includes(value)
+      );
+    });
+
+    setFilteredRequests(filtered);
+  }, [requests, searchValue]);
 
   return (
     <View style={styles.container}>
@@ -33,6 +43,7 @@ const RequestList: React.FC<Props> = ({
       )}
       <FlatList
         keyExtractor={(item) => item.id}
+        // eslint-disable-next-line react/no-unstable-nested-components
         ListHeaderComponent={() => (
           <Button onPress={onShowMore} style={styles.more}>
             More

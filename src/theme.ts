@@ -1,7 +1,10 @@
 import React, { useContext } from 'react';
+import { DeepPartial } from './types';
 
 export type ThemeName = 'light' | 'dark';
-export const ThemeContext = React.createContext<ThemeName>('light');
+export const ThemeContext = React.createContext<ThemeName | DeepPartial<Theme>>(
+  'light'
+);
 type Themes = { [key in ThemeName]: Theme };
 
 export type Theme = {
@@ -13,6 +16,8 @@ export type Theme = {
     statusGood: string;
     statusWarning: string;
     statusBad: string;
+    secondary: string;
+    onSecondary: string;
     muted: string;
   };
 };
@@ -26,9 +31,12 @@ const darkTheme: Theme = {
     statusGood: '#28a844',
     statusWarning: '#ffc007',
     statusBad: '#dd3444',
+    secondary: '#2c7489',
+    onSecondary: '#ffffff',
     muted: '#cccccc',
   },
 };
+
 const lightTheme: Theme = {
   colors: {
     background: '#ededed',
@@ -38,6 +46,8 @@ const lightTheme: Theme = {
     statusGood: '#28a844',
     statusWarning: '#ffc007',
     statusBad: '#dd3444',
+    secondary: '#2c7489',
+    onSecondary: '#ffffff',
     muted: '#757575',
   },
 };
@@ -48,9 +58,16 @@ const themes: Themes = {
 };
 
 export const useTheme = () => {
-  const themeName = useContext(ThemeContext);
+  const themeValue = useContext(ThemeContext);
 
-  return themes[themeName];
+  return typeof themeValue === 'string'
+    ? themes[themeValue]
+    : {
+        colors: {
+          ...lightTheme.colors,
+          ...themeValue.colors,
+        },
+      };
 };
 
 export const useThemedStyles = <T>(styles: (theme: Theme) => T) => {

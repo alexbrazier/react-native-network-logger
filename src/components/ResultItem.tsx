@@ -55,6 +55,8 @@ const ResultItem: React.FC<Props> = ({ style, request, onPress }) => {
     return `${hours}:${minutes}:${seconds}`;
   };
 
+  const gqlOperation = request.gqlOperation;
+
   return (
     <MaybeTouchable
       style={[styles.container, style]}
@@ -78,16 +80,24 @@ const ResultItem: React.FC<Props> = ({ style, request, onPress }) => {
         </Text>
         <Text style={styles.time}>{getTime(request.startTime)}</Text>
       </View>
-      <Text
-        style={[
-          styles.text,
-          styles.content,
-          getUrlTextColor(request.status),
-          onDetailsPage && !backHandlerSet() && styles.paddedUrl,
-        ]}
-      >
-        {request.url}
-      </Text>
+      <View style={[styles.content]}>
+        <Text
+          style={[
+            styles.text,
+            getUrlTextColor(request.status),
+            onDetailsPage && !backHandlerSet() && styles.paddedUrl,
+          ]}
+        >
+          {request.url}
+        </Text>
+        {gqlOperation && (
+          <View style={styles.gqlOperation}>
+            <Text style={[styles.text, styles.gqlText]}>
+              gql: {gqlOperation}
+            </Text>
+          </View>
+        )}
+      </View>
     </MaybeTouchable>
   );
 };
@@ -141,6 +151,17 @@ const themedStyles = (theme: Theme) =>
     },
     paddedUrl: {
       paddingVertical: 20,
+    },
+    gqlOperation: {
+      backgroundColor: theme.colors.secondary,
+      borderRadius: 10,
+      alignSelf: 'flex-start',
+      padding: 5,
+      marginTop: 5,
+    },
+    gqlText: {
+      color: theme.colors.onSecondary,
+      fontSize: 14,
     },
   });
 
