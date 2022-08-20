@@ -4,7 +4,7 @@
 [![Dependencies](https://img.shields.io/badge/dependencies-none-green)](https://www.npmjs.com/package/react-native-network-logger?activeTab=dependencies)
 [![npm](https://img.shields.io/npm/v/react-native-network-logger)](https://www.npmjs.com/package/react-native-network-logger)
 [![npm bundle size](https://img.shields.io/bundlephobia/min/react-native-network-logger)](https://bundlephobia.com/result?p=react-native-network-logger)
-[![npm downloads](https://img.shields.io/npm/dw/react-native-network-logger)](https://www.npmjs.com/package/react-native-network-logger)
+[![npm downloads](https://img.shields.io/npm/dm/react-native-network-logger)](https://www.npmjs.com/package/react-native-network-logger)
 [![License](https://img.shields.io/npm/l/react-native-network-logger)](./LICENSE)
 
 An HTTP traffic monitor for React Native including in app interface.
@@ -24,6 +24,7 @@ If this project has helped you out, please support us with a star 🌟.
 - Zero native or JavaScript dependencies
 - Built in TypeScript definitions
 - Extracts GraphQL operation name
+- Export all logs in HAR format
 
 ## Screenshots
 
