@@ -63,9 +63,7 @@ export default function App() {
       <Button
         title={'Re-open the network logger'}
         onPress={() => setUnmountNetworkLogger(false)}
-      >
-        Re-open network logger
-      </Button>
+      />
     </View>
   );
 
