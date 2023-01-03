@@ -119,8 +119,8 @@ describe('getRequestBody', () => {
     expect(typeof result).toBe('string');
     expect(result).toMatchInlineSnapshot(`
       "{
-        \\"data\\": {
-          \\"a\\": 1
+        "data": {
+          "a": 1
         }
       }"
     `);
@@ -133,8 +133,8 @@ describe('getRequestBody', () => {
     expect(typeof result).toBe('string');
     expect(result).toMatchInlineSnapshot(`
       "{
-        \\"data\\": {
-          \\"test\\": 1
+        "data": {
+          "test": 1
         }
       }"
     `);
@@ -153,8 +153,8 @@ describe('getRequestBody', () => {
     expect(typeof result).toBe('string');
     expect(result).toMatchInlineSnapshot(`
       "{
-        \\"test\\": \\"hello\\",
-        \\"another\\": \\"goodbye\\"
+        "test": "hello",
+        "another": "goodbye"
       }"
     `);
   });
@@ -188,8 +188,8 @@ describe('getResponseBody', () => {
     expect(typeof result).toBe('string');
     expect(result).toMatchInlineSnapshot(`
       "{
-        \\"data\\": {
-          \\"a\\": 1
+        "data": {
+          "a": 1
         }
       }"
     `);
@@ -202,8 +202,8 @@ describe('getResponseBody', () => {
     expect(typeof result).toBe('string');
     expect(result).toMatchInlineSnapshot(`
       "{
-        \\"data\\": {
-          \\"test\\": 1
+        "data": {
+          "test": 1
         }
       }"
     `);
