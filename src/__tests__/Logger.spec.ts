@@ -71,6 +71,31 @@ describe('enableXHRInterception', () => {
     expect(ignoredHosts?.has('test.example.com')).toBeTruthy();
   });
 
+  it('should update the ignoredUrls if provided', () => {
+    const logger = new Logger();
+
+    logger.enableXHRInterception({
+      ignoredUrls: ['http://test.example.com/test'],
+    });
+    // @ts-ignore
+    const ignoredUrls = logger.ignoredUrls;
+
+    expect(ignoredUrls).toBeInstanceOf(Set);
+    expect(ignoredUrls?.has('http://test.example.com/test')).toBeTruthy();
+  });
+
+  it('should update the ignoredPatterns if provided', () => {
+    const logger = new Logger();
+
+    logger.enableXHRInterception({
+      ignoredPatterns: [/^HEAD /],
+    });
+    // @ts-ignore
+    const ignoredPatterns = logger.ignoredPatterns;
+
+    expect(ignoredPatterns).toEqual([/^HEAD /]);
+  });
+
   it('should call setOpenCallback', () => {
     const logger = new Logger();
     logger.enableXHRInterception();
@@ -224,5 +249,47 @@ describe('openCallback', () => {
     logger.openCallback('POST', url2, xhr);
     expect(logger.getRequests()[0].url).toEqual(url1);
     expect(logger.getRequests()).toHaveLength(1);
+  });
+
+  it('should ignore requests that have ignored urls', () => {
+    const logger = new Logger();
+    logger.enableXHRInterception({ ignoredUrls: ['http://ignored.com/test'] });
+
+    const xhr = {};
+    const url1 = 'http://ignored.com/1';
+    const url2 = 'http://ignored.com/test';
+
+    // @ts-expect-error
+    logger.openCallback('POST', url1, xhr);
+    // @ts-expect-error
+    logger.openCallback('POST', url2, xhr);
+    expect(logger.getRequests()[0].url).toEqual(url1);
+    expect(logger.getRequests()).toHaveLength(1);
+  });
+
+  it('should ignore requests that match pattern', () => {
+    const logger = new Logger();
+    logger.enableXHRInterception({
+      ignoredPatterns: [/^HEAD /, /^POST http:\/\/ignored/],
+    });
+
+    const xhr = {};
+    const url1 = 'http://allowed.com/1';
+    const url2 = 'http://ignored.com/test';
+
+    // @ts-expect-error
+    logger.openCallback('POST', url1, xhr);
+    // @ts-expect-error
+    logger.openCallback('POST', url2, xhr);
+    // @ts-expect-error
+    logger.openCallback('HEAD', url2, xhr);
+    // @ts-expect-error
+    logger.openCallback('PUT', url2, xhr);
+    // Requests should be in reverse order
+    expect(logger.getRequests()[1].url).toEqual(url1);
+    expect(logger.getRequests()[1].method).toEqual('POST');
+    expect(logger.getRequests()[0].url).toEqual(url2);
+    expect(logger.getRequests()[0].method).toEqual('PUT');
+    expect(logger.getRequests()).toHaveLength(2);
   });
 });
