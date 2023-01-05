@@ -1,5 +1,12 @@
 
 
+# [1.14.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.13.0...v1.14.0) (2023-01-05)
+
+
+### Features
+
+* Add options to ignore specific urls and regex  patterns ([#70](https://github.com/alexbrazier/react-native-network-logger/issues/70)) ([5ee6c3e](https://github.com/alexbrazier/react-native-network-logger/commit/5ee6c3e84408d7338e5549e14a5f25d184cc1dee))
+
 # [1.13.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.12.0...v1.13.0) (2022-08-20)
 
 
