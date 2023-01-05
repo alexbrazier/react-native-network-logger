@@ -31,6 +31,11 @@ export default function App() {
       method: 'POST',
       body: formData,
     });
+    fetch('https://httpstat.us/200', { method: 'HEAD' });
+    fetch('https://postman-echo.com/put', {
+      method: 'PUT',
+      body: JSON.stringify({ test: 'hello' }),
+    });
     fetch('https://httpstat.us/302');
     fetch('https://httpstat.us/400');
     fetch('https://httpstat.us/500');
@@ -45,6 +50,8 @@ export default function App() {
   startNetworkLogging({
     ignoredHosts: ['192.168.1.28', '127.0.0.1'],
     maxRequests: 500,
+    ignoredUrls: ['https://httpstat.us/other'],
+    ignoredPatterns: [/^POST http:\/\/(192|10)/],
   });
 
   const [theme, setTheme] = useState<ThemeName>('dark');

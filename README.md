@@ -123,10 +123,37 @@ startNetworkLogging({ maxRequests: 500 });
 
 #### Ignored Hosts
 
-You can configure urls/hosts that should be ignored by calling `startNetworkLogging` with the `ignoredHosts` option.
+You can configure hosts that should be ignored by calling `startNetworkLogging` with the `ignoredHosts` option.
 
 ```ts
 startNetworkLogging({ ignoredHosts: ['test.example.com'] });
+```
+
+#### Ignored Urls
+
+You can configure urls that should be ignored by calling `startNetworkLogging` with the `ignoredUrls` option.
+
+```ts
+startNetworkLogging({ ignoredUrls: ['https://test.example.com/page'] });
+```
+
+#### Ignored Patterns
+
+You can configure url patterns, including methods that should be ignored by calling `startNetworkLogging` with the `ignoredPatterns` option.
+
+```ts
+startNetworkLogging({
+  ignoredPatterns: [/^GET http:\/\/test\.example\.com\/pages\/.*$/],
+});
+```
+
+The pattern to match with is the method followed by the url, e.g. `GET http://example.com/test` so you can use the pattern to match anything, e.g. ignoring all HEAD requests.
+
+```ts
+startNetworkLogging({
+  // Ignore all HEAD requests
+  ignoredPatterns: [/^HEAD /],
+});
 ```
 
 #### Sorting
