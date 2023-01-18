@@ -11,6 +11,6 @@ export const clearRequests = () => {};
 
 export { getBackHandler } from './backHandler';
 
-export { ThemeName } from './theme';
+export type { ThemeName } from './theme';
 
 export default () => null;
