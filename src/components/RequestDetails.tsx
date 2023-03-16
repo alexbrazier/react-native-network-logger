@@ -59,9 +59,8 @@ const LargeText: React.FC<{ children: string }> = ({ children }) => {
         style={[styles.content, styles.largeContent]}
         multiline
         editable={false}
-      >
-        {children}
-      </TextInput>
+        value={children}
+      />
     );
   }
 
