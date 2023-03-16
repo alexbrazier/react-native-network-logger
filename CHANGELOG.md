@@ -1,5 +1,12 @@
 
 
+## [1.14.1](https://github.com/alexbrazier/react-native-network-logger/compare/v1.14.0...v1.14.1) (2023-03-16)
+
+
+### Bug Fixes
+
+* Issue with response body not loading on ios on RN 0.71.x ([#74](https://github.com/alexbrazier/react-native-network-logger/issues/74)) ([1d503bb](https://github.com/alexbrazier/react-native-network-logger/commit/1d503bbd1503a09faaa2ff9bf374655df39bf3e4)), closes [#73](https://github.com/alexbrazier/react-native-network-logger/issues/73)
+
 # [1.14.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.13.0...v1.14.0) (2023-01-05)
 
 
