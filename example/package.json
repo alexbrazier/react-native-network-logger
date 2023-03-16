@@ -12,16 +12,16 @@
     "test": "jest"
   },
   "dependencies": {
-    "@apollo/client": "^3.7.2",
-    "expo": "~47.0.8",
+    "@apollo/client": "^3.7.10",
+    "expo": "~48.0.7",
     "graphql": "^16.6.0",
     "react": "~18.2.0",
-    "react-native": "~0.70.6"
+    "react-native": "0.71.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.5",
-    "@babel/runtime": "^7.20.6",
-    "babel-plugin-module-resolver": "^4.1.0",
-    "babel-preset-expo": "~9.2.2"
+    "@babel/core": "^7.21.3",
+    "@babel/runtime": "^7.21.0",
+    "babel-plugin-module-resolver": "^5.0.0",
+    "babel-preset-expo": "~9.3.0"
   }
 }
