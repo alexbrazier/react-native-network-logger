@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   Share,
-  TextInput,
   Platform,
 } from 'react-native';
 import NetworkRequestInfo from '../NetworkRequestInfo';
@@ -49,18 +48,10 @@ const LargeText: React.FC<{ children: string }> = ({ children }) => {
   const styles = useThemedStyles(themedStyles);
 
   if (Platform.OS === 'ios') {
-    /**
-     * A readonly TextInput is used because large Text blocks sometimes don't render on iOS
-     * See this issue https://github.com/facebook/react-native/issues/19453
-     * Note: Even with the fix mentioned in the comments, text with ~10,000 lines still fails to render
-     */
     return (
-      <TextInput
-        style={[styles.content, styles.largeContent]}
-        multiline
-        editable={false}
-        value={children}
-      />
+      <ScrollView style={styles.largeContent}>
+        <Text style={styles.content}>{children}</Text>
+      </ScrollView>
     );
   }
 
