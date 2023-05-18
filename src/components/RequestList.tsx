@@ -9,14 +9,14 @@ import SearchBar from './SearchBar';
 interface Props {
   requests: NetworkRequestInfo[];
   onPressItem: (item: NetworkRequestInfo) => void;
-  onShowMore: () => void;
+  options: {text: string; onPress: () => void }[];
   showDetails: boolean;
 }
 
 const RequestList: React.FC<Props> = ({
   requests,
   onPressItem,
-  onShowMore,
+  options,
   showDetails,
 }) => {
   const styles = useThemedStyles(themedStyles);
@@ -45,9 +45,13 @@ const RequestList: React.FC<Props> = ({
         keyExtractor={(item) => item.id}
         // eslint-disable-next-line react/no-unstable-nested-components
         ListHeaderComponent={() => (
-          <Button onPress={onShowMore} style={styles.more}>
-            More
-          </Button>
+          <View style={{ flexDirection: 'row' }}>
+            {options.map(({ text, onPress }) => (
+              <Button key={text} onPress={onPress} style={styles.more}>
+                {text}
+              </Button>)
+            )}
+          </View>
         )}
         data={filteredRequests}
         renderItem={({ item }) => (
