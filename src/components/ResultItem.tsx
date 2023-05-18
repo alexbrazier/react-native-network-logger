@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import NetworkRequestInfo from '../NetworkRequestInfo';
 import { Theme, useThemedStyles, useTheme } from '../theme';
 import { backHandlerSet } from '../backHandler';
+import { NetworkRequestInfoRow } from '../types';
 
 interface Props {
-  request: NetworkRequestInfo;
+  request: NetworkRequestInfoRow;
   onPress?(): void;
   style?: any;
 }

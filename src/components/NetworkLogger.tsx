@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { Alert, View, StyleSheet, BackHandler, Share } from 'react-native';
 import logger from '../loggerSingleton';
 import NetworkRequestInfo from '../NetworkRequestInfo';
@@ -96,6 +96,10 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
     ]);
   };
 
+  const requestsInfo = useMemo(() => {
+    return requests.map((r) => r.toRow());
+  }, [requests]);
+
   return (
     <ThemeContext.Provider value={theme}>
       <View style={styles.visible}>
@@ -112,11 +116,11 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
             <Unmounted />
           ) : (
             <RequestList
-              requests={requests}
+              requestsInfo={requestsInfo}
               onShowMore={showMore}
               showDetails={showDetails && !!request}
-              onPressItem={(item) => {
-                setRequest(item);
+              onPressItem={(id) => {
+                setRequest(requests.find((r) => r.id === id));
                 setShowDetails(true);
               }}
             />
