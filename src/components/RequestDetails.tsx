@@ -48,30 +48,19 @@ const Headers = ({
 const LargeText: React.FC<{ children: string }> = ({ children }) => {
   const styles = useThemedStyles(themedStyles);
 
-  if (Platform.OS === 'ios') {
-    /**
-     * A readonly TextInput is used because large Text blocks sometimes don't render on iOS
-     * See this issue https://github.com/facebook/react-native/issues/19453
-     * Note: Even with the fix mentioned in the comments, text with ~10,000 lines still fails to render
-     */
-    return (
-      <TextInput
-        style={[styles.content, styles.largeContent]}
-        multiline
-        editable={false}
-        value={children}
-      />
-    );
-  }
-
+  // always use TextInput for large text on both devices instead of Text:
+  // - on iOS, Text has a limit, not for TextInput
+  // - we want it non editable but allow copy/paste on both platforms
+  // - we want it scrollable on both platforms and prevent to use ScrollView which is not optimized for large text
   return (
-    <View style={styles.largeContent}>
-      <ScrollView nestedScrollEnabled>
-        <View>
-          <Text style={styles.content}>{children}</Text>
-        </View>
-      </ScrollView>
-    </View>
+    <TextInput
+      style={[styles.content, styles.largeContent]}
+      multiline
+      editable // always editable to allow copy/paste
+      showSoftInputOnFocus // prevents keyboard from showing on focus since it's readonly
+      caretHidden // hides the cursor since it's readonly
+      value={children}
+    />
   );
 };
 
