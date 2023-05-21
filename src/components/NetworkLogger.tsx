@@ -74,13 +74,13 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
     return () => backHandler.remove();
   }, [showDetails, setShowDetails]);
 
-  const getHar = async () => {
+  const getHar = useCallback(async () => {
     const har = await createHar(logger.getRequests());
 
     Share.share({
       message: JSON.stringify(har),
     });
-  };
+  }, []);
 
   const options = useMemo(() => {
     return [
@@ -90,8 +90,8 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
           setPaused((prev: boolean) => {
             logger.paused = !prev;
             return !prev;
-          })
-        }
+          });
+        },
       },
       {
         text: 'Clear Logs',
