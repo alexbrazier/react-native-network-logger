@@ -50,16 +50,16 @@ const LargeText: React.FC<{ children: string }> = ({ children }) => {
 
   // always use TextInput for large text on both devices instead of Text:
   // - on iOS, Text has a limit, not for TextInput
-  // - we want it non editable but allow copy/paste on both platforms
-  // - we want it scrollable on both platforms and prevent to use ScrollView which is not optimized for large text
+  // - on Android, copy paste is not allowed on a non-editable TextInput
   return (
     <TextInput
       style={[styles.content, styles.largeContent]}
       multiline
-      editable // always editable to allow copy/paste
-      showSoftInputOnFocus // prevents keyboard from showing on focus since it's readonly
-      caretHidden // hides the cursor since it's readonly
       value={children}
+      editable={Platform.OS === 'android'} // for android, make it editable to unlock copy paste; already supported on iOS
+      showSoftInputOnFocus={false} // for android only, prevents keyboard from showing on focus since it's readonly
+      caretHidden // for android only, hide the cursor since it's readonly
+      scrollEnabled
     />
   );
 };
