@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { Alert, View, StyleSheet, BackHandler, Share } from 'react-native';
+import { View, StyleSheet, BackHandler, Share } from 'react-native';
 import logger from '../loggerSingleton';
 import NetworkRequestInfo from '../NetworkRequestInfo';
 import { Theme, ThemeContext, ThemeName } from '../theme';
@@ -29,6 +29,7 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
   const [request, setRequest] = useState<NetworkRequestInfo>();
   const [showDetails, _setShowDetails] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [paused, setPaused] = useState<boolean>(logger.paused);
 
   const setShowDetails = useCallback((shouldShow: boolean) => {
     _setShowDetails(shouldShow);
@@ -73,28 +74,35 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
     return () => backHandler.remove();
   }, [showDetails, setShowDetails]);
 
-  const getHar = async () => {
+  const getHar = useCallback(async () => {
     const har = await createHar(logger.getRequests());
 
     Share.share({
       message: JSON.stringify(har),
     });
-  };
+  }, []);
 
-  const showMore = () => {
-    Alert.alert('More Options', undefined, [
+  const options = useMemo(() => {
+    return [
+      {
+        text: paused ? 'Resume' : 'Pause',
+        onPress: () => {
+          setPaused((prev: boolean) => {
+            logger.paused = !prev;
+            return !prev;
+          });
+        },
+      },
       {
         text: 'Clear Logs',
         onPress: () => logger.clearRequests(),
-        style: 'destructive',
       },
       {
         text: 'Export all Logs',
         onPress: getHar,
       },
-      { text: 'Cancel', style: 'cancel' },
-    ]);
-  };
+    ];
+  }, [paused, getHar]);
 
   const requestsInfo = useMemo(() => {
     return requests.map((r) => r.toRow());
@@ -117,7 +125,7 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
           ) : (
             <RequestList
               requestsInfo={requestsInfo}
-              onShowMore={showMore}
+              options={options}
               showDetails={showDetails && !!request}
               onPressItem={(id) => {
                 setRequest(requests.find((r) => r.id === id));

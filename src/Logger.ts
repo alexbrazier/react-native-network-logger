@@ -19,6 +19,7 @@ export default class Logger {
   private ignoredUrls: Set<string> | undefined;
   private ignoredPatterns: RegExp[] | undefined;
   public enabled = false;
+  public paused = false;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   callback = (requests: any[]) => {};
@@ -46,6 +47,10 @@ export default class Logger {
     xhr._index = nextXHRId++;
     const xhrIndex = this.requests.length;
     this.xhrIdMap[xhr._index] = xhrIndex;
+
+    if (this.paused) {
+      return;
+    }
 
     if (this.ignoredHosts) {
       const host = extractHost(url);
