@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { View, StyleSheet, BackHandler, Share } from 'react-native';
+import { View, StyleSheet, BackHandler, Share, Text } from 'react-native';
 import logger from '../loggerSingleton';
 import NetworkRequestInfo from '../NetworkRequestInfo';
 import { Theme, ThemeContext, ThemeName } from '../theme';
@@ -76,8 +76,7 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
 
   const getHar = useCallback(async () => {
     const har = await createHar(logger.getRequests());
-
-    Share.share({
+    await Share.share({
       message: JSON.stringify(har),
     });
   }, []);
@@ -123,15 +122,22 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
           {mounted && !logger.enabled && !requests.length ? (
             <Unmounted />
           ) : (
-            <RequestList
-              requestsInfo={requestsInfo}
-              options={options}
-              showDetails={showDetails && !!request}
-              onPressItem={(id) => {
-                setRequest(requests.find((r) => r.id === id));
-                setShowDetails(true);
-              }}
-            />
+            <>
+              {paused && (
+                <View style={styles.pausedBanner}>
+                  <Text>Paused</Text>
+                </View>
+              )}
+              <RequestList
+                requestsInfo={requestsInfo}
+                options={options}
+                showDetails={showDetails && !!request}
+                onPressItem={(id) => {
+                  setRequest(requests.find((r) => r.id === id));
+                  setShowDetails(true);
+                }}
+              />
+            </>
           )}
         </View>
       </View>
@@ -145,6 +151,11 @@ const styles = StyleSheet.create({
   },
   hidden: {
     flex: 0,
+  },
+  pausedBanner: {
+    backgroundColor: '#ff7c7c',
+    padding: 10,
+    alignItems: 'center',
   },
 });
 
