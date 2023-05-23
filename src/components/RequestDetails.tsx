@@ -68,7 +68,9 @@ const LargeText: React.FC<{ children: string }> = ({ children }) => {
     <View style={styles.largeContent}>
       <ScrollView nestedScrollEnabled>
         <View>
-          <Text style={styles.content}>{children}</Text>
+          <Text style={styles.content} selectable>
+            {children}
+          </Text>
         </View>
       </ScrollView>
     </View>
