@@ -104,6 +104,10 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
     ];
   }, [paused, getHar]);
 
+  const requestsInfo = useMemo(() => {
+    return requests.map((r) => r.toRow());
+  }, [requests]);
+
   return (
     <ThemeContext.Provider value={theme}>
       <View style={styles.visible}>
@@ -120,11 +124,11 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
             <Unmounted />
           ) : (
             <RequestList
-              requests={requests}
+              requestsInfo={requestsInfo}
               options={options}
               showDetails={showDetails && !!request}
-              onPressItem={(item) => {
-                setRequest(item);
+              onPressItem={(id) => {
+                setRequest(requests.find((r) => r.id === id));
                 setShowDetails(true);
               }}
             />

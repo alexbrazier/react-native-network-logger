@@ -1,5 +1,5 @@
 import BlobFileReader from 'react-native/Libraries/Blob/FileReader';
-import { Headers, RequestMethod } from './types';
+import { Headers, NetworkRequestInfoRow, RequestMethod } from './types';
 import fromEntries from './utils/fromEntries';
 
 export default class NetworkRequestInfo {
@@ -80,6 +80,18 @@ export default class NetworkRequestInfo {
 
   private stringifyFormat(data: any) {
     return JSON.stringify(this.parseData(data), null, 2);
+  }
+
+  public toRow(): NetworkRequestInfoRow {
+    return {
+      url: this.url,
+      gqlOperation: this.gqlOperation,
+      id: this.id,
+      method: this.method,
+      status: this.status,
+      duration: this.duration,
+      startTime: this.startTime,
+    };
   }
 
   getRequestBody(replaceEscaped = false) {
