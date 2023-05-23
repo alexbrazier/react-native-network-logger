@@ -1,34 +1,23 @@
 import React from 'react';
-import {
-  View,
-  Image,
-  TextInput,
-  StyleSheet,
-  Modal,
-  Text,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-} from 'react-native';
-
-import Button from './Button';
+import { View, Image, TextInput, StyleSheet } from 'react-native';
 import { Theme, useThemedStyles, useTheme } from '../theme';
+import Options from './Options';
 
 interface Props {
   value: string;
   onChangeText(text: string): void;
-  options: { text: string; onPress: () => void }[];
+  options: { text: string; onPress: () => Promise<void> | void }[];
 }
 
 const SearchBar: React.FC<Props> = ({ options, value, onChangeText }) => {
   const styles = useThemedStyles(themedStyles);
   const theme = useTheme();
-  const [openOptions, setOpenOptions] = React.useState(false);
 
   return (
     <View style={styles.searchContainer}>
       <View style={styles.searchBar}>
         <Image
-          source={require('./search.png')}
+          source={require('./images/search.png')}
           resizeMode="contain"
           style={styles.icon}
         />
@@ -41,37 +30,7 @@ const SearchBar: React.FC<Props> = ({ options, value, onChangeText }) => {
           placeholderTextColor={theme.colors.muted}
         />
       </View>
-      <TouchableOpacity
-        style={styles.menu}
-        onPress={() => setOpenOptions((prev) => !prev)}
-      >
-        <Image
-          source={require('./more.png')}
-          resizeMode="contain"
-          style={styles.icon}
-        />
-      </TouchableOpacity>
-      <Modal
-        visible={openOptions}
-        animationType="fade"
-        transparent={true}
-        onDismiss={() => setOpenOptions(false)}
-        onRequestClose={() => setOpenOptions(false)}
-      >
-        <View style={styles.modalRoot}>
-          <TouchableWithoutFeedback onPress={() => setOpenOptions(false)}>
-            <View style={styles.backdrop} />
-          </TouchableWithoutFeedback>
-          <View style={styles.modalContent}>
-            <Text style={styles.title}>Options</Text>
-            {options.map(({ text, onPress }) => (
-              <Button key={text} onPress={onPress}>
-                {text}
-              </Button>
-            ))}
-          </View>
-        </View>
-      </Modal>
+      <Options options={options} />
     </View>
   );
 };
@@ -85,20 +44,9 @@ const themedStyles = (theme: Theme) =>
       margin: 5,
       borderWidth: 1,
       borderColor: theme.colors.muted,
-      borderRadius: 20,
+      borderRadius: 10,
       flex: 1,
-    },
-    modalRoot: {
-      ...StyleSheet.absoluteFillObject,
-      justifyContent: 'center',
-      alignItems: 'center',
-      flex: 1,
-    },
-    modalContent: {
-      borderRadius: 8,
-      padding: 16,
-      maxWidth: '100%',
-      backgroundColor: 'white',
+      paddingVertical: 5,
     },
     backdrop: {
       ...StyleSheet.absoluteFillObject,
@@ -109,6 +57,7 @@ const themedStyles = (theme: Theme) =>
       height: 20,
       marginRight: 10,
       alignSelf: 'center',
+      tintColor: theme.colors.muted,
     },
     textInputSearch: {
       height: 30,

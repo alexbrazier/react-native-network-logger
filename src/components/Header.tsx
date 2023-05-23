@@ -36,7 +36,7 @@ const Header: React.FC<Props> = ({ children, shareContent }) => {
           }}
         >
           <Image
-            source={require('./share.png')}
+            source={require('./images/share.png')}
             resizeMode="contain"
             style={styles.shareIcon}
           />
