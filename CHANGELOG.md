@@ -1,5 +1,19 @@
 
 
+# [1.15.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.14.1...v1.15.0) (2023-05-24)
+
+
+### Bug Fixes
+
+* Prevent FlatList slow update on huge dataset ([#78](https://github.com/alexbrazier/react-native-network-logger/issues/78)) ([c2a8f68](https://github.com/alexbrazier/react-native-network-logger/commit/c2a8f68e7f8c405071a00a9e246421ee013f3ea2))
+
+
+### Features
+
+* Enable selection and copy for request and response body on Android ([#82](https://github.com/alexbrazier/react-native-network-logger/issues/82)) ([fd849f2](https://github.com/alexbrazier/react-native-network-logger/commit/fd849f27785bfe6cbfd010b44dcb5f02c5908a9e))
+* Improve design of search nav bar and refactor ([#81](https://github.com/alexbrazier/react-native-network-logger/issues/81)) ([e5a5d8e](https://github.com/alexbrazier/react-native-network-logger/commit/e5a5d8ea1fa5d0651e6a651fa346d073c52128fc))
+* Pause monitoring ([#77](https://github.com/alexbrazier/react-native-network-logger/issues/77)) ([11d4494](https://github.com/alexbrazier/react-native-network-logger/commit/11d44942d72fd0d0ff2edbc0bceb9d8eba18a77b))
+
 ## [1.14.1](https://github.com/alexbrazier/react-native-network-logger/compare/v1.14.0...v1.14.1) (2023-03-16)
 
 
