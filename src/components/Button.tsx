@@ -5,6 +5,7 @@ import {
   StyleSheet,
   StyleProp,
   ViewStyle,
+  TextStyle,
 } from 'react-native';
 import { useThemedStyles, Theme } from '../theme';
 
@@ -13,9 +14,16 @@ interface Props {
   fullWidth?: boolean;
   onPress: () => void;
   style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
 }
 
-const Button: React.FC<Props> = ({ children, fullWidth, style, onPress }) => {
+const Button: React.FC<Props> = ({
+  children,
+  fullWidth,
+  style,
+  textStyle,
+  onPress,
+}) => {
   const styles = useThemedStyles(themedStyles);
 
   return (
@@ -24,7 +32,7 @@ const Button: React.FC<Props> = ({ children, fullWidth, style, onPress }) => {
       onPress={onPress}
       style={style}
     >
-      <Text style={[styles.button, fullWidth && styles.fullWidth]}>
+      <Text style={[styles.button, fullWidth && styles.fullWidth, textStyle]}>
         {children}
       </Text>
     </TouchableOpacity>

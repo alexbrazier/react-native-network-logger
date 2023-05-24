@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Image,
-  StyleSheet,
-  Modal,
-  Text,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-} from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import Button from './Button';
 import { Theme, useThemedStyles } from '../theme';
+import NLModal from './Modal';
 
 interface Props {
   options: { text: string; onPress: () => Promise<void> | void }[];
@@ -32,55 +25,26 @@ const Options: React.FC<Props> = ({ options }) => {
           style={[styles.icon, styles.iconButton]}
         />
       </TouchableOpacity>
-      <Modal
-        visible={openOptions}
-        animationType="fade"
-        transparent={true}
-        onDismiss={() => setOpenOptions(false)}
-        onRequestClose={() => setOpenOptions(false)}
-      >
-        <View style={styles.modalRoot}>
-          <TouchableWithoutFeedback onPress={() => setOpenOptions(false)}>
-            <View style={styles.backdrop} />
-          </TouchableWithoutFeedback>
-          <View style={styles.modalContent}>
-            <Text style={styles.title}>Options</Text>
-            {options.map(({ text, onPress }) => (
-              <Button
-                key={text}
-                onPress={async () => {
-                  await onPress();
-                  setOpenOptions(false);
-                }}
-              >
-                {text}
-              </Button>
-            ))}
-          </View>
-        </View>
-      </Modal>
+      <NLModal visible={openOptions} onClose={() => setOpenOptions(false)}>
+        <Text style={styles.title}>Options</Text>
+        {options.map(({ text, onPress }) => (
+          <Button
+            key={text}
+            onPress={async () => {
+              await onPress();
+              setOpenOptions(false);
+            }}
+          >
+            {text}
+          </Button>
+        ))}
+      </NLModal>
     </>
   );
 };
 
 const themedStyles = (theme: Theme) =>
   StyleSheet.create({
-    modalRoot: {
-      ...StyleSheet.absoluteFillObject,
-      justifyContent: 'center',
-      alignItems: 'center',
-      flex: 1,
-    },
-    modalContent: {
-      borderRadius: 8,
-      padding: 16,
-      maxWidth: '100%',
-      backgroundColor: 'white',
-    },
-    backdrop: {
-      ...StyleSheet.absoluteFillObject,
-      backgroundColor: 'rgba(0,0,0,0.5)',
-    },
     iconButton: {
       tintColor: theme.colors.text,
       width: 30,

@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import NetworkRequestInfo from '../NetworkRequestInfo';
 import { useThemedStyles, Theme } from '../theme';
 import ResultItem from './ResultItem';
 import SearchBar from './SearchBar';
 import { NetworkRequestInfoRow } from '../types';
+import { useAppContext } from './AppContext';
 
 interface Props {
   requestsInfo: NetworkRequestInfoRow[];
@@ -20,28 +21,27 @@ const RequestList: React.FC<Props> = ({
   showDetails,
 }) => {
   const styles = useThemedStyles(themedStyles);
-
-  const [searchValue, onChangeSearchText] = useState('');
+  const { search, filter } = useAppContext();
 
   const filteredRequests = useMemo(() => {
     return requestsInfo.filter((request) => {
-      const value = searchValue.toLowerCase().trim();
-      return (
+      const value = search.toLowerCase().trim();
+
+      const searchMatches =
         request.url.toLowerCase().includes(value) ||
-        request.gqlOperation?.toLowerCase().includes(value)
-      );
+        request.gqlOperation?.toLowerCase().includes(value);
+
+      const filterMatches =
+        (filter.methods?.size ?? 0) === 0 ||
+        filter.methods?.has(request.method);
+
+      return searchMatches && filterMatches;
     });
-  }, [requestsInfo, searchValue]);
+  }, [requestsInfo, search, filter]);
 
   return (
     <View style={styles.container}>
-      {!showDetails && (
-        <SearchBar
-          value={searchValue}
-          onChangeText={onChangeSearchText}
-          options={options}
-        />
-      )}
+      {!showDetails && <SearchBar options={options} />}
       <FlatList
         keyExtractor={(item) => item.id}
         data={filteredRequests}
