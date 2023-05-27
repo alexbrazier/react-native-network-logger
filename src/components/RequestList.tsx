@@ -22,14 +22,14 @@ const RequestList: React.FC<Props> = ({
 }) => {
   const styles = useThemedStyles(themedStyles);
   const { search, filter } = useAppContext();
+  const lcSearch = search.toLowerCase().trim();
 
   const filteredRequests = useMemo(() => {
     return requestsInfo.filter((request) => {
-      const value = search.toLowerCase().trim();
-
       const searchMatches =
-        request.url.toLowerCase().includes(value) ||
-        request.gqlOperation?.toLowerCase().includes(value);
+        !lcSearch ||
+        request.url.toLowerCase().includes(lcSearch) ||
+        request.gqlOperation?.toLowerCase().includes(lcSearch);
 
       const filterMatches =
         (filter.methods?.size ?? 0) === 0 ||
@@ -37,7 +37,7 @@ const RequestList: React.FC<Props> = ({
 
       return searchMatches && filterMatches;
     });
-  }, [requestsInfo, search, filter]);
+  }, [requestsInfo, lcSearch, filter]);
 
   return (
     <View style={styles.container}>
