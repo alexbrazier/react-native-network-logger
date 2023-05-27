@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
-import { View, Image, TextInput, StyleSheet } from 'react-native';
+import {
+  View,
+  Image,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import { Theme, useThemedStyles, useTheme } from '../theme';
 import Options from './Options';
-import { TouchableOpacity } from 'react-native';
 import Filters from './Filters';
 import { useAppContext } from './AppContext';
 

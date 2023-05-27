@@ -1,16 +1,38 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TextInput, StyleSheet } from 'react-native';
 import NLModal from './Modal';
 import Button from './Button';
 import { useAppContext } from './AppContext';
-import { StyleSheet } from 'react-native';
-import { Theme, useThemedStyles } from '../theme';
+import { Theme, useTheme, useThemedStyles } from '../theme';
+
+const FilterButton = ({
+  onPress,
+  active,
+  children,
+}: {
+  onPress: () => void;
+  active?: boolean;
+  children: string;
+}) => {
+  const styles = useThemedStyles(themedStyles);
+
+  return (
+    <Button
+      style={[styles.methodButton, active && styles.buttonActive]}
+      textStyle={[styles.buttonText, active && styles.buttonActiveText]}
+      onPress={onPress}
+    >
+      {children}
+    </Button>
+  );
+};
 
 const Filters = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
   const { filter, dispatch } = useAppContext();
   const styles = useThemedStyles(themedStyles);
+  const theme = useTheme();
 
-  const methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'] as const;
+  const methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD'] as const;
 
   return (
     <View>
@@ -18,16 +40,9 @@ const Filters = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
         <Text style={styles.subTitle}>Method</Text>
         <View style={styles.methods}>
           {methods.map((method) => (
-            <Button
+            <FilterButton
               key={method}
-              style={[
-                styles.methodButton,
-                filter.methods?.has(method) && styles.buttonActive,
-              ]}
-              textStyle={[
-                styles.buttonText,
-                filter.methods?.has(method) && styles.buttonActiveText,
-              ]}
+              active={filter.methods?.has(method)}
               onPress={() => {
                 const newMethods = new Set(filter.methods);
                 if (newMethods.has(method)) {
@@ -46,10 +61,46 @@ const Filters = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
               }}
             >
               {method}
-            </Button>
+            </FilterButton>
           ))}
         </View>
-
+        <Text style={styles.subTitle}>Status</Text>
+        <View style={styles.methods}>
+          <FilterButton
+            active={filter.statusErrors}
+            onPress={() => {
+              dispatch({
+                type: 'SET_FILTER',
+                payload: {
+                  ...filter,
+                  statusErrors: !filter.statusErrors,
+                  status: undefined,
+                },
+              });
+            }}
+          >
+            Errors
+          </FilterButton>
+          <TextInput
+            style={styles.statusInput}
+            placeholder="Status Code"
+            placeholderTextColor={theme.colors.muted}
+            keyboardType="number-pad"
+            value={filter.status?.toString() || ''}
+            maxLength={3}
+            onChangeText={(text) => {
+              const status = parseInt(text, 10);
+              dispatch({
+                type: 'SET_FILTER',
+                payload: {
+                  ...filter,
+                  statusErrors: false,
+                  status: isNaN(status) ? undefined : status,
+                },
+              });
+            }}
+          />
+        </View>
         <View style={styles.divider} />
         <Button
           textStyle={styles.clearButton}
@@ -81,12 +132,22 @@ const themedStyles = (theme: Theme) =>
     methods: {
       flexDirection: 'row',
       flexWrap: 'wrap',
+      marginBottom: 10,
     },
     methodButton: {
       margin: 2,
       borderWidth: 1,
       borderRadius: 10,
       borderColor: theme.colors.secondary,
+    },
+    statusInput: {
+      color: theme.colors.text,
+      marginLeft: 10,
+      borderColor: theme.colors.secondary,
+      borderRadius: 10,
+      padding: 5,
+      borderBottomWidth: 1,
+      minWidth: 100,
     },
     buttonText: {
       fontSize: 12,

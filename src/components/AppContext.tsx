@@ -1,6 +1,6 @@
 import React, { Dispatch, useContext, useReducer } from 'react';
 
-type Method = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+type Method = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD';
 
 const initialFilter = {
   methods: new Set<Method>(),
@@ -8,6 +8,8 @@ const initialFilter = {
 
 type Filter = {
   methods?: typeof initialFilter.methods;
+  status?: number;
+  statusErrors?: boolean;
 };
 
 interface AppState {
@@ -54,7 +56,10 @@ const reducer = (state: AppState, action: Action): AppState => {
       return {
         ...state,
         filter: action.payload,
-        filterActive: !!action.payload.methods?.size,
+        filterActive:
+          !!action.payload.methods?.size ||
+          !!action.payload.status ||
+          !!action.payload.statusErrors,
       };
     case 'CLEAR_FILTER':
       return {

@@ -31,9 +31,17 @@ const RequestList: React.FC<Props> = ({
         request.url.toLowerCase().includes(lcSearch) ||
         request.gqlOperation?.toLowerCase().includes(lcSearch);
 
-      const filterMatches =
+      const filterMethodMatches =
         (filter.methods?.size ?? 0) === 0 ||
         filter.methods?.has(request.method);
+
+      const filterStatusMatches = filter.status
+        ? request.status === filter.status
+        : filter.statusErrors
+        ? request.status >= 400
+        : true;
+
+      const filterMatches = filterMethodMatches && filterStatusMatches;
 
       return searchMatches && filterMatches;
     });
