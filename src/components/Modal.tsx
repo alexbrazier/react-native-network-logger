@@ -5,11 +5,9 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Text,
-  Image,
 } from 'react-native';
 
 import { Theme, useThemedStyles } from '../theme';
-import { TouchableOpacity } from 'react-native';
 import Icon from './Icon';
 
 interface Props {
