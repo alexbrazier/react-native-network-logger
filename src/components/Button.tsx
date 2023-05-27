@@ -9,13 +9,13 @@ import {
 } from 'react-native';
 import { useThemedStyles, Theme } from '../theme';
 
-interface Props {
+type Props = {
   children: string;
   fullWidth?: boolean;
   onPress: () => void;
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
-}
+} & TouchableOpacity['props'];
 
 const Button: React.FC<Props> = ({
   children,
@@ -23,6 +23,7 @@ const Button: React.FC<Props> = ({
   style,
   textStyle,
   onPress,
+  ...rest
 }) => {
   const styles = useThemedStyles(themedStyles);
 
@@ -31,6 +32,7 @@ const Button: React.FC<Props> = ({
       accessibilityRole="button"
       onPress={onPress}
       style={style}
+      {...rest}
     >
       <Text style={[styles.button, fullWidth && styles.fullWidth, textStyle]}>
         {children}

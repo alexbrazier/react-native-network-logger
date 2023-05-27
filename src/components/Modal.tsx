@@ -10,6 +10,7 @@ import {
 
 import { Theme, useThemedStyles } from '../theme';
 import { TouchableOpacity } from 'react-native';
+import Icon from './Icon';
 
 interface Props {
   children: React.ReactNode;
@@ -36,14 +37,10 @@ const NLModal = ({ visible, onClose, children, title }: Props) => {
         <View style={styles.modalContent}>
           {title && (
             <View style={styles.titleContainer}>
-              <Text style={styles.title}>{title}</Text>
-              <TouchableOpacity onPress={onClose}>
-                <Image
-                  source={require('./images/close.png')}
-                  resizeMode="contain"
-                  style={styles.icon}
-                />
-              </TouchableOpacity>
+              <Text style={styles.title} accessibilityRole="header">
+                {title}
+              </Text>
+              <Icon name="close" onPress={onClose} accessibilityLabel="Close" />
             </View>
           )}
           {children}
@@ -67,13 +64,6 @@ const themedStyles = (theme: Theme) =>
       maxWidth: '100%',
       minWidth: '60%',
       backgroundColor: theme.colors.background,
-    },
-    icon: {
-      width: 20,
-      height: 20,
-      marginRight: 10,
-      alignSelf: 'center',
-      tintColor: theme.colors.muted,
     },
     titleContainer: {
       flexDirection: 'row',

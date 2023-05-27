@@ -21,6 +21,8 @@ const FilterButton = ({
       style={[styles.methodButton, active && styles.buttonActive]}
       textStyle={[styles.buttonText, active && styles.buttonActiveText]}
       onPress={onPress}
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked: active }}
     >
       {children}
     </Button>
@@ -37,7 +39,9 @@ const Filters = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
   return (
     <View>
       <NLModal visible={open} onClose={onClose} title="Filters">
-        <Text style={styles.subTitle}>Method</Text>
+        <Text style={styles.subTitle} accessibilityRole="header">
+          Method
+        </Text>
         <View style={styles.methods}>
           {methods.map((method) => (
             <FilterButton
@@ -64,7 +68,9 @@ const Filters = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
             </FilterButton>
           ))}
         </View>
-        <Text style={styles.subTitle}>Status</Text>
+        <Text style={styles.subTitle} accessibilityRole="header">
+          Status
+        </Text>
         <View style={styles.methods}>
           <FilterButton
             active={filter.statusErrors}
@@ -88,6 +94,7 @@ const Filters = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
             keyboardType="number-pad"
             value={filter.status?.toString() || ''}
             maxLength={3}
+            accessibilityLabel="Status Code"
             onChangeText={(text) => {
               const status = parseInt(text, 10);
               dispatch({

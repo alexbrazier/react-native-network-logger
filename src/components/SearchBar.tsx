@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Image,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import { View, TextInput, StyleSheet } from 'react-native';
 import { Theme, useThemedStyles, useTheme } from '../theme';
 import Options from './Options';
 import Filters from './Filters';
 import { useAppContext } from './AppContext';
+import Icon from './Icon';
 
 interface Props {
   options: { text: string; onPress: () => Promise<void> | void }[];
@@ -25,11 +20,7 @@ const SearchBar: React.FC<Props> = ({ options }) => {
     <>
       <View style={styles.searchContainer}>
         <View style={styles.searchBar}>
-          <Image
-            source={require('./images/search.png')}
-            resizeMode="contain"
-            style={styles.icon}
-          />
+          <Icon name="search" />
           <TextInput
             onChangeText={(text) =>
               dispatch({ type: 'SET_SEARCH', payload: text })
@@ -40,17 +31,12 @@ const SearchBar: React.FC<Props> = ({ options }) => {
             style={styles.textInputSearch}
             placeholderTextColor={theme.colors.muted}
           />
-          <TouchableOpacity onPress={() => setShowFilters(!showFilters)}>
-            <Image
-              source={require('./images/filter.png')}
-              resizeMode="contain"
-              style={[
-                styles.icon,
-                styles.filterIcon,
-                filterActive && styles.filterActive,
-              ]}
-            />
-          </TouchableOpacity>
+          <Icon
+            name="filter"
+            onPress={() => setShowFilters(!showFilters)}
+            accessibilityLabel="Filter"
+            iconStyle={[styles.filterIcon, filterActive && styles.filterActive]}
+          />
         </View>
         <Options options={options} />
       </View>
@@ -75,13 +61,6 @@ const themedStyles = (theme: Theme) =>
     backdrop: {
       ...StyleSheet.absoluteFillObject,
       backgroundColor: 'rgba(0,0,0,0.5)',
-    },
-    icon: {
-      width: 20,
-      height: 20,
-      marginRight: 10,
-      alignSelf: 'center',
-      tintColor: theme.colors.muted,
     },
     filterIcon: {
       marginRight: 0,
