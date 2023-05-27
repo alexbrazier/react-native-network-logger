@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 import Button from './Button';
 import { Theme, useThemedStyles } from '../theme';
@@ -25,8 +25,11 @@ const Options: React.FC<Props> = ({ options }) => {
           style={[styles.icon, styles.iconButton]}
         />
       </TouchableOpacity>
-      <NLModal visible={openOptions} onClose={() => setOpenOptions(false)}>
-        <Text style={styles.title}>Options</Text>
+      <NLModal
+        visible={openOptions}
+        onClose={() => setOpenOptions(false)}
+        title="Options"
+      >
         {options.map(({ text, onPress }) => (
           <Button
             key={text}
@@ -57,12 +60,6 @@ const themedStyles = (theme: Theme) =>
       tintColor: theme.colors.muted,
     },
     menu: { alignSelf: 'center' },
-    title: {
-      fontSize: 20,
-      paddingBottom: 10,
-      fontWeight: 'bold',
-      textAlign: 'center',
-    },
   });
 
 export default Options;

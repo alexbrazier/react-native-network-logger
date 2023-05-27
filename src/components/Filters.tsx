@@ -14,8 +14,7 @@ const Filters = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
 
   return (
     <View>
-      <NLModal visible={open} onClose={onClose}>
-        <Text style={styles.title}>Filters</Text>
+      <NLModal visible={open} onClose={onClose} title="Filters">
         <Text style={styles.subTitle}>Method</Text>
         <View style={styles.methods}>
           {methods.map((method) => (
@@ -51,6 +50,7 @@ const Filters = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
           ))}
         </View>
 
+        <View style={styles.divider} />
         <Button
           textStyle={styles.clearButton}
           onPress={() => {
@@ -62,15 +62,6 @@ const Filters = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
         >
           Reset All Filters
         </Button>
-
-        <Button
-          textStyle={styles.clearButton}
-          onPress={() => {
-            onClose();
-          }}
-        >
-          Close
-        </Button>
       </NLModal>
     </View>
   );
@@ -78,15 +69,11 @@ const Filters = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
 
 const themedStyles = (theme: Theme) =>
   StyleSheet.create({
-    title: {
-      fontSize: 25,
-      fontWeight: 'bold',
-      marginBottom: 10,
-    },
     subTitle: {
+      color: theme.colors.text,
       fontSize: 16,
       fontWeight: 'bold',
-      marginBottom: 5,
+      marginBottom: 8,
     },
     filterValue: {
       fontWeight: 'bold',
@@ -99,6 +86,7 @@ const themedStyles = (theme: Theme) =>
       margin: 2,
       borderWidth: 1,
       borderRadius: 10,
+      borderColor: theme.colors.secondary,
     },
     buttonText: {
       fontSize: 12,
@@ -111,6 +99,11 @@ const themedStyles = (theme: Theme) =>
     },
     clearButton: {
       color: theme.colors.statusBad,
+    },
+    divider: {
+      height: 1,
+      backgroundColor: theme.colors.muted,
+      marginTop: 20,
     },
   });
 
