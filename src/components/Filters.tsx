@@ -151,7 +151,6 @@ const themedStyles = (theme: Theme) =>
       color: theme.colors.text,
       marginLeft: 10,
       borderColor: theme.colors.secondary,
-      borderRadius: 10,
       padding: 5,
       borderBottomWidth: 1,
       minWidth: 100,
