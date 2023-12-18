@@ -224,4 +224,13 @@ export default class Logger {
       }
     }
   };
+
+  // dispose in tests
+  private dispose = () => {
+    this.enabled = false;
+    nextXHRId = 0;
+    this.requests = [];
+    this.callback(this.requests);
+    this.xhrIdMap.clear();
+  };
 }
