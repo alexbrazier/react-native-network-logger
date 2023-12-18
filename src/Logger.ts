@@ -207,4 +207,13 @@ export default class Logger {
     this.requests = [];
     this.callback(this.requests);
   };
+
+  // dispose in tests
+  private dispose = () => {
+    this.enabled = false;
+    nextXHRId = 0;
+    this.requests = [];
+    this.callback(this.requests);
+    this.xhrIdMap.clear();
+  };
 }

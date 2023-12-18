@@ -241,6 +241,9 @@ describe('openCallback', () => {
     logger.openCallback('POST', url2, xhr);
     expect(logger.getRequests()[0].url).toEqual(url2);
     expect(logger.getRequests()[1].url).toEqual(url1);
+
+    // @ts-expect-error
+    logger.dispose();
   });
 
   it('should ignore requests that have ignored hosts', () => {
@@ -257,22 +260,27 @@ describe('openCallback', () => {
     logger.openCallback('POST', url2, xhr);
     expect(logger.getRequests()[0].url).toEqual(url1);
     expect(logger.getRequests()).toHaveLength(1);
+
+    // @ts-expect-error
+    logger.dispose();
   });
 
   it('should ignore requests that have ignored urls', () => {
     const logger = new Logger();
     logger.enableXHRInterception({ ignoredUrls: ['http://ignored.com/test'] });
 
-    const xhr = {};
     const url1 = 'http://ignored.com/1';
     const url2 = 'http://ignored.com/test';
 
     // @ts-expect-error
-    logger.openCallback('POST', url1, xhr);
+    logger.openCallback('POST', url1, { _index: 0 });
     // @ts-expect-error
-    logger.openCallback('POST', url2, xhr);
+    logger.openCallback('POST', url2, { _index: 1 });
     expect(logger.getRequests()[0].url).toEqual(url1);
     expect(logger.getRequests()).toHaveLength(1);
+
+    // @ts-expect-error
+    logger.dispose();
   });
 
   it('should ignore requests that match pattern', () => {
@@ -281,24 +289,26 @@ describe('openCallback', () => {
       ignoredPatterns: [/^HEAD /, /^POST http:\/\/ignored/],
     });
 
-    const xhr = {};
     const url1 = 'http://allowed.com/1';
     const url2 = 'http://ignored.com/test';
 
     // @ts-expect-error
-    logger.openCallback('POST', url1, xhr);
+    logger.openCallback('POST', url1, { _index: 0 });
     // @ts-expect-error
-    logger.openCallback('POST', url2, xhr);
+    logger.openCallback('POST', url2, { _index: 1 });
     // @ts-expect-error
-    logger.openCallback('HEAD', url2, xhr);
+    logger.openCallback('HEAD', url2, { _index: 2 });
     // @ts-expect-error
-    logger.openCallback('PUT', url2, xhr);
+    logger.openCallback('PUT', url2, { _index: 3 });
     // Requests should be in reverse order
     expect(logger.getRequests()[1].url).toEqual(url1);
     expect(logger.getRequests()[1].method).toEqual('POST');
     expect(logger.getRequests()[0].url).toEqual(url2);
     expect(logger.getRequests()[0].method).toEqual('PUT');
     expect(logger.getRequests()).toHaveLength(2);
+
+    // @ts-expect-error
+    logger.dispose();
   });
 
   it('should retrieve requests when it is restricted by maxRequests', () => {
@@ -312,19 +322,11 @@ describe('openCallback', () => {
     // @ts-expect-error
     logger.openCallback('POST', url, { _index: 0 });
     // @ts-expect-error
-    logger.sendCallback('data', { _index: 0 });
-    // @ts-expect-error
     logger.openCallback('GET', url, { _index: 1 });
-    // @ts-expect-error
-    logger.sendCallback('', { _index: 1 });
     // @ts-expect-error
     logger.openCallback('HEAD', url, { _index: 2 });
     // @ts-expect-error
-    logger.sendCallback('', { _index: 2 });
-    // @ts-expect-error
     logger.openCallback('PUT', url, { _index: 3 });
-    // @ts-expect-error
-    logger.sendCallback('data', { _index: 3 });
 
     // Requests should be in reverse order
     expect(logger.getRequests()[0].method).toEqual('PUT');
@@ -333,7 +335,11 @@ describe('openCallback', () => {
 
     // @ts-expect-error
     expect(logger.getRequest(0)?.method).toBeUndefined();
+    const first = logger.getRequests()[0];
     // @ts-expect-error
-    expect(logger.getRequest(3)?.method).toBe(logger.getRequests()[0].method);
+    expect(logger.getRequest(3)?.method).toBe(first?.method);
+
+    // @ts-expect-error
+    logger.dispose();
   });
 });
