@@ -13,7 +13,7 @@ type XHR = {
 
 export default class Logger {
   private requests: NetworkRequestInfo[] = [];
-  private xhrIdMap: { [key: number]: number } = {};
+  private xhrIdMap: Map<number, () => number> = new Map();
   private maxRequests: number = 500;
   private ignoredHosts: Set<string> | undefined;
   private ignoredUrls: Set<string> | undefined;
@@ -21,8 +21,7 @@ export default class Logger {
   public enabled = false;
   public paused = false;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  callback = (requests: any[]) => {};
+  callback = (_: any[]) => null;
 
   setCallback = (callback: any) => {
     this.callback = callback;
@@ -30,8 +29,9 @@ export default class Logger {
 
   private getRequest = (xhrIndex?: number) => {
     if (xhrIndex === undefined) return undefined;
-    const requestIndex = this.requests.length - this.xhrIdMap[xhrIndex] - 1;
-    return this.requests[requestIndex];
+    if (!this.xhrIdMap.has(xhrIndex)) return undefined;
+    const index = this.xhrIdMap.get(xhrIndex)!();
+    return this.requests[index];
   };
 
   private updateRequest = (
@@ -44,10 +44,6 @@ export default class Logger {
   };
 
   private openCallback = (method: RequestMethod, url: string, xhr: XHR) => {
-    xhr._index = nextXHRId++;
-    const xhrIndex = this.requests.length;
-    this.xhrIdMap[xhr._index] = xhrIndex;
-
     if (this.paused) {
       return;
     }
@@ -71,8 +67,13 @@ export default class Logger {
       }
     }
 
+    xhr._index = nextXHRId++;
+    this.xhrIdMap.set(xhr._index, () => {
+      return this.requests.findIndex((r) => r.id === `${xhr._index}`);
+    });
+
     const newRequest = new NetworkRequestInfo(
-      `${nextXHRId}`,
+      `${xhr._index}`,
       'XMLHttpRequest',
       method,
       url
