@@ -25,7 +25,7 @@ beforeEach(() => {
 
 describe('enableXHRInterception', () => {
   it('should do nothing if interceptor has already been enabled', () => {
-    (warn as jest.Mock).mockImplementationOnce(() => {});
+    (warn as jest.Mock).mockImplementationOnce(() => { });
     const logger = new Logger();
 
     (XHRInterceptor.isInterceptorEnabled as jest.Mock).mockReturnValueOnce(
@@ -195,25 +195,33 @@ describe('getRequest', () => {
 
   it('should return request that matches index', () => {
     const logger = new Logger();
-    const requests = [{ id: 1 }, { id: 2 }, { id: 3 }];
+    const requests = [{ id: `3` }, { id: `2` }, { id: `1` }];
     // @ts-expect-error
     logger.requests = requests;
     // @ts-expect-error
-    logger.xhrIdMap = { 0: 0, 1: 1, 2: 2 };
+    logger.xhrIdMap = new Map([
+      [1, () => requests.findIndex((r) => r.id === `${1}`)],
+      [2, () => requests.findIndex((r) => r.id === `${2}`)],
+      [3, () => requests.findIndex((r) => r.id === `${3}`)],
+    ]);
     // @ts-expect-error
-    const result = logger.getRequest(0);
+    const result = logger.getRequest(1);
     expect(result).toBe(requests[2]);
   });
 
   it('should return request that matches index if at start', () => {
     const logger = new Logger();
-    const requests = [{ id: 1 }, { id: 2 }, { id: 3 }];
+    const requests = [{ id: `3` }, { id: `2` }, { id: `1` }];
     // @ts-expect-error
     logger.requests = requests;
     // @ts-expect-error
-    logger.xhrIdMap = { 0: 0, 1: 1, 2: 2 };
+    logger.xhrIdMap = new Map([
+      [1, () => requests.findIndex((r) => r.id === `${1}`)],
+      [2, () => requests.findIndex((r) => r.id === `${2}`)],
+      [3, () => requests.findIndex((r) => r.id === `${3}`)],
+    ]);
     // @ts-expect-error
-    const result = logger.getRequest(2);
+    const result = logger.getRequest(3);
     expect(result).toBe(requests[0]);
   });
 });
@@ -291,5 +299,41 @@ describe('openCallback', () => {
     expect(logger.getRequests()[0].url).toEqual(url2);
     expect(logger.getRequests()[0].method).toEqual('PUT');
     expect(logger.getRequests()).toHaveLength(2);
+  });
+
+  it('should retrieve requests when it is restricted by maxRequests', () => {
+    const logger = new Logger();
+    logger.enableXHRInterception({
+      maxRequests: 2,
+    });
+
+    const url = 'http://example.com/1';
+
+    // @ts-expect-error
+    logger.openCallback('POST', url, { _index: 0 });
+    // @ts-expect-error
+    logger.sendCallback('data', { _index: 0 });
+    // @ts-expect-error
+    logger.openCallback('GET', url, { _index: 1 });
+    // @ts-expect-error
+    logger.sendCallback('', { _index: 1 });
+    // @ts-expect-error
+    logger.openCallback('HEAD', url, { _index: 2 });
+    // @ts-expect-error
+    logger.sendCallback('', { _index: 2 });
+    // @ts-expect-error
+    logger.openCallback('PUT', url, { _index: 3 });
+    // @ts-expect-error
+    logger.sendCallback('data', { _index: 3 });
+
+    // Requests should be in reverse order
+    expect(logger.getRequests()[0].method).toEqual('PUT');
+    expect(logger.getRequests()[1].method).toEqual('HEAD');
+    expect(logger.getRequests()).toHaveLength(2);
+
+    // @ts-expect-error
+    expect(logger.getRequest(0)?.method).toBeUndefined();
+    // @ts-expect-error
+    expect(logger.getRequest(3)?.method).toBe(logger.getRequests()[0].method);
   });
 });
