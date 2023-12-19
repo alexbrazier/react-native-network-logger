@@ -3,6 +3,7 @@ import NetworkRequestInfo from './NetworkRequestInfo';
 import { Headers, RequestMethod, StartNetworkLoggingOptions } from './types';
 import extractHost from './utils/extractHost';
 import { warn } from './utils/logger';
+import { LOGGER_MAX_REQUESTS } from './constant';
 
 let nextXHRId = 0;
 
@@ -14,15 +15,14 @@ type XHR = {
 export default class Logger {
   private requests: NetworkRequestInfo[] = [];
   private xhrIdMap: { [key: number]: number } = {};
-  private maxRequests: number = 500;
+  private maxRequests: number = LOGGER_MAX_REQUESTS;
   private ignoredHosts: Set<string> | undefined;
   private ignoredUrls: Set<string> | undefined;
   private ignoredPatterns: RegExp[] | undefined;
   public enabled = false;
   public paused = false;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  callback = (requests: any[]) => {};
+  callback = (_: any[]) => null;
 
   setCallback = (callback: any) => {
     this.callback = callback;
@@ -205,5 +205,28 @@ export default class Logger {
   clearRequests = () => {
     this.requests = [];
     this.callback(this.requests);
+  };
+
+  disableXHRInterception = () => {
+    this.clearRequests();
+
+    nextXHRId = 0;
+    this.enabled = false;
+    this.paused = false;
+    this.xhrIdMap = {};
+    this.maxRequests = LOGGER_MAX_REQUESTS;
+    this.ignoredHosts = undefined;
+    this.ignoredUrls = undefined;
+    this.ignoredPatterns = undefined;
+
+    const noop = () => null;
+    // manually reset callbacks even if the XHRInterceptor lib does it for us with 'disableInterception'
+    XHRInterceptor.setOpenCallback(noop);
+    XHRInterceptor.setRequestHeaderCallback(noop);
+    XHRInterceptor.setHeaderReceivedCallback(noop);
+    XHRInterceptor.setSendCallback(noop);
+    XHRInterceptor.setResponseCallback(noop);
+
+    XHRInterceptor.disableInterception();
   };
 }
