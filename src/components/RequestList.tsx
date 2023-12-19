@@ -11,6 +11,7 @@ interface Props {
   onPressItem: (item: NetworkRequestInfo['id']) => void;
   options: { text: string; onPress: () => void }[];
   showDetails: boolean;
+  compact: boolean;
 }
 
 const RequestList: React.FC<Props> = ({
@@ -18,6 +19,7 @@ const RequestList: React.FC<Props> = ({
   onPressItem,
   options,
   showDetails,
+  compact,
 }) => {
   const styles = useThemedStyles(themedStyles);
 
@@ -46,7 +48,11 @@ const RequestList: React.FC<Props> = ({
         keyExtractor={(item) => item.id}
         data={filteredRequests}
         renderItem={({ item }) => (
-          <ResultItem request={item} onPress={() => onPressItem(item.id)} />
+          <ResultItem
+            request={item}
+            onPress={() => onPressItem(item.id)}
+            compact={compact}
+          />
         )}
       />
     </View>

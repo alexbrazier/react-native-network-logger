@@ -29,6 +29,7 @@ const Options: React.FC<Props> = ({ options }) => {
         <Image
           source={require('./images/more.png')}
           resizeMode="contain"
+          testID="options-menu"
           style={[styles.icon, styles.iconButton]}
         />
       </TouchableOpacity>
@@ -48,8 +49,8 @@ const Options: React.FC<Props> = ({ options }) => {
             {options.map(({ text, onPress }) => (
               <Button
                 key={text}
-                onPress={async () => {
-                  await onPress();
+                onPress={() => {
+                  onPress();
                   setOpenOptions(false);
                 }}
               >

@@ -8,9 +8,10 @@ interface Props {
   request: NetworkRequestInfoRow;
   onPress?(): void;
   style?: any;
+  compact?: boolean;
 }
 
-const ResultItem: React.FC<Props> = ({ style, request, onPress }) => {
+const ResultItem: React.FC<Props> = ({ style, request, onPress, compact }) => {
   const styles = useThemedStyles(themedStyles);
   const theme = useTheme();
   const onDetailsPage = !onPress;
@@ -47,6 +48,7 @@ const ResultItem: React.FC<Props> = ({ style, request, onPress }) => {
   const pad = (num: number) => `0${num}`.slice(-2);
 
   const getTime = (time: number) => {
+    if (time === 0) return '';
     const date = new Date(time);
     const hours = pad(date.getHours());
     const minutes = pad(date.getMinutes());
@@ -62,23 +64,34 @@ const ResultItem: React.FC<Props> = ({ style, request, onPress }) => {
       style={[styles.container, style]}
       {...(onPress && { accessibilityRole: 'button', onPress })}
     >
-      <View style={styles.leftContainer}>
-        <Text
-          style={[styles.text, styles.method]}
-          accessibilityLabel={`Method: ${request.method}`}
-        >
-          {request.method}
-        </Text>
-        <Text
-          style={[styles.status, getStatusStyles(request.status)]}
-          accessibilityLabel={`Response status ${status}`}
-        >
-          {status}
-        </Text>
-        <Text style={styles.text}>
-          {request.duration > 0 ? `${request.duration}ms` : 'pending'}
-        </Text>
-        <Text style={styles.time}>{getTime(request.startTime)}</Text>
+      <View
+        style={compact ? styles.leftContainerCompact : styles.leftContainer}
+      >
+        <View style={styles.leftContainerSplit}>
+          <Text
+            style={[styles.text, styles.method]}
+            accessibilityLabel={`Method: ${request.method}`}
+          >
+            {request.method}
+          </Text>
+          {compact && (
+            <Text style={styles.time}>{getTime(request.startTime)}</Text>
+          )}
+        </View>
+        <View style={styles.leftContainerSplit}>
+          <Text
+            style={[styles.status, getStatusStyles(request.status)]}
+            accessibilityLabel={`Response status ${status}`}
+          >
+            {status}
+          </Text>
+          <Text style={styles.time}>
+            {request.duration > 0 ? `${request.duration}ms` : 'pending'}
+          </Text>
+          {!compact && (
+            <Text style={styles.time}>{getTime(request.startTime)}</Text>
+          )}
+        </View>
       </View>
       <View style={[styles.content]}>
         <Text
@@ -116,6 +129,13 @@ const themedStyles = (theme: Theme) =>
     },
     leftContainer: {
       flexDirection: 'column',
+      alignItems: 'center',
+    },
+    leftContainerCompact: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    leftContainerSplit: {
       alignItems: 'center',
     },
     status: {
@@ -156,8 +176,8 @@ const themedStyles = (theme: Theme) =>
       backgroundColor: theme.colors.secondary,
       borderRadius: 10,
       alignSelf: 'flex-start',
-      padding: 5,
-      marginTop: 5,
+      padding: 4,
+      marginTop: 4,
     },
     gqlText: {
       color: theme.colors.onSecondary,
