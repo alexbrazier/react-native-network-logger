@@ -25,7 +25,7 @@ beforeEach(() => {
 
 describe('enableXHRInterception', () => {
   it('should do nothing if interceptor has already been enabled', () => {
-    (warn as jest.Mock).mockImplementationOnce(() => { });
+    (warn as jest.Mock).mockImplementationOnce(() => {});
     const logger = new Logger();
 
     (XHRInterceptor.isInterceptorEnabled as jest.Mock).mockReturnValueOnce(
