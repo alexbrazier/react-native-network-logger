@@ -13,6 +13,7 @@ import Unmounted from './Unmounted';
 interface Props {
   theme?: ThemeName | DeepPartial<Theme>;
   sort?: 'asc' | 'desc';
+  maxRows?: number;
 }
 
 const sortRequests = (requests: NetworkRequestInfo[], sort: 'asc' | 'desc') => {
@@ -22,7 +23,11 @@ const sortRequests = (requests: NetworkRequestInfo[], sort: 'asc' | 'desc') => {
   return [...requests];
 };
 
-const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
+const NetworkLogger: React.FC<Props> = ({
+  theme = 'light',
+  sort = 'desc',
+  maxRows,
+}) => {
   const [requests, setRequests] = useState(
     sortRequests(logger.getRequests(), sort)
   );
@@ -132,6 +137,7 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
                 requestsInfo={requestsInfo}
                 options={options}
                 showDetails={showDetails && !!request}
+                maxRows={maxRows ?? requests.length}
                 onPressItem={(id) => {
                   setRequest(requests.find((r) => r.id === id));
                   setShowDetails(true);
@@ -159,4 +165,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NetworkLogger;
+export { NetworkLogger as default, Props as NetworkLoggerProps };
