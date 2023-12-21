@@ -209,20 +209,22 @@ export default class Logger {
 
   clearRequests = () => {
     this.requests = [];
+    this.pausedRequests = [];
     this.callback(this.requests);
   };
 
   onPausedChange = (paused: boolean) => {
-    this.paused = paused;
     if (!paused) {
       this.pausedRequests.forEach((request) => {
         this.requests.unshift(request);
+        if (this.requests.length > this.maxRequests) {
+          this.requests.pop();
+        }
       });
       this.pausedRequests = [];
-      while (this.requests.length > this.maxRequests) {
-        this.requests.pop();
-      }
+      this.callback(this.requests);
     }
+    this.paused = paused;
   };
 
   // dispose in tests, it will be named 'disabledXhrInterceptor' in another PR
