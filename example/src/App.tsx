@@ -74,7 +74,7 @@ export default function App() {
 
   startNetworkLogging({
     ignoredHosts: ['192.168.1.28', '127.0.0.1'],
-    maxRequests-,
+    maxRequests,
     ignoredUrls: ['https://httpstat.us/other'],
     ignoredPatterns: [/^POST http:\/\/(192|10)/],
   });
