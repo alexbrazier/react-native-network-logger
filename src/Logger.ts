@@ -15,7 +15,7 @@ type XHR = {
 
 export default class Logger {
   private requests: NetworkRequestInfo[] = [];
-  private xhrIdMap: { [key: number]: number } = {};
+  private xhrIdMap: Map<number, () => number> = new Map();
   private maxRequests: number = LOGGER_MAX_REQUESTS;
   private refreshRate: number = LOGGER_REFRESH_RATE;
   private latestRequestUpdatedAt: number = 0;
@@ -44,8 +44,9 @@ export default class Logger {
 
   private getRequest = (xhrIndex?: number) => {
     if (xhrIndex === undefined) return undefined;
-    const requestIndex = this.requests.length - this.xhrIdMap[xhrIndex] - 1;
-    return this.requests[requestIndex];
+    if (!this.xhrIdMap.has(xhrIndex)) return undefined;
+    const index = this.xhrIdMap.get(xhrIndex)!();
+    return this.requests[index];
   };
 
   private updateRequest = (
@@ -58,10 +59,6 @@ export default class Logger {
   };
 
   private openCallback = (method: RequestMethod, url: string, xhr: XHR) => {
-    xhr._index = nextXHRId++;
-    const xhrIndex = this.requests.length;
-    this.xhrIdMap[xhr._index] = xhrIndex;
-
     if (this.paused) {
       return;
     }
@@ -85,8 +82,13 @@ export default class Logger {
       }
     }
 
+    xhr._index = nextXHRId++;
+    this.xhrIdMap.set(xhr._index, () => {
+      return this.requests.findIndex((r) => r.id === `${xhr._index}`);
+    });
+
     const newRequest = new NetworkRequestInfo(
-      `${nextXHRId}`,
+      `${xhr._index}`,
       'XMLHttpRequest',
       method,
       url
@@ -230,5 +232,14 @@ export default class Logger {
     this.requests = [];
     this.latestRequestUpdatedAt = 0;
     this.debouncedCallback();
+  };
+
+  // dispose in tests
+  private dispose = () => {
+    this.enabled = false;
+    nextXHRId = 0;
+    this.requests = [];
+    this.callback(this.requests);
+    this.xhrIdMap.clear();
   };
 }
