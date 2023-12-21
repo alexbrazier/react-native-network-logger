@@ -210,6 +210,8 @@ export default class Logger {
   };
 
   disableXHRInterception = () => {
+    if (!this.enabled) return;
+
     this.clearRequests();
 
     nextXHRId = 0;
