@@ -48,7 +48,7 @@ const ResultItem: React.FC<Props> = ({ style, request, onPress, compact }) => {
   const pad = (num: number) => `0${num}`.slice(-2);
 
   const getTime = (time: number) => {
-    if (time === 0) return '';
+    if (time === 0) return ''; // invalid time
     const date = new Date(time);
     const hours = pad(date.getHours());
     const minutes = pad(date.getMinutes());
