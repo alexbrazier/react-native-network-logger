@@ -225,7 +225,7 @@ export default class Logger {
     }
   };
 
-  // dispose in tests
+  // dispose in tests, it will be named 'disabledXhrInterceptor' in another PR
   private dispose = () => {
     this.enabled = false;
     nextXHRId = 0;
