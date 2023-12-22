@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useState } from 'react';
 import {
   StyleSheet,
   Button,
@@ -50,19 +50,21 @@ export default function App() {
 
   const start = useCallback(() => {
     startNetworkLogging({
-      ignoredHosts: ['192.168.1.28', '127.0.0.1'],
+      ignoredHosts: ['127.0.0.1'],
       maxRequests: 20,
       ignoredUrls: ['https://httpstat.us/other'],
-      ignoredPatterns: [/^POST http:\/\/(192|10)/],
+      ignoredPatterns: [/^POST http:\/\/(192|10)/, /\/logs$/, /\/symbolicate$/],
     });
   }, []);
 
-  useEffect(() => {
+  const [unmountNetworkLogger, setUnmountNetworkLogger] = useState(false);
+
+  useLayoutEffect(() => {
     start();
     return () => {
       stopNetworkLogging();
     };
-  }, [start]);
+  }, [start, unmountNetworkLogger]);
 
   const [theme, setTheme] = useState<ThemeName>('dark');
   const isDark = theme === 'dark';
@@ -74,8 +76,6 @@ export default function App() {
     setUnmountNetworkLogger(true);
   };
 
-  const [unmountNetworkLogger, setUnmountNetworkLogger] = useState(false);
-
   const backHandler = getBackHandler(goBack);
 
   const remountButton = (
@@ -84,7 +84,6 @@ export default function App() {
         title={'Re-open the network logger'}
         onPress={() => {
           setUnmountNetworkLogger(false);
-          start();
         }}
       />
     </View>
@@ -96,6 +95,7 @@ export default function App() {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.navButton}
+          testID="backButton"
           onPress={backHandler}
           hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
         >
