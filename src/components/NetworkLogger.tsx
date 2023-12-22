@@ -28,9 +28,7 @@ const NetworkLogger: React.FC<Props> = ({
   sort = 'desc',
   compact = false,
 }) => {
-  const [requests, setRequests] = useState(
-    sortRequests(logger.getRequests(), sort)
-  );
+  const [requests, setRequests] = useState(logger.getRequests());
   const [request, setRequest] = useState<NetworkRequestInfo>();
   const [showDetails, _setShowDetails] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -48,7 +46,7 @@ const NetworkLogger: React.FC<Props> = ({
 
   useEffect(() => {
     logger.setCallback((updatedRequests: NetworkRequestInfo[]) => {
-      setRequests(sortRequests(updatedRequests, sort));
+      setRequests([...updatedRequests]);
     });
 
     logger.enableXHRInterception();
@@ -109,8 +107,8 @@ const NetworkLogger: React.FC<Props> = ({
   }, [paused, getHar]);
 
   const requestsInfo = useMemo(() => {
-    return requests.map((r) => r.toRow());
-  }, [requests]);
+    return sortRequests(requests, sort).map((r) => r.toRow());
+  }, [sort, requests]);
 
   return (
     <ThemeContext.Provider value={theme}>
