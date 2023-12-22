@@ -125,16 +125,19 @@ describe('singleton logger', () => {
 
 describe('clearRequests', () => {
   it('should clear the requests', () => {
+    jest.useFakeTimers();
     logger.callback = jest.fn();
 
     // @ts-ignore
     logger.requests = ['test-request'];
 
     logger.clearRequests();
+    jest.advanceTimersByTime(LOGGER_REFRESH_RATE);
 
     expect(logger.getRequests()).toEqual([]);
     expect(logger.callback).toHaveBeenCalledTimes(1);
     expect(logger.callback).toHaveBeenCalledWith([]);
+    jest.useFakeTimers();
   });
 });
 
