@@ -3,6 +3,8 @@ import NetworkRequestInfo from './NetworkRequestInfo';
 import { Headers, RequestMethod, StartNetworkLoggingOptions } from './types';
 import extractHost from './utils/extractHost';
 import { warn } from './utils/logger';
+import debounce from './utils/debounce';
+import { LOGGER_REFRESH_RATE, LOGGER_MAX_REQUESTS } from './constant';
 
 let nextXHRId = 0;
 
@@ -15,20 +17,33 @@ export default class Logger {
   private requests: NetworkRequestInfo[] = [];
   private pausedRequests: NetworkRequestInfo[] = [];
   private xhrIdMap: Map<number, () => number> = new Map();
-  private maxRequests: number = 500;
+  private maxRequests: number = LOGGER_MAX_REQUESTS;
+  private refreshRate: number = LOGGER_REFRESH_RATE;
+  private latestRequestUpdatedAt: number = 0;
   private ignoredHosts: Set<string> | undefined;
   private ignoredUrls: Set<string> | undefined;
   private ignoredPatterns: RegExp[] | undefined;
   private paused = false;
   public enabled = false;
 
-  callback = (_: any[]) => null;
+  callback = (_: NetworkRequestInfo[]) => null;
 
   isPaused = this.paused;
 
   setCallback = (callback: any) => {
     this.callback = callback;
   };
+
+  debouncedCallback = debounce(() => {
+    if (
+      !this.latestRequestUpdatedAt ||
+      this.requests.some((r) => r.updatedAt > this.latestRequestUpdatedAt)
+    ) {
+      this.latestRequestUpdatedAt = Date.now();
+      // prevent mutation of requests for all subscribers
+      this.callback([...this.requests]);
+    }
+  }, this.refreshRate);
 
   private getRequest = (xhrIndex?: number) => {
     if (xhrIndex === undefined) return undefined;
@@ -118,7 +133,7 @@ export default class Logger {
       startTime: Date.now(),
       dataSent: data,
     });
-    this.callback(this.requests);
+    this.debouncedCallback();
   };
 
   private responseCallback = (
@@ -137,7 +152,7 @@ export default class Logger {
       responseURL,
       responseType,
     });
-    this.callback(this.requests);
+    this.debouncedCallback();
   };
 
   enableXHRInterception = (options?: StartNetworkLoggingOptions) => {
@@ -176,6 +191,16 @@ export default class Logger {
       this.ignoredHosts = new Set(options.ignoredHosts);
     }
 
+    if (options?.refreshRate) {
+      if (typeof options.refreshRate !== 'number' || options.refreshRate < 1) {
+        warn(
+          'refreshRate must be a number greater than 0. The logger has not been started.'
+        );
+        return;
+      }
+      this.refreshRate = options.refreshRate;
+    }
+
     if (options?.ignoredPatterns) {
       this.ignoredPatterns = options.ignoredPatterns;
     }
@@ -210,7 +235,8 @@ export default class Logger {
   clearRequests = () => {
     this.requests = [];
     this.pausedRequests = [];
-    this.callback(this.requests);
+    this.latestRequestUpdatedAt = 0;
+    this.debouncedCallback();
   };
 
   onPausedChange = (paused: boolean) => {
