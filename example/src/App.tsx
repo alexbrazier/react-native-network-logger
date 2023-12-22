@@ -59,6 +59,8 @@ export default function App() {
 
   const [unmountNetworkLogger, setUnmountNetworkLogger] = useState(false);
 
+  // note: Logger is a singleton so it starts on the first render
+  // useLayoutEffect is used to ensure the setup runs before the component mounts (useEffect is async)
   useLayoutEffect(() => {
     start();
     return () => {
