@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import NetworkRequestInfo from '../NetworkRequestInfo';
 import { useThemedStyles, Theme } from '../theme';
 import ResultItem from './ResultItem';
 import SearchBar from './SearchBar';
 import { NetworkRequestInfoRow } from '../types';
+import { useAppContext } from './AppContext';
 
 interface Props {
   requestsInfo: NetworkRequestInfoRow[];
@@ -20,28 +21,35 @@ const RequestList: React.FC<Props> = ({
   showDetails,
 }) => {
   const styles = useThemedStyles(themedStyles);
-
-  const [searchValue, onChangeSearchText] = useState('');
+  const { search, filter } = useAppContext();
+  const lcSearch = search.toLowerCase().trim();
 
   const filteredRequests = useMemo(() => {
     return requestsInfo.filter((request) => {
-      const value = searchValue.toLowerCase().trim();
-      return (
-        request.url.toLowerCase().includes(value) ||
-        request.gqlOperation?.toLowerCase().includes(value)
-      );
+      const searchMatches =
+        !lcSearch ||
+        request.url.toLowerCase().includes(lcSearch) ||
+        request.gqlOperation?.toLowerCase().includes(lcSearch);
+
+      const filterMethodMatches =
+        (filter.methods?.size ?? 0) === 0 ||
+        filter.methods?.has(request.method);
+
+      const filterStatusMatches = filter.status
+        ? request.status === filter.status
+        : filter.statusErrors
+        ? request.status >= 400
+        : true;
+
+      const filterMatches = filterMethodMatches && filterStatusMatches;
+
+      return searchMatches && filterMatches;
     });
-  }, [requestsInfo, searchValue]);
+  }, [requestsInfo, lcSearch, filter]);
 
   return (
     <View style={styles.container}>
-      {!showDetails && (
-        <SearchBar
-          value={searchValue}
-          onChangeText={onChangeSearchText}
-          options={options}
-        />
-      )}
+      {!showDetails && <SearchBar options={options} />}
       <FlatList
         keyExtractor={(item) => item.id}
         data={filteredRequests}

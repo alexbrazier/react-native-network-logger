@@ -1,13 +1,7 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Share,
-  Image,
-} from 'react-native';
+import { View, Text, StyleSheet, Share } from 'react-native';
 import { useThemedStyles, Theme } from '../theme';
+import Icon from './Icon';
 
 interface Props {
   children: string;
@@ -27,20 +21,15 @@ const Header: React.FC<Props> = ({ children, shareContent }) => {
       </Text>
 
       {!!shareContent && (
-        <TouchableOpacity
+        <Icon
+          name="share"
           testID="header-share"
           accessibilityLabel="Share"
-          accessibilityRole="button"
           onPress={() => {
             Share.share({ message: shareContent });
           }}
-        >
-          <Image
-            source={require('./images/share.png')}
-            resizeMode="contain"
-            style={styles.shareIcon}
-          />
-        </TouchableOpacity>
+          iconStyle={styles.shareIcon}
+        />
       )}
     </View>
   );
@@ -59,8 +48,6 @@ const themedStyles = (theme: Theme) =>
     shareIcon: {
       width: 24,
       height: 24,
-      marginRight: 10,
-      tintColor: theme.colors.text,
     },
     container: {
       justifyContent: 'space-between',
