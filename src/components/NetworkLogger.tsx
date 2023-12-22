@@ -14,6 +14,7 @@ interface Props {
   theme?: ThemeName | DeepPartial<Theme>;
   sort?: 'asc' | 'desc';
   compact?: boolean;
+  maxRows?: number;
 }
 
 const sortRequests = (requests: NetworkRequestInfo[], sort: 'asc' | 'desc') => {
@@ -27,6 +28,7 @@ const NetworkLogger: React.FC<Props> = ({
   theme = 'light',
   sort = 'desc',
   compact = false,
+  maxRows,
 }) => {
   const [requests, setRequests] = useState(logger.getRequests());
   const [request, setRequest] = useState<NetworkRequestInfo>();
@@ -136,6 +138,7 @@ const NetworkLogger: React.FC<Props> = ({
                 requestsInfo={requestsInfo}
                 options={options}
                 showDetails={showDetails && !!request}
+                maxRows={maxRows ?? requests.length}
                 onPressItem={(id) => {
                   setRequest(requests.find((r) => r.id === id));
                   setShowDetails(true);
