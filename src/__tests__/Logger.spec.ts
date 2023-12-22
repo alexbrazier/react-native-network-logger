@@ -1,7 +1,7 @@
 import XHRInterceptor from 'react-native/Libraries/Network/XHRInterceptor';
 import { warn } from '../utils/logger';
 import Logger from '../Logger';
-import { LOGGER_MAX_REQUESTS } from '../constant';
+import { LOGGER_MAX_REQUESTS, LOGGER_REFRESH_RATE } from '../constant';
 
 jest.mock('react-native/Libraries/Blob/FileReader', () => ({}));
 jest.mock('react-native/Libraries/Network/XHRInterceptor', () => ({
@@ -190,7 +190,11 @@ describe('disableXHRInterception', () => {
     // @ts-ignore
     expect(logger.maxRequests).toEqual(LOGGER_MAX_REQUESTS);
     // @ts-ignore
+    expect(logger.refreshRate).toEqual(LOGGER_REFRESH_RATE);
+    // @ts-ignore
     expect(logger.requests).toEqual([]);
+    // @ts-ignore
+    expect(logger.latestRequestUpdatedAt).toEqual(0);
     // @ts-ignore
     expect(logger.xhrIdMap).toEqual(new Map());
   });
@@ -236,6 +240,8 @@ describe('getRequests', () => {
 
 describe('clearRequests', () => {
   it('should clear the requests', () => {
+    jest.useFakeTimers();
+
     const logger = new Logger();
 
     logger.callback = jest.fn();
@@ -245,9 +251,13 @@ describe('clearRequests', () => {
 
     logger.clearRequests();
 
+    jest.advanceTimersByTime(LOGGER_REFRESH_RATE);
+
     expect(logger.getRequests()).toEqual([]);
     expect(logger.callback).toHaveBeenCalledTimes(1);
     expect(logger.callback).toHaveBeenCalledWith([]);
+
+    jest.useRealTimers();
   });
 });
 

@@ -24,12 +24,14 @@ export default class NetworkRequestInfo {
   startTime: number = 0;
   endTime: number = 0;
   gqlOperation?: string;
+  updatedAt: number = 0;
 
   constructor(id: string, type: string, method: RequestMethod, url: string) {
     this.id = id;
     this.type = type;
     this.method = method;
     this.url = url;
+    this.updatedAt = Date.now();
   }
 
   get duration() {
@@ -61,6 +63,7 @@ export default class NetworkRequestInfo {
       const data = this.parseData(values.dataSent);
       this.gqlOperation = data?.operationName;
     }
+    this.updatedAt = Date.now();
   }
 
   private escapeQuotes(value: string) {
