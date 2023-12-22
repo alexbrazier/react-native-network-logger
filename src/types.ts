@@ -25,6 +25,11 @@ export type StartNetworkLoggingOptions = {
    * e.g. a dev/debuging program
    */
   forceEnable?: boolean;
+  /**
+   * Refresh rate of the logger in milliseconds
+   * @default 50
+   */
+  refreshRate?: number;
 };
 
 export type NetworkRequestInfoRow = Pick<
