@@ -29,6 +29,7 @@ const Options: React.FC<Props> = ({ options }) => {
         <Image
           source={require('./images/more.png')}
           resizeMode="contain"
+          testID="options-menu"
           style={[styles.icon, styles.iconButton]}
         />
       </TouchableOpacity>
