@@ -36,7 +36,7 @@
     "!**/__mocks__"
   ],
   "scripts": {
-    "test": "TZ=UTC jest",
+    "test": "jest",
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "prettier": "prettier --check '{,example/}src/**/*.{js,json,ts,tsx}' '{*,example/*}.{js,ts,tsx}'",
@@ -79,7 +79,8 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
-    ]
+    ],
+    "globalSetup": "<rootDir>/global-jest-setup.js"
   },
   "husky": {
     "hooks": {
