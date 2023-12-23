@@ -1,7 +1,7 @@
 import XHRInterceptor from 'react-native/Libraries/Network/XHRInterceptor';
 import { warn } from '../utils/logger';
 import Logger from '../Logger';
-import { LOGGER_REFRESH_RATE } from '../constant';
+import { LOGGER_MAX_REQUESTS, LOGGER_REFRESH_RATE } from '../constant';
 
 jest.mock('react-native/Libraries/Blob/FileReader', () => ({}));
 jest.mock('react-native/Libraries/Network/XHRInterceptor', () => ({
@@ -12,6 +12,7 @@ jest.mock('react-native/Libraries/Network/XHRInterceptor', () => ({
   setHeaderReceivedCallback: jest.fn(),
   setResponseCallback: jest.fn(),
   enableInterception: jest.fn(),
+  disableInterception: jest.fn(),
 }));
 
 jest.mock('../utils/logger', () => ({
@@ -156,6 +157,76 @@ describe('enableXHRInterception', () => {
   });
 });
 
+describe('disableXHRInterception', () => {
+  it('should do nothing if interceptor has not been enabled', () => {
+    const logger = new Logger();
+
+    (XHRInterceptor.isInterceptorEnabled as jest.Mock).mockReturnValueOnce(
+      false
+    );
+
+    const result = logger.disableXHRInterception();
+
+    expect(result).toBeUndefined();
+    expect(XHRInterceptor.isInterceptorEnabled).toHaveBeenCalledTimes(0);
+    expect(XHRInterceptor.disableInterception).toHaveBeenCalledTimes(0);
+  });
+
+  it('should call disableInterception and clear options', () => {
+    const logger = new Logger();
+
+    logger.enableXHRInterception();
+    logger.disableXHRInterception();
+
+    expect(XHRInterceptor.disableInterception).toHaveBeenCalledTimes(1);
+    expect(XHRInterceptor.disableInterception).toHaveBeenCalledWith();
+
+    // @ts-ignore
+    expect(logger.ignoredHosts).toBeUndefined();
+    // @ts-ignore
+    expect(logger.ignoredUrls).toBeUndefined();
+    // @ts-ignore
+    expect(logger.ignoredPatterns).toBeUndefined();
+    // @ts-ignore
+    expect(logger.maxRequests).toEqual(LOGGER_MAX_REQUESTS);
+    // @ts-ignore
+    expect(logger.refreshRate).toEqual(LOGGER_REFRESH_RATE);
+    // @ts-ignore
+    expect(logger.requests).toEqual([]);
+    // @ts-ignore
+    expect(logger.latestRequestUpdatedAt).toEqual(0);
+    // @ts-ignore
+    expect(logger.xhrIdMap).toEqual(new Map());
+  });
+
+  it('should set options after re-enabling', () => {
+    const logger = new Logger();
+
+    logger.enableXHRInterception({
+      ignoredHosts: ['example.com'],
+      ignoredUrls: ['http://example.com/'],
+      ignoredPatterns: [/^POST /],
+      maxRequests: 100,
+    });
+    logger.disableXHRInterception();
+    logger.enableXHRInterception({
+      ignoredHosts: ['test.com'],
+      ignoredUrls: ['http://test.com/'],
+      ignoredPatterns: [/^HEAD /],
+      maxRequests: 10,
+    });
+
+    // @ts-ignore
+    expect(logger.ignoredHosts).toStrictEqual(new Set(['test.com']));
+    // @ts-ignore
+    expect(logger.ignoredUrls).toStrictEqual(new Set(['http://test.com/']));
+    // @ts-ignore
+    expect(logger.ignoredPatterns).toStrictEqual([/^HEAD /]);
+    // @ts-ignore
+    expect(logger.maxRequests).toEqual(10);
+  });
+});
+
 describe('getRequests', () => {
   it('should return the requests', () => {
     const logger = new Logger();
@@ -249,8 +320,7 @@ describe('openCallback', () => {
     expect(logger.getRequests()[0].url).toEqual(url2);
     expect(logger.getRequests()[1].url).toEqual(url1);
 
-    // @ts-expect-error
-    logger.dispose();
+    logger.disableXHRInterception();
   });
 
   it('should ignore requests that have ignored hosts', () => {
@@ -268,8 +338,7 @@ describe('openCallback', () => {
     expect(logger.getRequests()[0].url).toEqual(url1);
     expect(logger.getRequests()).toHaveLength(1);
 
-    // @ts-expect-error
-    logger.dispose();
+    logger.disableXHRInterception();
   });
 
   it('should ignore requests that have ignored urls', () => {
@@ -286,8 +355,7 @@ describe('openCallback', () => {
     expect(logger.getRequests()[0].url).toEqual(url1);
     expect(logger.getRequests()).toHaveLength(1);
 
-    // @ts-expect-error
-    logger.dispose();
+    logger.disableXHRInterception();
   });
 
   it('should ignore requests that match pattern', () => {
@@ -314,8 +382,7 @@ describe('openCallback', () => {
     expect(logger.getRequests()[0].method).toEqual('PUT');
     expect(logger.getRequests()).toHaveLength(2);
 
-    // @ts-expect-error
-    logger.dispose();
+    logger.disableXHRInterception();
   });
 
   it('should retrieve requests when it is restricted by maxRequests', () => {
@@ -346,7 +413,6 @@ describe('openCallback', () => {
     // @ts-expect-error
     expect(logger.getRequest(3)?.method).toBe(first?.method);
 
-    // @ts-expect-error
-    logger.dispose();
+    logger.disableXHRInterception();
   });
 });

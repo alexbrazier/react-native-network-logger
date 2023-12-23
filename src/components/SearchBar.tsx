@@ -6,7 +6,7 @@ import Options from './Options';
 interface Props {
   value: string;
   onChangeText(text: string): void;
-  options: { text: string; onPress: () => Promise<void> | void }[];
+  options: { text: string; onPress: () => Promise<void> }[];
 }
 
 const SearchBar: React.FC<Props> = ({ options, value, onChangeText }) => {

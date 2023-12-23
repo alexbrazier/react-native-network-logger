@@ -1,3 +1,4 @@
+// https://github.com/facebook/react-native/blob/main/packages/react-native/Libraries/Network/XHRInterceptor.js
 declare module 'react-native/Libraries/Network/XHRInterceptor' {
   export function isInterceptorEnabled(): boolean;
   export function setOpenCallback(...props: any): void;
@@ -6,6 +7,7 @@ declare module 'react-native/Libraries/Network/XHRInterceptor' {
   export function setHeaderReceivedCallback(...props: any): void;
   export function setResponseCallback(...props: any): void;
   export function enableInterception(): void;
+  export function disableInterception(): void;
 }
 
 declare module 'react-native/Libraries/Blob/FileReader' {

@@ -13,7 +13,7 @@ import Button from './Button';
 import { Theme, useThemedStyles } from '../theme';
 
 interface Props {
-  options: { text: string; onPress: () => Promise<void> | void }[];
+  options: { text: string; onPress: () => Promise<void> }[];
 }
 
 const Options: React.FC<Props> = ({ options }) => {
@@ -29,6 +29,7 @@ const Options: React.FC<Props> = ({ options }) => {
         <Image
           source={require('./images/more.png')}
           resizeMode="contain"
+          testID="options-menu"
           style={[styles.icon, styles.iconButton]}
         />
       </TouchableOpacity>
