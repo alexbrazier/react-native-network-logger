@@ -234,12 +234,29 @@ export default class Logger {
     this.debouncedCallback();
   };
 
-  // dispose in tests
-  private dispose = () => {
-    this.enabled = false;
+  disableXHRInterception = () => {
+    if (!this.enabled) return;
+
+    this.clearRequests();
+
     nextXHRId = 0;
-    this.requests = [];
-    this.callback(this.requests);
+    this.enabled = false;
+    this.paused = false;
     this.xhrIdMap.clear();
+    this.maxRequests = LOGGER_MAX_REQUESTS;
+    this.refreshRate = LOGGER_REFRESH_RATE;
+    this.ignoredHosts = undefined;
+    this.ignoredUrls = undefined;
+    this.ignoredPatterns = undefined;
+
+    const noop = () => null;
+    // manually reset callbacks even if the XHRInterceptor lib does it for us with 'disableInterception'
+    XHRInterceptor.setOpenCallback(noop);
+    XHRInterceptor.setRequestHeaderCallback(noop);
+    XHRInterceptor.setHeaderReceivedCallback(noop);
+    XHRInterceptor.setSendCallback(noop);
+    XHRInterceptor.setResponseCallback(noop);
+
+    XHRInterceptor.disableInterception();
   };
 }

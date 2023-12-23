@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useLayoutEffect, useState } from 'react';
 import {
   StyleSheet,
   Button,
@@ -13,6 +13,7 @@ import NetworkLogger, {
   ThemeName,
   getBackHandler,
   startNetworkLogging,
+  stopNetworkLogging,
 } from 'react-native-network-logger';
 import { getRates } from './apolloClient';
 
@@ -47,21 +48,35 @@ export default function App() {
     // fetch('https://failingrequest');
   };
 
-  startNetworkLogging({
-    ignoredHosts: ['192.168.1.28', '127.0.0.1'],
-    maxRequests: 20,
-    ignoredUrls: ['https://httpstat.us/other'],
-    ignoredPatterns: [/^POST http:\/\/(192|10)/],
-  });
+  const start = useCallback(() => {
+    startNetworkLogging({
+      ignoredHosts: ['127.0.0.1'],
+      maxRequests: 20,
+      ignoredUrls: ['https://httpstat.us/other'],
+      ignoredPatterns: [/^POST http:\/\/(192|10)/, /\/logs$/, /\/symbolicate$/],
+    });
+  }, []);
+
+  const [unmountNetworkLogger, setUnmountNetworkLogger] = useState(false);
+
+  // note: Logger is a singleton so it starts on the first render
+  // useLayoutEffect is used to ensure the setup runs before the component mounts (useEffect is async)
+  useLayoutEffect(() => {
+    start();
+    return () => {
+      stopNetworkLogging();
+    };
+  }, [start, unmountNetworkLogger]);
 
   const [theme, setTheme] = useState<ThemeName>('dark');
   const isDark = theme === 'dark';
 
   const styles = themedStyles(isDark);
 
-  const goBack = () => setUnmountNetworkLogger(true);
-
-  const [unmountNetworkLogger, setUnmountNetworkLogger] = useState(false);
+  const goBack = () => {
+    stopNetworkLogging();
+    setUnmountNetworkLogger(true);
+  };
 
   const backHandler = getBackHandler(goBack);
 
@@ -69,7 +84,9 @@ export default function App() {
     <View>
       <Button
         title={'Re-open the network logger'}
-        onPress={() => setUnmountNetworkLogger(false)}
+        onPress={() => {
+          setUnmountNetworkLogger(false);
+        }}
       />
     </View>
   );
@@ -80,6 +97,7 @@ export default function App() {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.navButton}
+          testID="backButton"
           onPress={backHandler}
           hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
         >
