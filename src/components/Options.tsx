@@ -49,8 +49,9 @@ const Options: React.FC<Props> = ({ options }) => {
             {options.map(({ text, onPress }) => (
               <Button
                 key={text}
-                onPress={() => {
-                  onPress();
+                onPress={async () => {
+                  // Need to await in order for the getHar option to work
+                  await onPress();
                   setOpenOptions(false);
                 }}
               >
