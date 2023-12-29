@@ -166,6 +166,26 @@ import NetworkLogger from 'react-native-network-logger';
 const MyScreen = () => <NetworkLogger sort="asc" />;
 ```
 
+#### Max Rows
+
+Set the maximum number of rows to display in the list to improve rendering. Default is same as request limit.
+
+```tsx
+import NetworkLogger from 'react-native-network-logger';
+
+const MyScreen = () => <NetworkLogger maxRows={100} />;
+```
+
+#### Compact Rows
+
+Make the rows smaller to fit more on the screen.
+
+```tsx
+import NetworkLogger from 'react-native-network-logger';
+
+const MyScreen = () => <NetworkLogger compact />;
+```
+
 #### Force Enable
 
 If you are running another network logging interceptor, e.g. Reactotron, the logger will not start as only one can be run at once. You can override this behaviour and force the logger to start by using the `forceEnable` option.
