@@ -79,7 +79,8 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
-    ]
+    ],
+    "globalSetup": "<rootDir>/global-jest-setup.js"
   },
   "husky": {
     "hooks": {

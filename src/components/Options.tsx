@@ -49,8 +49,8 @@ const Options: React.FC<Props> = ({ options }) => {
             {options.map(({ text, onPress }) => (
               <Button
                 key={text}
-                onPress={async () => {
-                  await onPress();
+                onPress={() => {
+                  onPress();
                   setOpenOptions(false);
                 }}
               >

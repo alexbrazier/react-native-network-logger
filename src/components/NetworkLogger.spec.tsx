@@ -1,5 +1,6 @@
 import React from 'react';
-import { render, fireEvent, act } from '@testing-library/react-native';
+
+import { act, fireEvent, render, within } from '@testing-library/react-native';
 import NetworkLogger, { NetworkLoggerProps } from './NetworkLogger';
 import logger from '../loggerSingleton';
 import NetworkRequestInfo from '../NetworkRequestInfo';
@@ -94,5 +95,61 @@ describe('options', () => {
     expect(spyOnLoggerClearRequests).toHaveBeenCalledTimes(1);
 
     spyOnLoggerClearRequests.mockRestore();
+  });
+});
+
+describe('regular vs compact row', () => {
+  it.each([true, false])('should render the row compact: %p', (compact) => {
+    const requests = [] as NetworkRequestInfo[];
+    const spyOnLoggerSetCallback = jest.spyOn(logger, 'setCallback');
+    const emitCallback = jest.fn();
+    spyOnLoggerSetCallback.mockImplementation((callback) => {
+      return emitCallback.mockImplementation((id: number) => {
+        if (id !== 1) {
+          const request = new NetworkRequestInfo(
+            `${id}`,
+            'XMLHttpRequest',
+            'GET',
+            `http://example.com/${id}`
+          );
+          requests.unshift(request);
+          return callback(requests);
+        }
+        const request = new NetworkRequestInfo(
+          '1',
+          'XMLHttpRequest',
+          'POST',
+          'http://example.com/1'
+        );
+        request.startTime = new Date('2000-01-01T12:34:00.000Z').getTime();
+        request.endTime = new Date('2000-01-01T12:34:56.789Z').getTime();
+        request.status = 200;
+        requests.unshift(request);
+        return callback(requests);
+      });
+    });
+
+    const { getByText } = render(<MyNetworkLogger compact={compact} />);
+
+    act(() => {
+      emitCallback(1);
+    });
+
+    const method = getByText(/^post$/i);
+    expect(method).toBeTruthy();
+    expect(!!within(method.parent!.parent!).queryByText(/^12:34:00$/i)).toBe(
+      compact
+    );
+
+    const status = getByText(/^200$/i);
+    expect(status).toBeTruthy();
+    expect(
+      within(status.parent!.parent!).queryByText(/^56789ms$/i)
+    ).toBeTruthy();
+    expect(within(status.parent!.parent!).queryByText(/^12:34:00$/i)).not.toBe(
+      compact
+    );
+
+    spyOnLoggerSetCallback.mockRestore();
   });
 });
