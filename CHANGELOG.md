@@ -1,5 +1,18 @@
 
 
+# [1.16.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.15.0...v1.16.0) (2024-04-12)
+
+
+### Bug Fixes
+
+* requests not being updated when maxRequests is reached ([#88](https://github.com/alexbrazier/react-native-network-logger/issues/88)) ([89e14ae](https://github.com/alexbrazier/react-native-network-logger/commit/89e14aeff895097c8445bbdfc51ffe354d141fa4))
+
+
+### Features
+
+* Compact vs regular rows ([#92](https://github.com/alexbrazier/react-native-network-logger/issues/92)) ([3913d9d](https://github.com/alexbrazier/react-native-network-logger/commit/3913d9dc058147ed5532d72dbe468ce2e749561a))
+* Disable the singleton logger ([#93](https://github.com/alexbrazier/react-native-network-logger/issues/93)) ([1191b61](https://github.com/alexbrazier/react-native-network-logger/commit/1191b61e9f6bf40ade4bee09718c14334e47581c))
+
 # [1.15.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.14.1...v1.15.0) (2023-05-24)
 
 
