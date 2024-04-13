@@ -1,5 +1,12 @@
 
 
+## [1.16.1](https://github.com/alexbrazier/react-native-network-logger/compare/v1.16.0...v1.16.1) (2024-04-13)
+
+
+### Bug Fixes
+
+* incorrect export of types ([#99](https://github.com/alexbrazier/react-native-network-logger/issues/99)) ([484414f](https://github.com/alexbrazier/react-native-network-logger/commit/484414f07ae8272a7bd7224f1c78e04dc670cfa9))
+
 # [1.16.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.15.0...v1.16.0) (2024-04-12)
 
 
