@@ -13,6 +13,7 @@ import Unmounted from './Unmounted';
 interface Props {
   theme?: ThemeName | DeepPartial<Theme>;
   sort?: 'asc' | 'desc';
+  compact?: boolean;
   maxRows?: number;
 }
 
@@ -26,6 +27,7 @@ const sortRequests = (requests: NetworkRequestInfo[], sort: 'asc' | 'desc') => {
 const NetworkLogger: React.FC<Props> = ({
   theme = 'light',
   sort = 'desc',
+  compact = false,
   maxRows,
 }) => {
   const [requests, setRequests] = useState(logger.getRequests());
@@ -134,6 +136,7 @@ const NetworkLogger: React.FC<Props> = ({
                 </View>
               )}
               <RequestList
+                compact={compact}
                 requestsInfo={requestsInfo}
                 options={options}
                 showDetails={showDetails && !!request}

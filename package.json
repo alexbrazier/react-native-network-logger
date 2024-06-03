@@ -1,6 +1,6 @@
 {
   "name": "react-native-network-logger",
-  "version": "1.15.0",
+  "version": "1.16.1",
   "description": "An HTTP traffic monitor for React Native with zero dependencies",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -79,7 +79,8 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
-    ]
+    ],
+    "globalSetup": "<rootDir>/global-jest-setup.js"
   },
   "husky": {
     "hooks": {
