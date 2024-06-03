@@ -96,6 +96,11 @@ export default class Logger {
     );
 
     if (this.paused) {
+      const logsLength = this.pausedRequests.length + this.requests.length;
+      if (logsLength > this.maxRequests) {
+        if (this.requests.length > 0) this.requests.pop();
+        else this.pausedRequests.pop();
+      }
       this.pausedRequests.push(newRequest);
     } else {
       this.requests.unshift(newRequest);
