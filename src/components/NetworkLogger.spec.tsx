@@ -5,6 +5,16 @@ import NetworkLogger, { NetworkLoggerProps } from './NetworkLogger';
 import logger from '../loggerSingleton';
 import NetworkRequestInfo from '../NetworkRequestInfo';
 
+jest.mock('../loggerSingleton', () => ({
+  isPaused: false,
+  enabled: true,
+  setCallback: jest.fn(),
+  clearRequests: jest.fn(),
+  onPausedChange: jest.fn(),
+  getRequests: jest.fn().mockReturnValue([]),
+  enableXHRInterception: jest.fn(),
+  disableXHRInterception: jest.fn(),
+}));
 jest.mock('react-native/Libraries/Blob/FileReader', () => ({}));
 jest.mock('react-native/Libraries/Network/XHRInterceptor', () => ({
   isInterceptorEnabled: jest.fn(),
@@ -69,32 +79,48 @@ describe('max rows', () => {
 });
 
 describe('options', () => {
-  it('should toggle the display of the paused banner when paused', () => {
-    const { getByText, queryByText, getByTestId } = render(<MyNetworkLogger />);
+  it('should toggle the display of the paused banner when paused', async () => {
+    const spyOnLoggerPauseRequests = jest.spyOn(logger, 'onPausedChange');
+    const { getByText, queryByText, getByTestId, unmount } = render(
+      <MyNetworkLogger />
+    );
 
     fireEvent.press(getByTestId('options-menu'));
     fireEvent.press(getByText(/^pause$/i));
 
     expect(queryByText(/^paused$/i)).toBeTruthy();
 
+    expect(spyOnLoggerPauseRequests).toHaveBeenCalledTimes(1);
+
     fireEvent.press(getByTestId('options-menu'));
     fireEvent.press(getByText(/^resume$/i));
 
     expect(queryByText(/^paused$/i)).toBeFalsy();
+
+    spyOnLoggerPauseRequests.mockRestore();
+
+    unmount();
   });
 
-  it('should clear the logs on demand', () => {
-    const spyOnLoggerClearRequests = jest.spyOn(logger, 'clearRequests');
+  it('should clear the logs on demand', async () => {
+    const spyOnLoggerClearRequests = jest
+      .spyOn(logger, 'clearRequests')
+      .mockImplementationOnce(() => null);
 
-    const { getByText, getByTestId } = render(<MyNetworkLogger />);
+    const { getByText, queryByText, getByTestId, unmount } = render(
+      <MyNetworkLogger />
+    );
     expect(spyOnLoggerClearRequests).toHaveBeenCalledTimes(0);
 
     fireEvent.press(getByTestId('options-menu'));
+    expect(queryByText(/^options$/i)).toBeDefined();
     fireEvent.press(getByText(/^clear/i));
 
     expect(spyOnLoggerClearRequests).toHaveBeenCalledTimes(1);
 
     spyOnLoggerClearRequests.mockRestore();
+
+    unmount();
   });
 });
 
