@@ -120,7 +120,7 @@ export default class Logger {
     const networkInfo = this.getRequest(xhr._index);
     const updatedNetworkInfo = {
       ...networkInfo?.requestHeaders,
-      Cookie: `${xhr.responseHeaders?.['set-cookie']}`,
+      Cookie: `${xhr.responseHeaders?.['set-cookie'] ?? ''}`,
     };
     this.updateRequest(xhr._index, {
       responseContentType,
