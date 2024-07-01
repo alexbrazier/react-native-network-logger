@@ -117,10 +117,16 @@ export default class Logger {
     responseHeaders: Headers,
     xhr: XHR
   ) => {
+    const networkInfo = this.getRequest(xhr._index);
+    const updatedNetworkInfo = {
+      ...networkInfo?.requestHeaders,
+      Cookie: `${xhr.responseHeaders?.['set-cookie'] ?? ''}`,
+    };
     this.updateRequest(xhr._index, {
       responseContentType,
       responseSize,
       responseHeaders: xhr.responseHeaders,
+      requestHeaders: updatedNetworkInfo,
     });
   };
 
