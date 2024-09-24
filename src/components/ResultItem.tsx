@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
 import { Theme, useThemedStyles, useTheme } from '../theme';
 import { backHandlerSet } from '../backHandler';
 import { NetworkRequestInfoRow } from '../types';
@@ -9,9 +15,16 @@ interface Props {
   onPress?(): void;
   style?: any;
   compact?: boolean;
+  list?: boolean;
 }
 
-const ResultItem: React.FC<Props> = ({ style, request, onPress, compact }) => {
+const ResultItem: React.FC<Props> = ({
+  style,
+  request,
+  onPress,
+  compact,
+  list,
+}) => {
   const styles = useThemedStyles(themedStyles);
   const theme = useTheme();
   const onDetailsPage = !onPress;
@@ -59,6 +72,8 @@ const ResultItem: React.FC<Props> = ({ style, request, onPress, compact }) => {
 
   const gqlOperation = request.gqlOperation;
 
+  const UrlContainer = list ? View : ScrollView;
+
   return (
     <MaybeTouchable
       style={[styles.container, style]}
@@ -93,8 +108,9 @@ const ResultItem: React.FC<Props> = ({ style, request, onPress, compact }) => {
           )}
         </View>
       </View>
-      <View style={[styles.content]}>
+      <UrlContainer style={[styles.content]}>
         <Text
+          numberOfLines={list ? 5 : undefined}
           style={[
             styles.text,
             getUrlTextColor(request.status),
@@ -110,7 +126,7 @@ const ResultItem: React.FC<Props> = ({ style, request, onPress, compact }) => {
             </Text>
           </View>
         )}
-      </View>
+      </UrlContainer>
     </MaybeTouchable>
   );
 };
@@ -156,6 +172,7 @@ const themedStyles = (theme: Theme) =>
       paddingRight: 5,
       flexShrink: 1,
       flex: 1,
+      maxHeight: 250,
     },
     method: {
       fontSize: 18,
