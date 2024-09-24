@@ -415,4 +415,46 @@ describe('openCallback', () => {
 
     logger.disableXHRInterception();
   });
+
+  it('should retrieve missed requests when it is restricted by maxRequests after resuming a paused network logging', () => {
+    const logger = new Logger();
+    logger.enableXHRInterception({
+      maxRequests: 2,
+    });
+
+    const url = 'http://example.com/1';
+
+    // @ts-expect-error
+    logger.openCallback('POST', url, { _index: 0 });
+
+    // @ts-expect-error
+    logger.paused = true;
+
+    // @ts-expect-error
+    logger.openCallback('GET', url, { _index: 1 });
+
+    expect(logger.getRequests()[0].method).toEqual('POST');
+    expect(logger.getRequests()).toHaveLength(1);
+
+    // @ts-expect-error
+    logger.paused = false;
+
+    // @ts-expect-error
+    logger.openCallback('HEAD', url, { _index: 2 });
+    // @ts-expect-error
+    logger.openCallback('PUT', url, { _index: 3 });
+
+    // Requests should be in reverse order
+    expect(logger.getRequests()[0].method).toEqual('PUT');
+    expect(logger.getRequests()[1].method).toEqual('HEAD');
+    expect(logger.getRequests()).toHaveLength(2);
+
+    // @ts-expect-error
+    expect(logger.getRequest(0)?.method).toBeUndefined();
+    const first = logger.getRequests()[0];
+    // @ts-expect-error
+    expect(logger.getRequest(3)?.method).toBe(first?.method);
+
+    logger.disableXHRInterception();
+  });
 });

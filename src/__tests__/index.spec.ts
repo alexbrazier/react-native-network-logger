@@ -107,7 +107,7 @@ describe('singleton logger', () => {
     expect(XHRInterceptor.setResponseCallback).toHaveBeenCalledTimes(2);
 
     expect(logger.enabled).toBe(false);
-    expect(logger.paused).toBe(false);
+    expect(logger.isPaused).toBe(false);
     // @ts-ignore
     expect(logger.requests).toEqual([]);
     // @ts-ignore
