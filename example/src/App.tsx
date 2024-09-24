@@ -3,7 +3,6 @@ import {
   StyleSheet,
   Button,
   SafeAreaView,
-  Platform,
   View,
   Text,
   TouchableOpacity,
@@ -120,7 +119,10 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+      <StatusBar
+        barStyle={isDark ? 'light-content' : 'dark-content'}
+        backgroundColor={isDark ? '#2d2a28' : 'white'}
+      />
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.navButton}
@@ -154,7 +156,7 @@ const themedStyles = (dark = false) =>
     container: {
       flex: 1,
       backgroundColor: dark ? '#2d2a28' : 'white',
-      paddingTop: Platform.OS === 'android' ? 25 : 0,
+      paddingTop: 0,
     },
     header: {
       flexDirection: 'row',

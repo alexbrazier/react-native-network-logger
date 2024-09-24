@@ -9,6 +9,7 @@ import RequestList from './RequestList';
 import RequestDetails from './RequestDetails';
 import createHar from '../utils/createHar';
 import Unmounted from './Unmounted';
+import { AppContextProvider } from './AppContext';
 
 interface Props {
   theme?: ThemeName | DeepPartial<Theme>;
@@ -116,40 +117,44 @@ const NetworkLogger: React.FC<Props> = ({
 
   return (
     <ThemeContext.Provider value={theme}>
-      <View style={styles.visible}>
-        {showDetails && !!request && (
-          <View style={styles.visible}>
-            <RequestDetails
-              onClose={() => setShowDetails(false)}
-              request={request}
-            />
-          </View>
-        )}
-        <View style={showDetails && !!request ? styles.hidden : styles.visible}>
-          {mounted && !logger.enabled && !requests.length ? (
-            <Unmounted />
-          ) : (
-            <>
-              {paused && (
-                <View style={styles.pausedBanner}>
-                  <Text>Paused</Text>
-                </View>
-              )}
-              <RequestList
-                compact={compact}
-                requestsInfo={requestsInfo}
-                options={options}
-                showDetails={showDetails && !!request}
-                maxRows={maxRows ?? requests.length}
-                onPressItem={(id) => {
-                  setRequest(requests.find((r) => r.id === id));
-                  setShowDetails(true);
-                }}
+      <AppContextProvider>
+        <View style={styles.visible}>
+          {showDetails && !!request && (
+            <View style={styles.visible}>
+              <RequestDetails
+                onClose={() => setShowDetails(false)}
+                request={request}
               />
-            </>
+            </View>
           )}
+          <View
+            style={showDetails && !!request ? styles.hidden : styles.visible}
+          >
+            {mounted && !logger.enabled && !requests.length ? (
+              <Unmounted />
+            ) : (
+              <>
+                {paused && (
+                  <View style={styles.pausedBanner}>
+                    <Text>Paused</Text>
+                  </View>
+                )}
+                <RequestList
+                  compact={compact}
+                  requestsInfo={requestsInfo}
+                  options={options}
+                  showDetails={showDetails && !!request}
+                  maxRows={maxRows ?? requests.length}
+                  onPressItem={(id) => {
+                    setRequest(requests.find((r) => r.id === id));
+                    setShowDetails(true);
+                  }}
+                />
+              </>
+            )}
+          </View>
         </View>
-      </View>
+      </AppContextProvider>
     </ThemeContext.Provider>
   );
 };

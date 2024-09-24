@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Image,
-  StyleSheet,
-  Modal,
-  Text,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import Button from './Button';
-import { Theme, useThemedStyles } from '../theme';
+import { useThemedStyles } from '../theme';
+import NLModal from './Modal';
+import Icon from './Icon';
 
 interface Props {
   options: { text: string; onPress: () => Promise<void> }[];
@@ -22,84 +16,39 @@ const Options: React.FC<Props> = ({ options }) => {
 
   return (
     <>
-      <TouchableOpacity
-        style={styles.menu}
+      <Icon
+        name="more"
         onPress={() => setOpenOptions(true)}
-      >
-        <Image
-          source={require('./images/more.png')}
-          resizeMode="contain"
-          testID="options-menu"
-          style={[styles.icon, styles.iconButton]}
-        />
-      </TouchableOpacity>
-      <Modal
+        testID="options-menu"
+        accessibilityLabel="More"
+        iconStyle={styles.iconButton}
+      />
+      <NLModal
         visible={openOptions}
-        animationType="fade"
-        transparent={true}
-        onDismiss={() => setOpenOptions(false)}
-        onRequestClose={() => setOpenOptions(false)}
+        onClose={() => setOpenOptions(false)}
+        title="Options"
       >
-        <View style={styles.modalRoot}>
-          <TouchableWithoutFeedback onPress={() => setOpenOptions(false)}>
-            <View style={styles.backdrop} />
-          </TouchableWithoutFeedback>
-          <View style={styles.modalContent}>
-            <Text style={styles.title}>Options</Text>
-            {options.map(({ text, onPress }) => (
-              <Button
-                key={text}
-                onPress={async () => {
-                  // Need to await in order for the getHar option to work
-                  await onPress();
-                  setOpenOptions(false);
-                }}
-              >
-                {text}
-              </Button>
-            ))}
-          </View>
-        </View>
-      </Modal>
+        {options.map(({ text, onPress }) => (
+          <Button
+            key={text}
+            onPress={async () => {
+              // Need to await in order for the getHar option to work
+              await onPress();
+              setOpenOptions(false);
+            }}
+          >
+            {text}
+          </Button>
+        ))}
+      </NLModal>
     </>
   );
 };
 
-const themedStyles = (theme: Theme) =>
+const themedStyles = () =>
   StyleSheet.create({
-    modalRoot: {
-      ...StyleSheet.absoluteFillObject,
-      justifyContent: 'center',
-      alignItems: 'center',
-      flex: 1,
-    },
-    modalContent: {
-      borderRadius: 8,
-      padding: 16,
-      maxWidth: '100%',
-      backgroundColor: 'white',
-    },
-    backdrop: {
-      ...StyleSheet.absoluteFillObject,
-      backgroundColor: 'rgba(0,0,0,0.5)',
-    },
     iconButton: {
-      tintColor: theme.colors.text,
       width: 30,
-    },
-    icon: {
-      width: 20,
-      height: 20,
-      marginRight: 10,
-      alignSelf: 'center',
-      tintColor: theme.colors.muted,
-    },
-    menu: { alignSelf: 'center' },
-    title: {
-      fontSize: 20,
-      paddingBottom: 10,
-      fontWeight: 'bold',
-      textAlign: 'center',
     },
   });
 

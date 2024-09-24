@@ -5,6 +5,7 @@ import { useThemedStyles, Theme } from '../theme';
 import ResultItem from './ResultItem';
 import SearchBar from './SearchBar';
 import { NetworkRequestInfoRow } from '../types';
+import { useAppContext } from './AppContext';
 
 interface Props {
   requestsInfo: NetworkRequestInfoRow[];
@@ -24,20 +25,34 @@ const RequestList: React.FC<Props> = ({
   maxRows,
 }) => {
   const styles = useThemedStyles(themedStyles);
-
   const [searchValue, onChangeSearchText] = useState('');
+  const { search, filter } = useAppContext();
+  const lcSearch = search.toLowerCase().trim();
 
   const filteredRequests = useMemo(() => {
     return requestsInfo
       .filter((request) => {
-        const value = searchValue.toLowerCase().trim();
-        return (
-          request.url.toLowerCase().includes(value) ||
-          request.gqlOperation?.toLowerCase().includes(value)
-        );
+        const searchMatches =
+          !lcSearch ||
+          request.url.toLowerCase().includes(lcSearch) ||
+          request.gqlOperation?.toLowerCase().includes(lcSearch);
+
+        const filterMethodMatches =
+          (filter.methods?.size ?? 0) === 0 ||
+          filter.methods?.has(request.method);
+
+        const filterStatusMatches = filter.status
+          ? request.status === filter.status
+          : filter.statusErrors
+          ? request.status >= 400
+          : true;
+
+        const filterMatches = filterMethodMatches && filterStatusMatches;
+
+        return searchMatches && filterMatches;
       })
       .slice(0, maxRows);
-  }, [requestsInfo, maxRows, searchValue]);
+  }, [requestsInfo, lcSearch, filter, maxRows]);
 
   return (
     <View style={styles.container}>
