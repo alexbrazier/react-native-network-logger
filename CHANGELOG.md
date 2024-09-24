@@ -1,5 +1,18 @@
 
 
+# [1.17.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.16.1...v1.17.0) (2024-09-24)
+
+
+### Bug Fixes
+
+* Limit request length before scrolling for long requests ([#108](https://github.com/alexbrazier/react-native-network-logger/issues/108)) ([e423079](https://github.com/alexbrazier/react-native-network-logger/commit/e423079fc36c4aac32c5673ccde2a74d39f63525))
+
+
+### Features
+
+* 'Resume' needs to apply missed logs ([#89](https://github.com/alexbrazier/react-native-network-logger/issues/89)) ([0ecd3e8](https://github.com/alexbrazier/react-native-network-logger/commit/0ecd3e82a5191965076ebd7be138fc51cbeac5d5))
+* Add Search filters for method and status code ([#83](https://github.com/alexbrazier/react-native-network-logger/issues/83)) ([3639ef3](https://github.com/alexbrazier/react-native-network-logger/commit/3639ef3422ee1586c031fa09318ee4e19724369a))
+
 ## [1.16.1](https://github.com/alexbrazier/react-native-network-logger/compare/v1.16.0...v1.16.1) (2024-04-13)
 
 
