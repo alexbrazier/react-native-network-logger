@@ -3,6 +3,8 @@ import NetworkRequestInfo from './NetworkRequestInfo';
 import { Headers, RequestMethod, StartNetworkLoggingOptions } from './types';
 import extractHost from './utils/extractHost';
 import { warn } from './utils/logger';
+import debounce from './utils/debounce';
+import { LOGGER_REFRESH_RATE, LOGGER_MAX_REQUESTS } from './constant';
 
 let nextXHRId = 0;
 
@@ -13,25 +15,41 @@ type XHR = {
 
 export default class Logger {
   private requests: NetworkRequestInfo[] = [];
-  private xhrIdMap: { [key: number]: number } = {};
-  private maxRequests: number = 500;
+  private pausedRequests: NetworkRequestInfo[] = [];
+  private xhrIdMap: Map<number, () => number> = new Map();
+  private maxRequests: number = LOGGER_MAX_REQUESTS;
+  private refreshRate: number = LOGGER_REFRESH_RATE;
+  private latestRequestUpdatedAt: number = 0;
   private ignoredHosts: Set<string> | undefined;
   private ignoredUrls: Set<string> | undefined;
   private ignoredPatterns: RegExp[] | undefined;
+  private paused = false;
   public enabled = false;
-  public paused = false;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  callback = (requests: any[]) => {};
+  callback = (_: NetworkRequestInfo[]) => null;
+
+  isPaused = this.paused;
 
   setCallback = (callback: any) => {
     this.callback = callback;
   };
 
+  debouncedCallback = debounce(() => {
+    if (
+      !this.latestRequestUpdatedAt ||
+      this.requests.some((r) => r.updatedAt > this.latestRequestUpdatedAt)
+    ) {
+      this.latestRequestUpdatedAt = Date.now();
+      // prevent mutation of requests for all subscribers
+      this.callback([...this.requests]);
+    }
+  }, this.refreshRate);
+
   private getRequest = (xhrIndex?: number) => {
     if (xhrIndex === undefined) return undefined;
-    const requestIndex = this.requests.length - this.xhrIdMap[xhrIndex] - 1;
-    return this.requests[requestIndex];
+    if (!this.xhrIdMap.has(xhrIndex)) return undefined;
+    const index = this.xhrIdMap.get(xhrIndex)!();
+    return (this.paused ? this.pausedRequests : this.requests)[index];
   };
 
   private updateRequest = (
@@ -44,14 +62,6 @@ export default class Logger {
   };
 
   private openCallback = (method: RequestMethod, url: string, xhr: XHR) => {
-    xhr._index = nextXHRId++;
-    const xhrIndex = this.requests.length;
-    this.xhrIdMap[xhr._index] = xhrIndex;
-
-    if (this.paused) {
-      return;
-    }
-
     if (this.ignoredHosts) {
       const host = extractHost(url);
       if (host && this.ignoredHosts.has(host)) {
@@ -71,18 +81,33 @@ export default class Logger {
       }
     }
 
+    xhr._index = nextXHRId++;
+    this.xhrIdMap.set(xhr._index, () => {
+      return (this.paused ? this.pausedRequests : this.requests).findIndex(
+        (r) => r.id === `${xhr._index}`
+      );
+    });
+
     const newRequest = new NetworkRequestInfo(
-      `${nextXHRId}`,
+      `${xhr._index}`,
       'XMLHttpRequest',
       method,
       url
     );
 
-    if (this.requests.length >= this.maxRequests) {
-      this.requests.pop();
+    if (this.paused) {
+      const logsLength = this.pausedRequests.length + this.requests.length;
+      if (logsLength > this.maxRequests) {
+        if (this.requests.length > 0) this.requests.pop();
+        else this.pausedRequests.pop();
+      }
+      this.pausedRequests.push(newRequest);
+    } else {
+      this.requests.unshift(newRequest);
+      if (this.requests.length > this.maxRequests) {
+        this.requests.pop();
+      }
     }
-
-    this.requests.unshift(newRequest);
   };
 
   private requestHeadersCallback = (
@@ -113,7 +138,7 @@ export default class Logger {
       startTime: Date.now(),
       dataSent: data,
     });
-    this.callback(this.requests);
+    this.debouncedCallback();
   };
 
   private responseCallback = (
@@ -132,7 +157,7 @@ export default class Logger {
       responseURL,
       responseType,
     });
-    this.callback(this.requests);
+    this.debouncedCallback();
   };
 
   enableXHRInterception = (options?: StartNetworkLoggingOptions) => {
@@ -171,6 +196,16 @@ export default class Logger {
       this.ignoredHosts = new Set(options.ignoredHosts);
     }
 
+    if (options?.refreshRate) {
+      if (typeof options.refreshRate !== 'number' || options.refreshRate < 1) {
+        warn(
+          'refreshRate must be a number greater than 0. The logger has not been started.'
+        );
+        return;
+      }
+      this.refreshRate = options.refreshRate;
+    }
+
     if (options?.ignoredPatterns) {
       this.ignoredPatterns = options.ignoredPatterns;
     }
@@ -204,6 +239,48 @@ export default class Logger {
 
   clearRequests = () => {
     this.requests = [];
-    this.callback(this.requests);
+    this.pausedRequests = [];
+    this.latestRequestUpdatedAt = 0;
+    this.debouncedCallback();
+  };
+
+  onPausedChange = (paused: boolean) => {
+    if (!paused) {
+      this.pausedRequests.forEach((request) => {
+        this.requests.unshift(request);
+        if (this.requests.length > this.maxRequests) {
+          this.requests.pop();
+        }
+      });
+      this.pausedRequests = [];
+      this.debouncedCallback();
+    }
+    this.paused = paused;
+  };
+
+  disableXHRInterception = () => {
+    if (!this.enabled) return;
+
+    this.clearRequests();
+
+    nextXHRId = 0;
+    this.enabled = false;
+    this.paused = false;
+    this.xhrIdMap.clear();
+    this.maxRequests = LOGGER_MAX_REQUESTS;
+    this.refreshRate = LOGGER_REFRESH_RATE;
+    this.ignoredHosts = undefined;
+    this.ignoredUrls = undefined;
+    this.ignoredPatterns = undefined;
+
+    const noop = () => null;
+    // manually reset callbacks even if the XHRInterceptor lib does it for us with 'disableInterception'
+    XHRInterceptor.setOpenCallback(noop);
+    XHRInterceptor.setRequestHeaderCallback(noop);
+    XHRInterceptor.setHeaderReceivedCallback(noop);
+    XHRInterceptor.setSendCallback(noop);
+    XHRInterceptor.setResponseCallback(noop);
+
+    XHRInterceptor.disableInterception();
   };
 }

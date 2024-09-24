@@ -7,7 +7,9 @@ import { useAppContext } from './AppContext';
 import Icon from './Icon';
 
 interface Props {
-  options: { text: string; onPress: () => Promise<void> | void }[];
+  value: string;
+  onChangeText(text: string): void;
+  options: { text: string; onPress: () => Promise<void> }[];
 }
 
 const SearchBar: React.FC<Props> = ({ options }) => {

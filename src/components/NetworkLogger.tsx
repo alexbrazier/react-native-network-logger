@@ -14,6 +14,8 @@ import { AppContextProvider } from './AppContext';
 interface Props {
   theme?: ThemeName | DeepPartial<Theme>;
   sort?: 'asc' | 'desc';
+  compact?: boolean;
+  maxRows?: number;
 }
 
 const sortRequests = (requests: NetworkRequestInfo[], sort: 'asc' | 'desc') => {
@@ -23,14 +25,17 @@ const sortRequests = (requests: NetworkRequestInfo[], sort: 'asc' | 'desc') => {
   return [...requests];
 };
 
-const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
-  const [requests, setRequests] = useState(
-    sortRequests(logger.getRequests(), sort)
-  );
+const NetworkLogger: React.FC<Props> = ({
+  theme = 'light',
+  sort = 'desc',
+  compact = false,
+  maxRows,
+}) => {
+  const [requests, setRequests] = useState(logger.getRequests());
   const [request, setRequest] = useState<NetworkRequestInfo>();
   const [showDetails, _setShowDetails] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [paused, setPaused] = useState<boolean>(logger.paused);
+  const [paused, setPaused] = useState<boolean>(logger.isPaused);
 
   const setShowDetails = useCallback((shouldShow: boolean) => {
     _setShowDetails(shouldShow);
@@ -44,7 +49,7 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
 
   useEffect(() => {
     logger.setCallback((updatedRequests: NetworkRequestInfo[]) => {
-      setRequests(sortRequests(updatedRequests, sort));
+      setRequests([...updatedRequests]);
     });
 
     logger.enableXHRInterception();
@@ -86,16 +91,18 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
     return [
       {
         text: paused ? 'Resume' : 'Pause',
-        onPress: () => {
+        onPress: async () => {
           setPaused((prev: boolean) => {
-            logger.paused = !prev;
+            logger.onPausedChange(!prev);
             return !prev;
           });
         },
       },
       {
         text: 'Clear Logs',
-        onPress: () => logger.clearRequests(),
+        onPress: async () => {
+          logger.clearRequests();
+        },
       },
       {
         text: 'Export all Logs',
@@ -105,46 +112,46 @@ const NetworkLogger: React.FC<Props> = ({ theme = 'light', sort = 'desc' }) => {
   }, [paused, getHar]);
 
   const requestsInfo = useMemo(() => {
-    return requests.map((r) => r.toRow());
-  }, [requests]);
+    return sortRequests(requests, sort).map((r) => r.toRow());
+  }, [sort, requests]);
 
   return (
     <ThemeContext.Provider value={theme}>
       <AppContextProvider>
-        <View style={styles.visible}>
-          {showDetails && !!request && (
-            <View style={styles.visible}>
-              <RequestDetails
-                onClose={() => setShowDetails(false)}
-                request={request}
-              />
-            </View>
-          )}
-          <View
-            style={showDetails && !!request ? styles.hidden : styles.visible}
-          >
-            {mounted && !logger.enabled && !requests.length ? (
-              <Unmounted />
-            ) : (
-              <>
-                {paused && (
-                  <View style={styles.pausedBanner}>
-                    <Text>Paused</Text>
-                  </View>
-                )}
-                <RequestList
-                  requestsInfo={requestsInfo}
-                  options={options}
-                  showDetails={showDetails && !!request}
-                  onPressItem={(id) => {
-                    setRequest(requests.find((r) => r.id === id));
-                    setShowDetails(true);
-                  }}
-                />
-              </>
-            )}
+      <View style={styles.visible}>
+        {showDetails && !!request && (
+          <View style={styles.visible}>
+            <RequestDetails
+              onClose={() => setShowDetails(false)}
+              request={request}
+            />
           </View>
+        )}
+        <View style={showDetails && !!request ? styles.hidden : styles.visible}>
+          {mounted && !logger.enabled && !requests.length ? (
+            <Unmounted />
+          ) : (
+            <>
+              {paused && (
+                <View style={styles.pausedBanner}>
+                  <Text>Paused</Text>
+                </View>
+              )}
+              <RequestList
+                compact={compact}
+                requestsInfo={requestsInfo}
+                options={options}
+                showDetails={showDetails && !!request}
+                maxRows={maxRows ?? requests.length}
+                onPressItem={(id) => {
+                  setRequest(requests.find((r) => r.id === id));
+                  setShowDetails(true);
+                }}
+              />
+            </>
+          )}
         </View>
+      </View>
       </AppContextProvider>
     </ThemeContext.Provider>
   );
@@ -164,4 +171,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NetworkLogger;
+export { NetworkLogger as default, Props as NetworkLoggerProps };

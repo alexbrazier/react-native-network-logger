@@ -1,6 +1,7 @@
 import XHRInterceptor from 'react-native/Libraries/Network/XHRInterceptor';
 import { warn } from '../utils/logger';
 import Logger from '../Logger';
+import { LOGGER_MAX_REQUESTS, LOGGER_REFRESH_RATE } from '../constant';
 
 jest.mock('react-native/Libraries/Blob/FileReader', () => ({}));
 jest.mock('react-native/Libraries/Network/XHRInterceptor', () => ({
@@ -11,6 +12,7 @@ jest.mock('react-native/Libraries/Network/XHRInterceptor', () => ({
   setHeaderReceivedCallback: jest.fn(),
   setResponseCallback: jest.fn(),
   enableInterception: jest.fn(),
+  disableInterception: jest.fn(),
 }));
 
 jest.mock('../utils/logger', () => ({
@@ -25,7 +27,7 @@ beforeEach(() => {
 
 describe('enableXHRInterception', () => {
   it('should do nothing if interceptor has already been enabled', () => {
-    (warn as jest.Mock).mockImplementationOnce(() => {});
+    (warn as jest.Mock).mockImplementationOnce(() => null);
     const logger = new Logger();
 
     (XHRInterceptor.isInterceptorEnabled as jest.Mock).mockReturnValueOnce(
@@ -155,6 +157,76 @@ describe('enableXHRInterception', () => {
   });
 });
 
+describe('disableXHRInterception', () => {
+  it('should do nothing if interceptor has not been enabled', () => {
+    const logger = new Logger();
+
+    (XHRInterceptor.isInterceptorEnabled as jest.Mock).mockReturnValueOnce(
+      false
+    );
+
+    const result = logger.disableXHRInterception();
+
+    expect(result).toBeUndefined();
+    expect(XHRInterceptor.isInterceptorEnabled).toHaveBeenCalledTimes(0);
+    expect(XHRInterceptor.disableInterception).toHaveBeenCalledTimes(0);
+  });
+
+  it('should call disableInterception and clear options', () => {
+    const logger = new Logger();
+
+    logger.enableXHRInterception();
+    logger.disableXHRInterception();
+
+    expect(XHRInterceptor.disableInterception).toHaveBeenCalledTimes(1);
+    expect(XHRInterceptor.disableInterception).toHaveBeenCalledWith();
+
+    // @ts-ignore
+    expect(logger.ignoredHosts).toBeUndefined();
+    // @ts-ignore
+    expect(logger.ignoredUrls).toBeUndefined();
+    // @ts-ignore
+    expect(logger.ignoredPatterns).toBeUndefined();
+    // @ts-ignore
+    expect(logger.maxRequests).toEqual(LOGGER_MAX_REQUESTS);
+    // @ts-ignore
+    expect(logger.refreshRate).toEqual(LOGGER_REFRESH_RATE);
+    // @ts-ignore
+    expect(logger.requests).toEqual([]);
+    // @ts-ignore
+    expect(logger.latestRequestUpdatedAt).toEqual(0);
+    // @ts-ignore
+    expect(logger.xhrIdMap).toEqual(new Map());
+  });
+
+  it('should set options after re-enabling', () => {
+    const logger = new Logger();
+
+    logger.enableXHRInterception({
+      ignoredHosts: ['example.com'],
+      ignoredUrls: ['http://example.com/'],
+      ignoredPatterns: [/^POST /],
+      maxRequests: 100,
+    });
+    logger.disableXHRInterception();
+    logger.enableXHRInterception({
+      ignoredHosts: ['test.com'],
+      ignoredUrls: ['http://test.com/'],
+      ignoredPatterns: [/^HEAD /],
+      maxRequests: 10,
+    });
+
+    // @ts-ignore
+    expect(logger.ignoredHosts).toStrictEqual(new Set(['test.com']));
+    // @ts-ignore
+    expect(logger.ignoredUrls).toStrictEqual(new Set(['http://test.com/']));
+    // @ts-ignore
+    expect(logger.ignoredPatterns).toStrictEqual([/^HEAD /]);
+    // @ts-ignore
+    expect(logger.maxRequests).toEqual(10);
+  });
+});
+
 describe('getRequests', () => {
   it('should return the requests', () => {
     const logger = new Logger();
@@ -168,6 +240,8 @@ describe('getRequests', () => {
 
 describe('clearRequests', () => {
   it('should clear the requests', () => {
+    jest.useFakeTimers();
+
     const logger = new Logger();
 
     logger.callback = jest.fn();
@@ -177,9 +251,13 @@ describe('clearRequests', () => {
 
     logger.clearRequests();
 
+    jest.advanceTimersByTime(LOGGER_REFRESH_RATE);
+
     expect(logger.getRequests()).toEqual([]);
     expect(logger.callback).toHaveBeenCalledTimes(1);
     expect(logger.callback).toHaveBeenCalledWith([]);
+
+    jest.useRealTimers();
   });
 });
 
@@ -195,25 +273,33 @@ describe('getRequest', () => {
 
   it('should return request that matches index', () => {
     const logger = new Logger();
-    const requests = [{ id: 1 }, { id: 2 }, { id: 3 }];
+    const requests = [{ id: `3` }, { id: `2` }, { id: `1` }];
     // @ts-expect-error
     logger.requests = requests;
     // @ts-expect-error
-    logger.xhrIdMap = { 0: 0, 1: 1, 2: 2 };
+    logger.xhrIdMap = new Map([
+      [1, () => requests.findIndex((r) => r.id === `${1}`)],
+      [2, () => requests.findIndex((r) => r.id === `${2}`)],
+      [3, () => requests.findIndex((r) => r.id === `${3}`)],
+    ]);
     // @ts-expect-error
-    const result = logger.getRequest(0);
+    const result = logger.getRequest(1);
     expect(result).toBe(requests[2]);
   });
 
   it('should return request that matches index if at start', () => {
     const logger = new Logger();
-    const requests = [{ id: 1 }, { id: 2 }, { id: 3 }];
+    const requests = [{ id: `3` }, { id: `2` }, { id: `1` }];
     // @ts-expect-error
     logger.requests = requests;
     // @ts-expect-error
-    logger.xhrIdMap = { 0: 0, 1: 1, 2: 2 };
+    logger.xhrIdMap = new Map([
+      [1, () => requests.findIndex((r) => r.id === `${1}`)],
+      [2, () => requests.findIndex((r) => r.id === `${2}`)],
+      [3, () => requests.findIndex((r) => r.id === `${3}`)],
+    ]);
     // @ts-expect-error
-    const result = logger.getRequest(2);
+    const result = logger.getRequest(3);
     expect(result).toBe(requests[0]);
   });
 });
@@ -233,6 +319,8 @@ describe('openCallback', () => {
     logger.openCallback('POST', url2, xhr);
     expect(logger.getRequests()[0].url).toEqual(url2);
     expect(logger.getRequests()[1].url).toEqual(url1);
+
+    logger.disableXHRInterception();
   });
 
   it('should ignore requests that have ignored hosts', () => {
@@ -249,22 +337,25 @@ describe('openCallback', () => {
     logger.openCallback('POST', url2, xhr);
     expect(logger.getRequests()[0].url).toEqual(url1);
     expect(logger.getRequests()).toHaveLength(1);
+
+    logger.disableXHRInterception();
   });
 
   it('should ignore requests that have ignored urls', () => {
     const logger = new Logger();
     logger.enableXHRInterception({ ignoredUrls: ['http://ignored.com/test'] });
 
-    const xhr = {};
     const url1 = 'http://ignored.com/1';
     const url2 = 'http://ignored.com/test';
 
     // @ts-expect-error
-    logger.openCallback('POST', url1, xhr);
+    logger.openCallback('POST', url1, { _index: 0 });
     // @ts-expect-error
-    logger.openCallback('POST', url2, xhr);
+    logger.openCallback('POST', url2, { _index: 1 });
     expect(logger.getRequests()[0].url).toEqual(url1);
     expect(logger.getRequests()).toHaveLength(1);
+
+    logger.disableXHRInterception();
   });
 
   it('should ignore requests that match pattern', () => {
@@ -273,23 +364,97 @@ describe('openCallback', () => {
       ignoredPatterns: [/^HEAD /, /^POST http:\/\/ignored/],
     });
 
-    const xhr = {};
     const url1 = 'http://allowed.com/1';
     const url2 = 'http://ignored.com/test';
 
     // @ts-expect-error
-    logger.openCallback('POST', url1, xhr);
+    logger.openCallback('POST', url1, { _index: 0 });
     // @ts-expect-error
-    logger.openCallback('POST', url2, xhr);
+    logger.openCallback('POST', url2, { _index: 1 });
     // @ts-expect-error
-    logger.openCallback('HEAD', url2, xhr);
+    logger.openCallback('HEAD', url2, { _index: 2 });
     // @ts-expect-error
-    logger.openCallback('PUT', url2, xhr);
+    logger.openCallback('PUT', url2, { _index: 3 });
     // Requests should be in reverse order
     expect(logger.getRequests()[1].url).toEqual(url1);
     expect(logger.getRequests()[1].method).toEqual('POST');
     expect(logger.getRequests()[0].url).toEqual(url2);
     expect(logger.getRequests()[0].method).toEqual('PUT');
     expect(logger.getRequests()).toHaveLength(2);
+
+    logger.disableXHRInterception();
+  });
+
+  it('should retrieve requests when it is restricted by maxRequests', () => {
+    const logger = new Logger();
+    logger.enableXHRInterception({
+      maxRequests: 2,
+    });
+
+    const url = 'http://example.com/1';
+
+    // @ts-expect-error
+    logger.openCallback('POST', url, { _index: 0 });
+    // @ts-expect-error
+    logger.openCallback('GET', url, { _index: 1 });
+    // @ts-expect-error
+    logger.openCallback('HEAD', url, { _index: 2 });
+    // @ts-expect-error
+    logger.openCallback('PUT', url, { _index: 3 });
+
+    // Requests should be in reverse order
+    expect(logger.getRequests()[0].method).toEqual('PUT');
+    expect(logger.getRequests()[1].method).toEqual('HEAD');
+    expect(logger.getRequests()).toHaveLength(2);
+
+    // @ts-expect-error
+    expect(logger.getRequest(0)?.method).toBeUndefined();
+    const first = logger.getRequests()[0];
+    // @ts-expect-error
+    expect(logger.getRequest(3)?.method).toBe(first?.method);
+
+    logger.disableXHRInterception();
+  });
+
+  it('should retrieve missed requests when it is restricted by maxRequests after resuming a paused network logging', () => {
+    const logger = new Logger();
+    logger.enableXHRInterception({
+      maxRequests: 2,
+    });
+
+    const url = 'http://example.com/1';
+
+    // @ts-expect-error
+    logger.openCallback('POST', url, { _index: 0 });
+
+    // @ts-expect-error
+    logger.paused = true;
+
+    // @ts-expect-error
+    logger.openCallback('GET', url, { _index: 1 });
+
+    expect(logger.getRequests()[0].method).toEqual('POST');
+    expect(logger.getRequests()).toHaveLength(1);
+
+    // @ts-expect-error
+    logger.paused = false;
+
+    // @ts-expect-error
+    logger.openCallback('HEAD', url, { _index: 2 });
+    // @ts-expect-error
+    logger.openCallback('PUT', url, { _index: 3 });
+
+    // Requests should be in reverse order
+    expect(logger.getRequests()[0].method).toEqual('PUT');
+    expect(logger.getRequests()[1].method).toEqual('HEAD');
+    expect(logger.getRequests()).toHaveLength(2);
+
+    // @ts-expect-error
+    expect(logger.getRequest(0)?.method).toBeUndefined();
+    const first = logger.getRequests()[0];
+    // @ts-expect-error
+    expect(logger.getRequest(3)?.method).toBe(first?.method);
+
+    logger.disableXHRInterception();
   });
 });

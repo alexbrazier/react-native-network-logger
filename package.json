@@ -1,6 +1,6 @@
 {
   "name": "react-native-network-logger",
-  "version": "1.15.0",
+  "version": "1.16.1",
   "description": "An HTTP traffic monitor for React Native with zero dependencies",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -38,7 +38,8 @@
   "scripts": {
     "test": "jest",
     "typescript": "tsc --noEmit",
-    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "lint": "yarn eslint && yarn prettier",
+    "eslint": "eslint \"**/*.{js,ts,tsx}\"",
     "prettier": "prettier --check '{,example/}src/**/*.{js,json,ts,tsx}' '{*,example/*}.{js,ts,tsx}'",
     "prepare": "bob build",
     "release": "release-it",
@@ -48,22 +49,21 @@
   "dependencies": {},
   "devDependencies": {
     "@react-native-community/eslint-config": "^3.2.0",
-    "@release-it/conventional-changelog": "^5.1.1",
+    "@release-it/conventional-changelog": "^8.0.1",
     "@testing-library/react-native": "^12.1.2",
     "@types/jest": "^29.5.1",
     "@types/react": "^18.2.6",
     "@types/react-native": "^0.72.0",
     "eslint": "^8.41.0",
     "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.3",
     "jest": "^29.5.0",
     "prettier": "^2.8.8",
     "react": "^18.2.0",
     "react-native": "0.71.8",
-    "react-native-builder-bob": "^0.20.4",
+    "react-native-builder-bob": "^0.23.2",
     "react-test-renderer": "^18.2.0",
-    "release-it": "^15.10.3",
+    "release-it": "^17.0.1",
     "rimraf": "^5.0.1",
     "typescript": "^5.0.4"
   },
@@ -79,7 +79,8 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
-    ]
+    ],
+    "globalSetup": "<rootDir>/global-jest-setup.js"
   },
   "husky": {
     "hooks": {
@@ -108,19 +109,7 @@
     "extends": [
       "@react-native-community",
       "prettier"
-    ],
-    "rules": {
-      "prettier/prettier": [
-        "error",
-        {
-          "quoteProps": "consistent",
-          "singleQuote": true,
-          "tabWidth": 2,
-          "trailingComma": "es5",
-          "useTabs": false
-        }
-      ]
-    }
+    ]
   },
   "eslintIgnore": [
     "node_modules/",

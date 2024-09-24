@@ -7,7 +7,7 @@ import NLModal from './Modal';
 import Icon from './Icon';
 
 interface Props {
-  options: { text: string; onPress: () => Promise<void> | void }[];
+  options: { text: string; onPress: () => Promise<void> }[];
 }
 
 const Options: React.FC<Props> = ({ options }) => {
@@ -19,6 +19,7 @@ const Options: React.FC<Props> = ({ options }) => {
       <Icon
         name="more"
         onPress={() => setOpenOptions(true)}
+        testID="options-menu"
         accessibilityLabel="More"
         iconStyle={styles.iconButton}
       />
@@ -31,6 +32,7 @@ const Options: React.FC<Props> = ({ options }) => {
           <Button
             key={text}
             onPress={async () => {
+              // Need to await in order for the getHar option to work
               await onPress();
               setOpenOptions(false);
             }}
