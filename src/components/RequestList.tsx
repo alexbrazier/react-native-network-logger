@@ -56,6 +56,7 @@ const RequestList: React.FC<Props> = ({
             request={item}
             onPress={() => onPressItem(item.id)}
             compact={compact}
+            list
           />
         )}
       />

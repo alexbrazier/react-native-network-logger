@@ -22,7 +22,9 @@ export default function App() {
   formData.append('test', 'hello');
   const makeRequest = () => {
     fetch(
-      'https://postman-echo.com/post?query=some really long query that goes onto multiple lines so we can test what happens',
+      `https://postman-echo.com/post?query=${'some really long query that goes onto multiple lines so we can test what happens'.repeat(
+        5
+      )}`,
       {
         method: 'POST',
         body: JSON.stringify({ test: 'hello' }),
