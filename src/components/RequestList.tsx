@@ -44,8 +44,8 @@ const RequestList: React.FC<Props> = ({
         const filterStatusMatches = filter.status
           ? request.status === filter.status
           : filter.statusErrors
-          ? request.status >= 400
-          : true;
+            ? request.status >= 400
+            : true;
 
         const filterMatches = filterMethodMatches && filterStatusMatches;
 

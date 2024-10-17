@@ -25,7 +25,7 @@ const Headers = ({
   headers,
 }: {
   title: string;
-  headers?: Object;
+  headers?: object;
 }) => {
   const styles = useThemedStyles(themedStyles);
   return (
