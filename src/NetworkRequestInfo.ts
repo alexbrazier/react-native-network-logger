@@ -76,7 +76,7 @@ export default class NetworkRequestInfo {
         return fromEntries(data?._parts);
       }
       return JSON.parse(data);
-    } catch (e) {
+    } catch {
       return { data };
     }
   }
