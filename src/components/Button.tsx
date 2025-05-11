@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   TouchableOpacity,
+  TouchableOpacityProps,
   Text,
   StyleSheet,
   StyleProp,
@@ -15,7 +16,7 @@ type Props = {
   onPress: () => void;
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
-} & TouchableOpacity['props'];
+} & TouchableOpacityProps;
 
 const Button: React.FC<Props> = ({
   children,

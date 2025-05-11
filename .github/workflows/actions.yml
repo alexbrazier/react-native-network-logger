@@ -10,20 +10,25 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: yarn bootstrap --frozen-lockfile
+      - run: yarn install --frozen-lockfile
+      - run: yarn prepare
       - run: yarn lint
       - run: yarn typescript
       - run: yarn prettier
   unit-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: yarn bootstrap --frozen-lockfile
+      - run: yarn install --frozen-lockfile
       - run: yarn test --coverage

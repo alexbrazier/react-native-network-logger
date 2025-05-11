@@ -3,7 +3,7 @@ import { render, act, fireEvent } from '@testing-library/react-native';
 import Header from './Header';
 import { Share } from 'react-native';
 
-jest.mock('react-native/Libraries/Share/Share', () => ({ share: jest.fn() }));
+jest.mock('react-native/Libraries/Share/Share');
 jest.mock('./images/share.png', () => ({ uri: '' }));
 
 test('it renders header correctly', () => {
