@@ -1,5 +1,10 @@
 import React, { Fragment } from 'react';
-import { Image, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableOpacityProps,
+} from 'react-native';
 import { Theme, useThemedStyles } from '../theme';
 
 const icons = {
@@ -18,7 +23,9 @@ type ButtonProps =
   | ({
       onPress: () => void;
       accessibilityLabel: string;
-    } & TouchableOpacity['props']);
+    } & TouchableOpacityProps);
+
+type IconName = keyof typeof icons;
 
 const Icon = ({
   name,
@@ -27,7 +34,7 @@ const Icon = ({
   iconStyle,
   ...rest
 }: {
-  name: keyof typeof icons;
+  name: IconName;
   iconStyle?: Image['props']['style'];
 } & ButtonProps) => {
   const styles = useThemedStyles(themedStyles);
