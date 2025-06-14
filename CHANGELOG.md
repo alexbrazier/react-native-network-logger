@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.1](https://github.com/alexbrazier/react-native-network-logger/compare/v2.0.0...v2.0.1) (2025-06-14)
+
+- Adds support for React Native 0.80 and above.
+
+### Bug Fixes
+
+- XHRInterceptor location for RN 80 ([#117](https://github.com/alexbrazier/react-native-network-logger/issues/117)) ([5491b7c](https://github.com/alexbrazier/react-native-network-logger/commit/5491b7cf7635b00253b18b4958e05fd1d72cfa90))
+
 # [2.0.0](https://github.com/alexbrazier/react-native-network-logger/compare/v1.17.0...v2.0.0) (2025-05-11)
 
 ### Bug Fixes
