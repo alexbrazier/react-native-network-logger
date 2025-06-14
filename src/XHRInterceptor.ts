@@ -11,15 +11,21 @@ type XHRInterceptorModule = {
 
 let XHRInterceptor: XHRInterceptorModule;
 try {
-  // new location for React Native 0.79+
-  const module = require('react-native/src/private/inspector/XHRInterceptor');
+  // new location for React Native 0.80+
+  const module = require('react-native/src/private/devsupport/devmenu/elementinspector/XHRInterceptor');
   XHRInterceptor = module.default ?? module;
 } catch {
   try {
-    const module = require('react-native/Libraries/Network/XHRInterceptor');
+    // new location for React Native 0.79+
+    const module = require('react-native/src/private/inspector/XHRInterceptor');
     XHRInterceptor = module.default ?? module;
   } catch {
-    throw new Error('XHRInterceptor could not be found in either location');
+    try {
+      const module = require('react-native/Libraries/Network/XHRInterceptor');
+      XHRInterceptor = module.default ?? module;
+    } catch {
+      throw new Error('XHRInterceptor could not be found in either location');
+    }
   }
 }
 
