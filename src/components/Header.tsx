@@ -19,6 +19,7 @@ const Header: React.FC<Props> = ({
   onToggle,
 }) => {
   const styles = useThemedStyles(themedStyles);
+  const prefix = collapsible ? (expanded ? '▼ ' : '▶ ') : '';
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -32,8 +33,7 @@ const Header: React.FC<Props> = ({
           accessibilityRole="header"
           testID="header-text"
         >
-          {collapsible ? (expanded ? '▼ ' : '▶ ') : ''}
-          {children}
+          {prefix + children}
         </Text>
       </TouchableOpacity>
 

@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   Share,
-  TextInput,
   Platform,
 } from 'react-native';
 import NetworkRequestInfo from '../NetworkRequestInfo';
@@ -14,22 +13,29 @@ import { backHandlerSet } from '../backHandler';
 import ResultItem from './ResultItem';
 import Header from './Header';
 import Button from './Button';
+import BodyViewer from './BodyViewer';
 
 interface Props {
   request: NetworkRequestInfo;
   onClose(): void;
   compact?: boolean;
+  initialRequestHeadersExpanded?: boolean;
+  initialResponseHeadersExpanded?: boolean;
+  initialRequestBodyExpanded?: boolean;
+  initialResponseBodyExpanded?: boolean;
 }
 
 const Headers = ({
   title = 'Headers',
   headers = {},
+  initiallyExpanded = true,
 }: {
   title: string;
   headers?: object;
+  initiallyExpanded?: boolean;
 }) => {
   const styles = useThemedStyles(themedStyles);
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(initiallyExpanded);
   return (
     <View>
       <Header
@@ -60,45 +66,23 @@ const Headers = ({
   );
 };
 
-const LargeText: React.FC<{ children: string }> = ({ children }) => {
-  const styles = useThemedStyles(themedStyles);
-
-  if (Platform.OS === 'ios') {
-    /**
-     * A readonly TextInput is used because large Text blocks sometimes don't render on iOS
-     * See this issue https://github.com/facebook/react-native/issues/19453
-     * Note: Even with the fix mentioned in the comments, text with ~10,000 lines still fails to render
-     */
-    return (
-      <TextInput
-        style={[styles.baseText, styles.content, styles.largeContent]}
-        multiline
-        editable={false}
-        value={children}
-      />
-    );
-  }
-
-  return (
-    <View style={styles.largeContent}>
-      <ScrollView nestedScrollEnabled>
-        <Text style={[styles.baseText, styles.content]} selectable>
-          {children}
-        </Text>
-      </ScrollView>
-    </View>
-  );
-};
-
 const RequestDetails: React.FC<Props> = ({
   request,
   onClose,
   compact = false,
+  initialRequestHeadersExpanded = true,
+  initialResponseHeadersExpanded = true,
+  initialRequestBodyExpanded = true,
+  initialResponseBodyExpanded = true,
 }) => {
   const [responseBody, setResponseBody] = useState('Loading...');
   const styles = useThemedStyles(themedStyles);
-  const [requestBodyExpanded, setRequestBodyExpanded] = useState(true);
-  const [responseBodyExpanded, setResponseBodyExpanded] = useState(true);
+  const [requestBodyExpanded, setRequestBodyExpanded] = useState(
+    initialRequestBodyExpanded
+  );
+  const [responseBodyExpanded, setResponseBodyExpanded] = useState(
+    initialResponseBodyExpanded
+  );
 
   useEffect(() => {
     (async () => {
@@ -130,7 +114,11 @@ const RequestDetails: React.FC<Props> = ({
     <View style={styles.container}>
       <ResultItem request={request} style={styles.info} compact={compact} />
       <ScrollView style={styles.scrollView} nestedScrollEnabled>
-        <Headers title="Request Headers" headers={request.requestHeaders} />
+        <Headers
+          title="Request Headers"
+          headers={request.requestHeaders}
+          initiallyExpanded={initialRequestHeadersExpanded}
+        />
         <Header
           collapsible
           shareContent={requestBody}
@@ -139,8 +127,17 @@ const RequestDetails: React.FC<Props> = ({
         >
           Request Body
         </Header>
-        {requestBodyExpanded && <LargeText>{requestBody}</LargeText>}
-        <Headers title="Response Headers" headers={request.responseHeaders} />
+        {requestBodyExpanded && (
+          <BodyViewer
+            content={requestBody}
+            initiallyExpanded={initialRequestBodyExpanded}
+          />
+        )}
+        <Headers
+          title="Response Headers"
+          headers={request.responseHeaders}
+          initiallyExpanded={initialResponseHeadersExpanded}
+        />
         <Header
           collapsible
           shareContent={responseBody}
@@ -149,8 +146,13 @@ const RequestDetails: React.FC<Props> = ({
         >
           Response Body
         </Header>
-        {responseBodyExpanded && <LargeText>{responseBody}</LargeText>}
-        <View style={styles.moreButtons}>
+        {responseBodyExpanded && (
+          <BodyViewer
+            content={responseBody}
+            initiallyExpanded={initialResponseBodyExpanded}
+          />
+        )}
+        <View style={styles.moreActionsContainer}>
           <Button
             onPress={() => Share.share({ message: getFullRequest() })}
             textStyle={styles.buttonText}
@@ -221,10 +223,7 @@ const themedStyles = (theme: Theme) =>
       backgroundColor: theme.colors.card,
       padding: 10,
     },
-    largeContent: {
-      maxHeight: 350,
-    },
-    moreButtons: {
+    moreActionsContainer: {
       gap: 10,
       flexDirection: 'row',
       alignItems: 'center',
