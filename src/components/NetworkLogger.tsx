@@ -122,6 +122,7 @@ const NetworkLogger: React.FC<Props> = ({
           {showDetails && !!request && (
             <View style={styles.visible}>
               <RequestDetails
+                compact={compact}
                 onClose={() => setShowDetails(false)}
                 request={request}
               />

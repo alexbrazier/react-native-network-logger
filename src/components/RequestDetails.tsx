@@ -18,29 +18,44 @@ import Button from './Button';
 interface Props {
   request: NetworkRequestInfo;
   onClose(): void;
+  compact?: boolean;
 }
 
 const Headers = ({
   title = 'Headers',
-  headers,
+  headers = {},
 }: {
   title: string;
   headers?: object;
 }) => {
   const styles = useThemedStyles(themedStyles);
+  const [expanded, setExpanded] = useState(true);
   return (
     <View>
-      <Header shareContent={headers && JSON.stringify(headers, null, 2)}>
+      <Header
+        collapsible
+        expanded={expanded}
+        onToggle={() => setExpanded((e) => !e)}
+        shareContent={headers && JSON.stringify(headers, null, 2)}
+      >
         {title}
       </Header>
-      <View style={styles.content}>
-        {Object.entries(headers || {}).map(([name, value]) => (
-          <View style={styles.headerContainer} key={name}>
-            <Text style={styles.headerKey}>{name}: </Text>
-            <Text style={styles.headerValue}>{value}</Text>
-          </View>
-        ))}
-      </View>
+      {expanded && (
+        <View style={styles.content}>
+          {Object.entries(headers).map(([name, value], index) => (
+            <View
+              key={name}
+              style={[
+                styles.headerContainer,
+                index % 2 !== 0 && styles.headerOddEntries,
+              ]}
+            >
+              <Text style={[styles.baseText, styles.headerKey]}>{name}: </Text>
+              <Text style={[styles.baseText, styles.headerValue]}>{value}</Text>
+            </View>
+          ))}
+        </View>
+      )}
     </View>
   );
 };
@@ -56,7 +71,7 @@ const LargeText: React.FC<{ children: string }> = ({ children }) => {
      */
     return (
       <TextInput
-        style={[styles.content, styles.largeContent]}
+        style={[styles.baseText, styles.content, styles.largeContent]}
         multiline
         editable={false}
         value={children}
@@ -67,19 +82,23 @@ const LargeText: React.FC<{ children: string }> = ({ children }) => {
   return (
     <View style={styles.largeContent}>
       <ScrollView nestedScrollEnabled>
-        <View>
-          <Text style={styles.content} selectable>
-            {children}
-          </Text>
-        </View>
+        <Text style={[styles.baseText, styles.content]} selectable>
+          {children}
+        </Text>
       </ScrollView>
     </View>
   );
 };
 
-const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
+const RequestDetails: React.FC<Props> = ({
+  request,
+  onClose,
+  compact = false,
+}) => {
   const [responseBody, setResponseBody] = useState('Loading...');
   const styles = useThemedStyles(themedStyles);
+  const [requestBodyExpanded, setRequestBodyExpanded] = useState(true);
+  const [responseBodyExpanded, setResponseBodyExpanded] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -109,27 +128,42 @@ const RequestDetails: React.FC<Props> = ({ request, onClose }) => {
 
   return (
     <View style={styles.container}>
-      <ResultItem request={request} style={styles.info} />
+      <ResultItem request={request} style={styles.info} compact={compact} />
       <ScrollView style={styles.scrollView} nestedScrollEnabled>
         <Headers title="Request Headers" headers={request.requestHeaders} />
-        <Header shareContent={requestBody}>Request Body</Header>
-        <LargeText>{requestBody}</LargeText>
+        <Header
+          collapsible
+          shareContent={requestBody}
+          expanded={requestBodyExpanded}
+          onToggle={() => setRequestBodyExpanded((e) => !e)}
+        >
+          Request Body
+        </Header>
+        {requestBodyExpanded && <LargeText>{requestBody}</LargeText>}
         <Headers title="Response Headers" headers={request.responseHeaders} />
-        <Header shareContent={responseBody}>Response Body</Header>
-        <LargeText>{responseBody}</LargeText>
-        <Header>More</Header>
-        <Button
-          onPress={() => Share.share({ message: getFullRequest() })}
-          fullWidth
+        <Header
+          collapsible
+          shareContent={responseBody}
+          expanded={responseBodyExpanded}
+          onToggle={() => setResponseBodyExpanded((e) => !e)}
         >
-          Share full request
-        </Button>
-        <Button
-          onPress={() => Share.share({ message: request.curlRequest })}
-          fullWidth
-        >
-          Share as cURL
-        </Button>
+          Response Body
+        </Header>
+        {responseBodyExpanded && <LargeText>{responseBody}</LargeText>}
+        <View style={styles.moreButtons}>
+          <Button
+            onPress={() => Share.share({ message: getFullRequest() })}
+            textStyle={styles.buttonText}
+          >
+            Share full request
+          </Button>
+          <Button
+            onPress={() => Share.share({ message: request.curlRequest })}
+            textStyle={styles.buttonText}
+          >
+            Share as cURL
+          </Button>
+        </View>
       </ScrollView>
       {!backHandlerSet() && (
         <Button onPress={onClose} style={styles.close}>
@@ -160,20 +194,44 @@ const themedStyles = (theme: Theme) =>
     scrollView: {
       width: '100%',
     },
-    headerContainer: { flexDirection: 'row', flexWrap: 'wrap' },
-    headerKey: { fontWeight: 'bold', color: theme.colors.text },
-    headerValue: { color: theme.colors.text },
-    text: {
-      fontSize: 16,
+    baseText: {
+      fontFamily: Platform.select({
+        ios: 'Menlo',
+        android: 'monospace',
+      }),
       color: theme.colors.text,
+    },
+    headerContainer: {
+      padding: 4,
+      borderRadius: 4,
+      flexWrap: 'wrap',
+      flexDirection: 'row',
+    },
+    headerOddEntries: {
+      backgroundColor: `${theme.colors.background}33`,
+    },
+    headerKey: {
+      fontSize: 13,
+      fontWeight: 'bold',
+    },
+    headerValue: {
+      fontSize: 12,
     },
     content: {
       backgroundColor: theme.colors.card,
       padding: 10,
-      color: theme.colors.text,
     },
     largeContent: {
-      maxHeight: 300,
+      maxHeight: 350,
+    },
+    moreButtons: {
+      gap: 10,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    buttonText: {
+      fontSize: 16,
     },
   });
 
