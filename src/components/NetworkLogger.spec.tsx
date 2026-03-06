@@ -25,6 +25,13 @@ jest.mock('../XHRInterceptor', () => ({
   setResponseCallback: jest.fn(),
   enableInterception: jest.fn(),
 }));
+jest.mock(
+  'react-native/Libraries/LogBox/LogBoxNotificationContainer',
+  () => () => null
+);
+jest.mock('react-native/Libraries/Image/Image', () => ({
+  default: () => null,
+}));
 
 const MyNetworkLogger = (props: NetworkLoggerProps) => {
   return <NetworkLogger {...props} />;
