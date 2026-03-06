@@ -1,3 +1,5 @@
+export {};
+
 type ReadyStateListener = () => void;
 
 class FakeXMLHttpRequest {
