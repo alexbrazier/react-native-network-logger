@@ -52,7 +52,9 @@ type NativeNetworkModule = {
 };
 
 const moduleName = 'RNNetworkLoggerNativeTransport';
-const nativeModule = NativeModules[moduleName] as NativeNetworkModule | undefined;
+const nativeModule = NativeModules[moduleName] as
+  | NativeNetworkModule
+  | undefined;
 
 let openCallback: OpenCallback = () => {};
 let requestHeaderCallback: RequestHeaderCallback = () => {};
@@ -99,10 +101,13 @@ const addSubscriptions = () => {
         requestHeaderCallback(header, value, xhr);
       }
     ),
-    emitter.addListener('networkLoggerRequestSend', ({ id, body }: NativeRequestSendEvent) => {
-      const xhr = getXHR(id);
-      sendCallback(body || '', xhr);
-    }),
+    emitter.addListener(
+      'networkLoggerRequestSend',
+      ({ id, body }: NativeRequestSendEvent) => {
+        const xhr = getXHR(id);
+        sendCallback(body || '', xhr);
+      }
+    ),
     emitter.addListener(
       'networkLoggerResponseHeaders',
       ({
