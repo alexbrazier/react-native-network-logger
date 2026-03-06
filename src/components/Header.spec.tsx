@@ -5,9 +5,6 @@ import { Share } from 'react-native';
 
 jest.mock('react-native/Libraries/Share/Share');
 jest.mock('./images/share.png', () => ({ uri: '' }));
-jest.mock('react-native/Libraries/Image/Image', () => ({
-  default: () => null,
-}));
 
 test('it renders header correctly', () => {
   const { getByTestId, queryByTestId } = render(<Header>My Title</Header>);
