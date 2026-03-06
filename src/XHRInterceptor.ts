@@ -100,7 +100,11 @@ function enableInterception(): void {
       url: url.toString(),
     };
 
-    openCallback(method, url.toString(), this);
+    try {
+      openCallback(method, url.toString(), this);
+    } catch {
+      // Interceptor callbacks must not break network requests.
+    }
 
     return originalXHROpen!.call(
       this,
@@ -117,7 +121,11 @@ function enableInterception(): void {
     header: string,
     value: string
   ): void {
-    requestHeaderCallback(header, value, this);
+    try {
+      requestHeaderCallback(header, value, this);
+    } catch {
+      // Interceptor callbacks must not break network requests.
+    }
     return originalXHRSetRequestHeader!.call(this, header, value);
   };
 
@@ -126,64 +134,78 @@ function enableInterception(): void {
     const xhr = this as any;
 
     const dataString = body === null || body === undefined ? '' : String(body);
-    sendCallback(dataString, xhr);
+    try {
+      sendCallback(dataString, xhr);
+    } catch {
+      // Interceptor callbacks must not break network requests.
+    }
 
     // Use addEventListener which is more reliable than overriding onreadystatechange
     // This works even when handlers are set after send() is called
-    this.addEventListener('readystatechange', function () {
-      if (this.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
-        if (!xhr._interception?.hasCalledHeaderReceived) {
-          if (xhr._interception) {
-            xhr._interception.hasCalledHeaderReceived = true;
-          }
-          const contentType = this.getResponseHeader('content-type') || '';
-          const contentLength = this.getResponseHeader('content-length');
-          const responseSize = contentLength ? parseInt(contentLength, 10) : 0;
-          const responseHeaders = parseResponseHeaders(
-            this.getAllResponseHeaders()
-          );
-
-          // Set responseHeaders on xhr for compatibility with Logger.ts
-          xhr.responseHeaders = responseHeaders;
-
-          headerReceivedCallback(
-            contentType,
-            responseSize,
-            responseHeaders,
-            xhr
-          );
-        }
-      }
-
-      if (this.readyState === XMLHttpRequest.DONE) {
-        if (!xhr._interception?.hasCalledResponse) {
-          if (xhr._interception) {
-            xhr._interception.hasCalledResponse = true;
-          }
-          let responseData = '';
-          if (this.responseType === '' || this.responseType === 'text') {
-            responseData = this.responseText || '';
-          } else if (this.responseType === 'json' && this.response) {
-            try {
-              responseData = JSON.stringify(this.response);
-            } catch {
-              responseData = '[Unable to stringify response]';
+    if (typeof this.addEventListener === 'function') {
+      this.addEventListener('readystatechange', function () {
+        if (this.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
+          if (!xhr._interception?.hasCalledHeaderReceived) {
+            if (xhr._interception) {
+              xhr._interception.hasCalledHeaderReceived = true;
             }
-          } else if (this.response) {
-            responseData = '[Non-text response]';
-          }
+            const contentType = this.getResponseHeader('content-type') || '';
+            const contentLength = this.getResponseHeader('content-length');
+            const responseSize = contentLength
+              ? parseInt(contentLength, 10)
+              : 0;
+            const responseHeaders = parseResponseHeaders(
+              this.getAllResponseHeaders()
+            );
 
-          responseCallback(
-            this.status,
-            this.timeout,
-            responseData,
-            this.responseURL,
-            this.responseType,
-            xhr
-          );
+            // Set responseHeaders on xhr for compatibility with Logger.ts
+            xhr.responseHeaders = responseHeaders;
+
+            try {
+              headerReceivedCallback(
+                contentType,
+                responseSize,
+                responseHeaders,
+                xhr
+              );
+            } catch {
+              // Interceptor callbacks must not break network requests.
+            }
+          }
         }
-      }
-    });
+
+        if (this.readyState === XMLHttpRequest.DONE) {
+          if (!xhr._interception?.hasCalledResponse) {
+            if (xhr._interception) {
+              xhr._interception.hasCalledResponse = true;
+            }
+            let responseData: any = this.response;
+            if (this.responseType === '' || this.responseType === 'text') {
+              responseData = this.responseText || '';
+            } else if (this.responseType === 'json' && this.response) {
+              try {
+                responseData = JSON.stringify(this.response);
+              } catch {
+                responseData = '[Unable to stringify response]';
+              }
+            }
+
+            try {
+              responseCallback(
+                this.status,
+                this.timeout,
+                responseData,
+                this.responseURL,
+                this.responseType,
+                xhr
+              );
+            } catch {
+              // Interceptor callbacks must not break network requests.
+            }
+          }
+        }
+      });
+    }
 
     return originalXHRSend!.call(this, body);
   };

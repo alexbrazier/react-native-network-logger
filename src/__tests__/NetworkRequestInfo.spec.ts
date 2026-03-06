@@ -175,36 +175,48 @@ describe('getRequestBody', () => {
 });
 
 describe('getResponseBody', () => {
-  const info = new NetworkRequestInfo(
-    '1',
-    'application/json',
-    'GET',
-    'https://test.com'
-  );
+  it('should show pending response for requests not finished yet', async () => {
+    const info = new NetworkRequestInfo(
+      '1',
+      'application/json',
+      'GET',
+      'https://test.com'
+    );
+    info.status = -1;
+    info.endTime = 0;
+    info.response = '';
 
-  it('should return stringified data in consistent format', () => {
-    info.dataSent = '{"data":    {"a":   1   }}';
-    const result = info.getRequestBody();
-    expect(typeof result).toBe('string');
-    expect(result).toMatchInlineSnapshot(`
-      "{
-        "data": {
-          "a": 1
-        }
-      }"
-    `);
+    await expect(info.getResponseBody()).resolves.toBe('Pending response...');
   });
 
-  it('should return object wrapped in data if parsing fails', () => {
-    // @ts-ignore
-    info.dataSent = { test: 1 };
-    const result = info.getRequestBody();
-    expect(typeof result).toBe('string');
-    expect(result).toMatchInlineSnapshot(`
+  it('should return empty string for successful empty responses', async () => {
+    const info = new NetworkRequestInfo(
+      '1',
+      'application/json',
+      'GET',
+      'https://test.com'
+    );
+    info.status = 204;
+    info.endTime = Date.now();
+    info.response = '';
+
+    await expect(info.getResponseBody()).resolves.toBe('');
+  });
+
+  it('should return stringified JSON response', async () => {
+    const info = new NetworkRequestInfo(
+      '1',
+      'application/json',
+      'GET',
+      'https://test.com'
+    );
+    info.status = 200;
+    info.endTime = Date.now();
+    info.response = '{"ok":true}';
+
+    await expect(info.getResponseBody()).resolves.toMatchInlineSnapshot(`
       "{
-        "data": {
-          "test": 1
-        }
+        "ok": true
       }"
     `);
   });

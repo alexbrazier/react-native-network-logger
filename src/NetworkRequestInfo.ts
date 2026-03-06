@@ -108,9 +108,11 @@ export default class NetworkRequestInfo {
   }
 
   private async parseResponseBlob() {
-    const blobReader = new BlobFileReader();
-    blobReader.readAsText(this.response);
+    if (this.response === null || this.response === undefined) {
+      return '';
+    }
 
+    const blobReader = new BlobFileReader();
     return await new Promise<string>((resolve, reject) => {
       const handleError = () => reject(blobReader.error);
 
@@ -119,14 +121,32 @@ export default class NetworkRequestInfo {
       });
       blobReader.addEventListener('error', handleError);
       blobReader.addEventListener('abort', handleError);
+
+      try {
+        blobReader.readAsText(this.response);
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
   async getResponseBody() {
-    const body = await (this.responseType !== 'blob'
-      ? this.response
-      : this.parseResponseBlob());
+    if (this.endTime === 0 && this.status < 0) {
+      return 'Pending response...';
+    }
 
-    return this.stringifyFormat(body);
+    try {
+      const body = await (this.responseType !== 'blob'
+        ? this.response
+        : this.parseResponseBlob());
+
+      if (body === '' || body === null || body === undefined) {
+        return '';
+      }
+
+      return this.stringifyFormat(body);
+    } catch {
+      return '[Unable to load response body]';
+    }
   }
 }
