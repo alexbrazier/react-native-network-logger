@@ -10837,6 +10837,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"react-native-network-logger-native@workspace:react-native-network-logger-native":
+  version: 0.0.0-use.local
+  resolution: "react-native-network-logger-native@workspace:react-native-network-logger-native"
+  dependencies:
+    react-native-builder-bob: ^0.40.18
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+    react-native-network-logger: "*"
+  languageName: unknown
+  linkType: soft
+
 "react-native-network-logger@workspace:.":
   version: 0.0.0-use.local
   resolution: "react-native-network-logger@workspace:."
