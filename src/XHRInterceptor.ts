@@ -21,12 +21,21 @@ declare class XMLHttpRequest {
 
   onreadystatechange: ((this: XMLHttpRequest, ev: any) => any) | null;
 
-  open(method: string, url: string | URL, async?: boolean, username?: string | null, password?: string | null): void;
+  open(
+    method: string,
+    url: string | URL,
+    async?: boolean,
+    username?: string | null,
+    password?: string | null
+  ): void;
   send(body?: any): void;
   setRequestHeader(header: string, value: string): void;
   getResponseHeader(name: string): string | null;
   getAllResponseHeaders(): string;
-  addEventListener(type: string, listener: (this: XMLHttpRequest, ev: any) => any): void;
+  addEventListener(
+    type: string,
+    listener: (this: XMLHttpRequest, ev: any) => any
+  ): void;
 }
 
 // Callback types use 'any' to match React Native's XHRInterceptor API
@@ -40,8 +49,9 @@ type ResponseCallback = (...args: any[]) => void;
 // Store original XMLHttpRequest methods
 let originalXHROpen: typeof XMLHttpRequest.prototype.open | null = null;
 let originalXHRSend: typeof XMLHttpRequest.prototype.send | null = null;
-let originalXHRSetRequestHeader: typeof XMLHttpRequest.prototype.setRequestHeader | null =
-  null;
+let originalXHRSetRequestHeader:
+  | typeof XMLHttpRequest.prototype.setRequestHeader
+  | null = null;
 
 // Callbacks
 let openCallback: OpenCallback = () => {};
@@ -136,7 +146,12 @@ function enableInterception(): void {
           // Set responseHeaders on xhr for compatibility with Logger.ts
           xhr.responseHeaders = responseHeaders;
 
-          headerReceivedCallback(contentType, responseSize, responseHeaders, xhr);
+          headerReceivedCallback(
+            contentType,
+            responseSize,
+            responseHeaders,
+            xhr
+          );
         }
       }
 
