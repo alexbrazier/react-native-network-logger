@@ -1,5 +1,6 @@
 import logger from './loggerSingleton';
 import { StartNetworkLoggingOptions } from './types';
+import createHar from './utils/createHar';
 
 export { default } from './components/NetworkLogger';
 
@@ -14,6 +15,8 @@ export const stopNetworkLogging = () => {
 export const getRequests = () => logger.getRequests();
 
 export const clearRequests = () => logger.clearRequests();
+
+export const createHarFile = () => createHar(logger.getRequests());
 
 export { getBackHandler } from './backHandler';
 
