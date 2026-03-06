@@ -194,6 +194,25 @@ If you are running another network logging interceptor, e.g. Reactotron, the log
 startNetworkLogging({ forceEnable: true });
 ```
 
+#### Native Transport Plugin (iOS + Android)
+
+By default, requests are captured via JavaScript XHR interception (`transport: "js"`).
+To use native transport, install and register the plugin package:
+
+```bash
+yarn add react-native-network-logger-native
+```
+
+```ts
+import { startNetworkLogging } from 'react-native-network-logger';
+import { registerNativeNetworkLoggerTransport } from 'react-native-network-logger-native';
+
+registerNativeNetworkLoggerTransport();
+startNetworkLogging({ transport: 'native' });
+```
+
+The base package does not include native code, so native pods/gradle setup are only added when you install this plugin package.
+
 #### Integrate with existing navigation
 
 Use your existing back button (e.g. in your navigation header) to navigate within the network logger.
@@ -226,6 +245,23 @@ yarn example start
 ```
 
 You should then be able to open the expo server at http://localhost:3000/ and launch the app on iOS or Android.
+
+### Native Example (Expo prebuild)
+
+For the native transport example, use the separate workspace:
+
+```sh
+yarn example-native native:ios
+```
+
+For Android:
+
+```sh
+yarn example-native native:android
+```
+
+`native:ios` runs Expo prebuild for iOS, installs pods, and launches the native iOS app.  
+`native:android` runs Expo prebuild for Android and launches the native Android app.
 
 For more setup and development details, see [Contributing](#Contributing).
 

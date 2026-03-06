@@ -6,6 +6,12 @@ export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 export type StartNetworkLoggingOptions = {
   /**
+   * Select logging transport.
+   * - `js`: JavaScript XHR interception (default)
+   * - any registered transport name via registerNetworkTransport(...)
+   */
+  transport?: 'js' | string;
+  /**
    * Max number of requests to keep before overwriting
    * @default 500
    */

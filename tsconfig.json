@@ -2,7 +2,10 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "react-native-network-logger": ["./src/index"]
+      "react-native-network-logger": ["./src/index"],
+      "react-native-network-logger-native": [
+        "./react-native-network-logger-native/src/index"
+      ]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,

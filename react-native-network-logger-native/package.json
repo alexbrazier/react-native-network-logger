@@ -1,0 +1,73 @@
+{
+  "name": "react-native-network-logger-native",
+  "version": "0.1.0",
+  "description": "Native transport plugin for react-native-network-logger",
+  "main": "./lib/module/index.js",
+  "types": "./lib/typescript/src/index.d.ts",
+  "source": "src/index.ts",
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "types": "./lib/typescript/src/index.d.ts",
+      "default": "./lib/module/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "src",
+    "android",
+    "ios",
+    "react-native-network-logger-native.podspec",
+    "!**/__tests__",
+    "!**/*.spec.ts",
+    "!**/*.spec.tsx",
+    "!**/__fixtures__",
+    "!**/__mocks__"
+  ],
+  "scripts": {
+    "prepare": "bob build"
+  },
+  "keywords": [
+    "react-native",
+    "network",
+    "logger",
+    "native",
+    "ios",
+    "android"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexbrazier/react-native-network-logger.git"
+  },
+  "author": "alexbrazier",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*",
+    "react-native-network-logger": "*"
+  },
+  "devDependencies": {
+    "react-native-builder-bob": "^0.40.18"
+  },
+  "react-native": "src/index.ts",
+  "homepage": "https://github.com/alexbrazier/react-native-network-logger",
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      [
+        "module",
+        {
+          "esm": true
+        }
+      ],
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
+    ]
+  }
+}
