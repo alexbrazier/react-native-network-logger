@@ -12,17 +12,19 @@
     "test": "jest"
   },
   "dependencies": {
-    "@apollo/client": "^3.13.8",
-    "expo": "~53.0.9",
+    "@apollo/client": "^4.1.6",
+    "expo": "~55.0.5",
     "graphql": "^16.11.0",
-    "react": "~19.0.0",
-    "react-native": "0.79.2"
+    "react": "19.2.0",
+    "react-native": "0.83.2",
+    "react-native-safe-area-context": "^5.7.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.27.1",
-    "@babel/runtime": "^7.27.1",
-    "@react-native/metro-config": "^0.79.2",
-    "react-native-builder-bob": "^0.40.10"
+    "@babel/core": "^7.29.0",
+    "@babel/runtime": "^7.28.6",
+    "@react-native/metro-config": "^0.84.1",
+    "babel-preset-expo": "^55.0.10",
+    "react-native-builder-bob": "^0.40.18"
   },
   "resolutions": {
     "semver": "^7.5.4"

@@ -2,7 +2,6 @@ import React, { useCallback, useLayoutEffect, useState } from 'react';
 import {
   StyleSheet,
   Button,
-  SafeAreaView,
   View,
   Text,
   TouchableOpacity,
@@ -14,10 +13,17 @@ import NetworkLogger, {
   startNetworkLogging,
   stopNetworkLogging,
 } from 'react-native-network-logger';
-import { getHero, getRates, getUser } from './apolloClient';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { getTodos } from './apolloClient';
 
 const formData = new FormData();
 formData.append('test', 'hello');
+
+const fetchStatus = async (status: number, sleepSeconds?: number) => {
+  return fetch(`https://httpbin.org/status/${status}`, {
+    headers: { 'X-HttpBin-Sleep': `${sleepSeconds || 0}` },
+  });
+};
 
 const requests = [
   async () =>
@@ -35,29 +41,27 @@ const requests = [
       method: 'POST',
       body: formData,
     }),
-  async () => fetch('https://httpstat.us/200', { method: 'HEAD' }),
+  async () => fetch('https://httpbin.org/status/200', { method: 'HEAD' }),
   async () =>
     fetch('https://postman-echo.com/put', {
       method: 'PUT',
       body: JSON.stringify({ test: 'hello' }),
     }),
-  async () => fetch('https://httpstat.us/200?sleep=300'),
-  async () => fetch('https://httpstat.us/204?sleep=200'),
-  async () => fetch('https://httpstat.us/302?sleep=200'),
-  async () => fetch('https://httpstat.us/400?sleep=200'),
-  async () => fetch('https://httpstat.us/401?sleep=200'),
-  async () => fetch('https://httpstat.us/403?sleep=200'),
-  async () => fetch('https://httpstat.us/404?sleep=400'),
-  async () => fetch('https://httpstat.us/500?sleep=5000'),
-  async () => fetch('https://httpstat.us/503?sleep=200'),
-  async () => fetch('https://httpstat.us/504?sleep=10000'),
+  async () => fetchStatus(200, 0.3),
+  async () => fetchStatus(204, 0.2),
+  async () => fetchStatus(302, 0.2),
+  async () => fetchStatus(400, 0.2),
+  async () => fetchStatus(401, 0.2),
+  async () => fetchStatus(403, 0.2),
+  async () => fetchStatus(404, 0.4),
+  async () => fetchStatus(500, 5),
+  async () => fetchStatus(503, 0.2),
+  async () => fetchStatus(504, 10),
 
   // Non JSON response
   async () => fetch('https://postman-echo.com/stream/2'),
 
-  async () => getRates(), // 405
-  async () => getHero(), // 400
-  async () => getUser(), // 200
+  async () => getTodos(),
   // Test requests that fail
   // async () => fetch('https://failingrequest'),
 ];
@@ -78,7 +82,7 @@ export default function App() {
     startNetworkLogging({
       ignoredHosts: ['127.0.0.1'],
       maxRequests,
-      ignoredUrls: ['https://httpstat.us/other'],
+      ignoredUrls: ['https://httpbin.org/status/other'],
       ignoredPatterns: [/^POST http:\/\/(192|10)/, /\/logs$/, /\/symbolicate$/],
     });
   }, []);
@@ -118,36 +122,38 @@ export default function App() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar
-        barStyle={isDark ? 'light-content' : 'dark-content'}
-        backgroundColor={isDark ? '#2d2a28' : 'white'}
-      />
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.navButton}
-          testID="backButton"
-          onPress={backHandler}
-          hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
-        >
-          <Text style={styles.backButtonText}>{'‹'}</Text>
-        </TouchableOpacity>
-        <Text style={styles.title} accessibilityRole="header">
-          react-native-network-logger
-        </Text>
-        <View style={styles.navButton} />
-      </View>
-      {(unmountNetworkLogger && remountButton) || (
-        <NetworkLogger theme={theme} maxRows={10} />
-      )}
-      <View style={styles.bottomView}>
-        <Button
-          title="Toggle Theme"
-          onPress={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <StatusBar
+          barStyle={isDark ? 'light-content' : 'dark-content'}
+          backgroundColor={isDark ? '#2d2a28' : 'white'}
         />
-        <Button title="Make request" onPress={makeRequest} />
-      </View>
-    </SafeAreaView>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.navButton}
+            testID="backButton"
+            onPress={backHandler}
+            hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
+          >
+            <Text style={styles.backButtonText}>{'‹'}</Text>
+          </TouchableOpacity>
+          <Text style={styles.title} accessibilityRole="header">
+            react-native-network-logger
+          </Text>
+          <View style={styles.navButton} />
+        </View>
+        {(unmountNetworkLogger && remountButton) || (
+          <NetworkLogger theme={theme} maxRows={10} />
+        )}
+        <View style={styles.bottomView}>
+          <Button
+            title="Toggle Theme"
+            onPress={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+          />
+          <Button title="Make request" onPress={makeRequest} />
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
@@ -156,7 +162,6 @@ const themedStyles = (dark = false) =>
     container: {
       flex: 1,
       backgroundColor: dark ? '#2d2a28' : 'white',
-      paddingTop: 0,
     },
     header: {
       flexDirection: 'row',
