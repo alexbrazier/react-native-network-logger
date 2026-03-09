@@ -187,6 +187,7 @@ const themedStyles = (theme: Theme) =>
     },
     info: {
       margin: 0,
+      maxHeight: 150,
     },
     close: {
       position: 'absolute',
