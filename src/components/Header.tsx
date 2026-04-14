@@ -20,22 +20,26 @@ const Header: React.FC<Props> = ({
 }) => {
   const styles = useThemedStyles(themedStyles);
   const prefix = collapsible ? (expanded ? '▼ ' : '▶ ') : '';
+  const titleContent = (
+    <Text style={styles.header} accessibilityRole="header" testID="header-text">
+      {prefix + children}
+    </Text>
+  );
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        testID="header-toggle"
-        accessibilityRole="button"
-        activeOpacity={collapsible ? 0.6 : 1}
-        onPress={collapsible && onToggle ? onToggle : undefined}
-      >
-        <Text
-          style={styles.header}
-          accessibilityRole="header"
-          testID="header-text"
+      {collapsible ? (
+        <TouchableOpacity
+          testID="header-toggle"
+          accessibilityRole="button"
+          activeOpacity={0.6}
+          onPress={onToggle}
         >
-          {prefix + children}
-        </Text>
-      </TouchableOpacity>
+          {titleContent}
+        </TouchableOpacity>
+      ) : (
+        <View testID="header-toggle">{titleContent}</View>
+      )}
 
       {!!shareContent && (
         <Icon
