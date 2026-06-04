@@ -1,0 +1,1 @@
+{"version":3,"names":["Logger","logger"],"sourceRoot":"../../src","sources":["loggerSingleton.ts"],"mappings":";;AAAA,OAAOA,MAAM,MAAM,aAAU;AAE7B,MAAMC,MAAc,GAAG,IAAID,MAAM,CAAC,CAAC;AAEnC,eAAeC,MAAM","ignoreList":[]}
