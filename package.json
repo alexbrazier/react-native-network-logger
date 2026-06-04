@@ -138,5 +138,8 @@
         }
       ]
     ]
+  },
+  "dependencies": {
+    "react-native-json-tree": "^1.5.0"
   }
 }
