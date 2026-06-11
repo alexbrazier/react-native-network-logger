@@ -1,5 +1,13 @@
 # Changelog
 
+# [3.0.0](https://github.com/alexbrazier/react-native-network-logger/compare/v2.0.1...v3.0.0) (2026-06-11)
+
+This adds fixes for React Native 0.81 at above. There should be no breaking changes, but XHRInterceptor is now bundled with the package which is why it's a major version bump just in case.
+
+### Bug Fixes
+
+- rn81 api warnings ([#123](https://github.com/alexbrazier/react-native-network-logger/issues/123)) ([db30e12](https://github.com/alexbrazier/react-native-network-logger/commit/db30e127358669dcbaf4367a571c45e7985e2d55))
+
 ## [2.0.1](https://github.com/alexbrazier/react-native-network-logger/compare/v2.0.0...v2.0.1) (2025-06-14)
 
 - Adds support for React Native 0.80 and above.
