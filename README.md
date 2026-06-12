@@ -186,6 +186,27 @@ import NetworkLogger from 'react-native-network-logger';
 const MyScreen = () => <NetworkLogger compact />;
 ```
 
+#### Initial Expansion Controls of RequestDetails component
+
+Control which sections of the RequestDetails component are expanded by default when viewing a request:
+
+```tsx
+import NetworkLogger from 'react-native-network-logger';
+
+const MyScreen = () => (
+  <NetworkLogger
+    // Headers
+    initialRequestHeadersExpanded={false}
+    initialResponseHeadersExpanded={false}
+    // Bodies
+    initialRequestBodyExpanded={false}
+    initialResponseBodyExpanded={false}
+  />
+);
+```
+
+These affect the initial expansion of the Request/Response headers and body sections in the details view.
+
 #### Force Enable
 
 If you are running another network logging interceptor, e.g. Reactotron, the logger will not start as only one can be run at once. You can override this behaviour and force the logger to start by using the `forceEnable` option.
