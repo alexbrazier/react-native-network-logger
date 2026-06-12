@@ -16,6 +16,7 @@ interface Props {
   sort?: 'asc' | 'desc';
   compact?: boolean;
   maxRows?: number;
+  autoStart?: boolean;
 }
 
 const sortRequests = (requests: NetworkRequestInfo[], sort: 'asc' | 'desc') => {
@@ -30,6 +31,7 @@ const NetworkLogger: React.FC<Props> = ({
   sort = 'desc',
   compact = false,
   maxRows,
+  autoStart = false,
 }) => {
   const [requests, setRequests] = useState(logger.getRequests());
   const [request, setRequest] = useState<NetworkRequestInfo>();
@@ -52,14 +54,16 @@ const NetworkLogger: React.FC<Props> = ({
       setRequests([...updatedRequests]);
     });
 
-    logger.enableXHRInterception();
+    if (autoStart) {
+      logger.enableXHRInterception();
+    }
     setMounted(true);
 
     return () => {
       // no-op if component is unmounted
       logger.setCallback(() => {});
     };
-  }, [sort]);
+  }, [sort, autoStart]);
 
   useEffect(() => {
     const onBack = () => {

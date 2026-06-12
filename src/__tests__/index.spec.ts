@@ -1,4 +1,5 @@
 import XHRInterceptor from '../XHRInterceptor';
+import * as transportRegistry from '../transportRegistry';
 import { startNetworkLogging, stopNetworkLogging } from '..';
 import logger from '../loggerSingleton';
 import { LOGGER_MAX_REQUESTS, LOGGER_REFRESH_RATE } from '../constant';
@@ -14,12 +15,30 @@ jest.mock('../XHRInterceptor', () => ({
   enableInterception: jest.fn(),
   disableInterception: jest.fn(),
 }));
+jest.mock('../transportRegistry', () => ({
+  registerNetworkTransport: jest.fn(),
+  unregisterNetworkTransport: jest.fn(),
+  getNetworkTransport: jest.fn(),
+}));
+jest.mock('../utils/logger', () => ({
+  warn: jest.fn(),
+}));
 
 describe('singleton logger', () => {
+  beforeEach(() => {
+    (transportRegistry.getNetworkTransport as jest.Mock).mockReturnValue(
+      undefined
+    );
+  });
+
   afterEach(() => {
     logger.disableXHRInterception();
     jest.resetAllMocks();
+    (transportRegistry.getNetworkTransport as jest.Mock).mockReturnValue(
+      undefined
+    );
   });
+
   it('should set options when starting the logger', () => {
     (XHRInterceptor.isInterceptorEnabled as jest.Mock).mockReturnValueOnce(
       false
@@ -49,6 +68,28 @@ describe('singleton logger', () => {
     expect(XHRInterceptor.setResponseCallback).toHaveBeenCalledTimes(1);
     expect(XHRInterceptor.enableInterception).toHaveBeenCalledTimes(1);
     expect(logger.enabled).toBe(true);
+  });
+
+  it('should start a registered transport when requested', () => {
+    const transport = {
+      isInterceptorEnabled: jest.fn().mockReturnValue(false),
+      setOpenCallback: jest.fn(),
+      setRequestHeaderCallback: jest.fn(),
+      setSendCallback: jest.fn(),
+      setHeaderReceivedCallback: jest.fn(),
+      setResponseCallback: jest.fn(),
+      enableInterception: jest.fn(),
+      disableInterception: jest.fn(),
+    };
+
+    (transportRegistry.getNetworkTransport as jest.Mock).mockReturnValueOnce(
+      transport
+    );
+
+    startNetworkLogging({ transport: 'native' });
+
+    expect(transport.enableInterception).toHaveBeenCalledTimes(1);
+    expect(XHRInterceptor.enableInterception).toHaveBeenCalledTimes(0);
   });
 
   it('should not start twice the logger', () => {

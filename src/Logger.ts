@@ -1,6 +1,10 @@
 import XHRInterceptor from './XHRInterceptor';
 import NetworkRequestInfo from './NetworkRequestInfo';
 import { Headers, RequestMethod, StartNetworkLoggingOptions } from './types';
+import {
+  getNetworkTransport,
+  type NetworkTransportAdapter,
+} from './transportRegistry';
 import extractHost from './utils/extractHost';
 import { warn } from './utils/logger';
 import debounce from './utils/debounce';
@@ -24,6 +28,7 @@ export default class Logger {
   private ignoredUrls: Set<string> | undefined;
   private ignoredPatterns: RegExp[] | undefined;
   private paused = false;
+  private interceptor: NetworkTransportAdapter = XHRInterceptor;
   public enabled = false;
 
   callback = (_: NetworkRequestInfo[]) => null;
@@ -161,9 +166,21 @@ export default class Logger {
   };
 
   enableXHRInterception = (options?: StartNetworkLoggingOptions) => {
+    let interceptor: NetworkTransportAdapter = XHRInterceptor;
+    if (options?.transport && options.transport !== 'js') {
+      const registered = getNetworkTransport(options.transport);
+      if (!registered) {
+        warn(
+          `${options.transport} transport is unavailable (not registered). Network logging has not been started.`
+        );
+        return;
+      }
+      interceptor = registered;
+    }
+
     if (
       this.enabled ||
-      (XHRInterceptor.isInterceptorEnabled() && !options?.forceEnable)
+      (interceptor.isInterceptorEnabled() && !options?.forceEnable)
     ) {
       if (!this.enabled) {
         warn(
@@ -223,13 +240,13 @@ export default class Logger {
       this.ignoredUrls = new Set(options.ignoredUrls);
     }
 
-    XHRInterceptor.setOpenCallback(this.openCallback);
-    XHRInterceptor.setRequestHeaderCallback(this.requestHeadersCallback);
-    XHRInterceptor.setHeaderReceivedCallback(this.headerReceivedCallback);
-    XHRInterceptor.setSendCallback(this.sendCallback);
-    XHRInterceptor.setResponseCallback(this.responseCallback);
-
-    XHRInterceptor.enableInterception();
+    interceptor.setOpenCallback(this.openCallback);
+    interceptor.setRequestHeaderCallback(this.requestHeadersCallback);
+    interceptor.setHeaderReceivedCallback(this.headerReceivedCallback);
+    interceptor.setSendCallback(this.sendCallback);
+    interceptor.setResponseCallback(this.responseCallback);
+    interceptor.enableInterception();
+    this.interceptor = interceptor;
     this.enabled = true;
   };
 
@@ -275,12 +292,12 @@ export default class Logger {
 
     const noop = () => null;
     // manually reset callbacks even if the XHRInterceptor lib does it for us with 'disableInterception'
-    XHRInterceptor.setOpenCallback(noop);
-    XHRInterceptor.setRequestHeaderCallback(noop);
-    XHRInterceptor.setHeaderReceivedCallback(noop);
-    XHRInterceptor.setSendCallback(noop);
-    XHRInterceptor.setResponseCallback(noop);
-
-    XHRInterceptor.disableInterception();
+    this.interceptor.setOpenCallback(noop);
+    this.interceptor.setRequestHeaderCallback(noop);
+    this.interceptor.setHeaderReceivedCallback(noop);
+    this.interceptor.setSendCallback(noop);
+    this.interceptor.setResponseCallback(noop);
+    this.interceptor.disableInterception();
+    this.interceptor = XHRInterceptor;
   };
 }

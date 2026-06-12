@@ -1,4 +1,5 @@
 import XHRInterceptor from '../XHRInterceptor';
+import * as transportRegistry from '../transportRegistry';
 import { warn } from '../utils/logger';
 import Logger from '../Logger';
 import { LOGGER_MAX_REQUESTS, LOGGER_REFRESH_RATE } from '../constant';
@@ -14,6 +15,11 @@ jest.mock('../XHRInterceptor', () => ({
   enableInterception: jest.fn(),
   disableInterception: jest.fn(),
 }));
+jest.mock('../transportRegistry', () => ({
+  registerNetworkTransport: jest.fn(),
+  unregisterNetworkTransport: jest.fn(),
+  getNetworkTransport: jest.fn(),
+}));
 
 jest.mock('../utils/logger', () => ({
   warn: jest.fn(() => {
@@ -23,6 +29,9 @@ jest.mock('../utils/logger', () => ({
 
 beforeEach(() => {
   jest.clearAllMocks();
+  (transportRegistry.getNetworkTransport as jest.Mock).mockReturnValue(
+    undefined
+  );
 });
 
 describe('enableXHRInterception', () => {
@@ -154,6 +163,44 @@ describe('enableXHRInterception', () => {
 
     expect(XHRInterceptor.enableInterception).toHaveBeenCalledTimes(1);
     expect(XHRInterceptor.enableInterception).toHaveBeenCalledWith();
+  });
+
+  it('should use a registered transport when requested', () => {
+    const customTransport = {
+      isInterceptorEnabled: jest.fn().mockReturnValue(false),
+      setOpenCallback: jest.fn(),
+      setRequestHeaderCallback: jest.fn(),
+      setSendCallback: jest.fn(),
+      setHeaderReceivedCallback: jest.fn(),
+      setResponseCallback: jest.fn(),
+      enableInterception: jest.fn(),
+      disableInterception: jest.fn(),
+    };
+    (transportRegistry.getNetworkTransport as jest.Mock).mockReturnValueOnce(
+      customTransport
+    );
+
+    const logger = new Logger();
+    logger.enableXHRInterception({ transport: 'native' });
+
+    expect(customTransport.setOpenCallback).toHaveBeenCalledTimes(1);
+    expect(customTransport.setRequestHeaderCallback).toHaveBeenCalledTimes(1);
+    expect(customTransport.setHeaderReceivedCallback).toHaveBeenCalledTimes(1);
+    expect(customTransport.setSendCallback).toHaveBeenCalledTimes(1);
+    expect(customTransport.setResponseCallback).toHaveBeenCalledTimes(1);
+    expect(customTransport.enableInterception).toHaveBeenCalledTimes(1);
+    expect(XHRInterceptor.enableInterception).toHaveBeenCalledTimes(0);
+  });
+
+  it('should not start if requested transport is unavailable', () => {
+    (warn as jest.Mock).mockImplementationOnce(() => null);
+    const logger = new Logger();
+
+    logger.enableXHRInterception({ transport: 'native' });
+
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(XHRInterceptor.enableInterception).toHaveBeenCalledTimes(0);
+    expect(logger.enabled).toBe(false);
   });
 });
 

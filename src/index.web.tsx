@@ -1,4 +1,8 @@
 import { StartNetworkLoggingOptions } from './types';
+import {
+  registerNetworkTransport,
+  unregisterNetworkTransport,
+} from './transportRegistry';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const startNetworkLogging = (options?: StartNetworkLoggingOptions) => {
@@ -8,6 +12,8 @@ export const startNetworkLogging = (options?: StartNetworkLoggingOptions) => {
 export const getRequests = () => [];
 
 export const clearRequests = () => {};
+export { registerNetworkTransport, unregisterNetworkTransport };
+export type { NetworkTransportAdapter } from './transportRegistry';
 
 export { getBackHandler } from './backHandler';
 

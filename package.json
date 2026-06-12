@@ -99,7 +99,8 @@
     }
   },
   "workspaces": [
-    "example"
+    "example",
+    "react-native-network-logger-native"
   ],
   "packageManager": "yarn@3.6.1",
   "release-it": {
